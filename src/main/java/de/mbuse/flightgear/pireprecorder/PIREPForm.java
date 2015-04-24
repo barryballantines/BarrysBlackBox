@@ -8,6 +8,7 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.ResourceBundle;
+import java.util.Timer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -47,9 +48,29 @@ public class PIREPForm implements Initializable {
     private Calendar arrivalTime;
     private long departureFuel;
     private long arrivalFuel;
+    
+    private Timer fuelCheckerTimer;
 
     public void setFlightDataRetrieval(FlightDataRetrieval flightDataRetrieval) {
         this.retrieval = flightDataRetrieval;
+    }
+    
+    public void setDepartureFuelGauge(long fuel) {
+        departureFuel = fuel;
+        departureFuelLbl.setText(FUEL_FORMAT.format(departureFuel));
+    }
+    
+    public long getDepartureFuelGauge() {
+        return departureFuel;
+    }
+    
+    public void setArrivalFuelGauge(long fuel) {
+        arrivalFuel = fuel;
+        arrivalFuelLbl.setText(FUEL_FORMAT.format(arrivalFuel));     
+    }
+    
+    public long getArrivalFuelGauge() {
+        return arrivalFuel;
     }
     
     @FXML
@@ -58,11 +79,10 @@ public class PIREPForm implements Initializable {
         
         String airport = retrieval.getAirport();
         departureTime = retrieval.getTimeUTC();
-        departureFuel = retrieval.getFuel();
         
         departureAirportLbl.setText(airport);
         departureTimeLbl.setText(TIME_FORMAT.format(departureTime.getTime()));
-        departureFuelLbl.setText(FUEL_FORMAT.format(departureFuel));
+        setDepartureFuelGauge(retrieval.getFuel());
         
         arrivalAirportLbl.setText("----");
         arrivalTimeLbl.setText("--:--");
@@ -73,21 +93,27 @@ public class PIREPForm implements Initializable {
         
         startupBtn.setDisable(true);
         shutdownBtn.setDisable(false);
+        
+        fuelCheckerTimer = new Timer("FuelChecker");
+        fuelCheckerTimer.schedule(new FuelChecker(this, retrieval), 5000, 5000);
                
     }
+    
     
     @FXML 
     private void shutdownBtnPressed(ActionEvent event) {
         System.out.println("Shutdown button pressed");
+        
+        fuelCheckerTimer.cancel();
+        
         arrivalTime = retrieval.getTimeUTC();
-        arrivalFuel = retrieval.getFuel();
+        setArrivalFuelGauge(retrieval.getFuel());
        
         arrivalAirportLbl.setText(retrieval.getAirport());
         arrivalTimeLbl.setText(TIME_FORMAT.format(arrivalTime.getTime()));
-        arrivalFuelLbl.setText(FUEL_FORMAT.format(arrivalFuel));
         
             
-        long fuelConsumption = departureFuel - arrivalFuel;
+        long fuelConsumption = getDepartureFuelGauge() - getArrivalFuelGauge();
 
         long diff = arrivalTime.getTimeInMillis() - departureTime.getTimeInMillis();
 
@@ -100,8 +126,6 @@ public class PIREPForm implements Initializable {
 
         fuelConsumptionLbl.setText(FUEL_FORMAT.format(fuelConsumption));
         flightTimeLbl.setText(duration);
-   
-            
         
         shutdownBtn.setDisable(true); 
         startupBtn.setDisable(false);
