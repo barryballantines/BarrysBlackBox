@@ -14,10 +14,18 @@ import java.util.Calendar;
  */
 public interface FlightDataRetrieval {
     
+    /** ICAO airport code **/
     String getAirport();
     
+    /** fuel in lb **/
     long getFuel();
+   
+    /** ground speed in kt **/
+    double getGroundspeed();
     
+    /** time, represented in UTC **/
     Calendar getTimeUTC();
+    
+   
     
 }

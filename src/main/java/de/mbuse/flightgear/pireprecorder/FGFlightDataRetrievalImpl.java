@@ -60,6 +60,11 @@ public class FGFlightDataRetrievalImpl implements FlightDataRetrieval, Configura
     }
 
     @Override
+    public double getGroundspeed() {
+        return Double.parseDouble(getProperty("velocities/groundspeed-kt"));
+    }
+    
+    @Override
     public Calendar getTimeUTC() {
         Calendar cal = Calendar.getInstance();
         cal.setTimeZone(UTC);
