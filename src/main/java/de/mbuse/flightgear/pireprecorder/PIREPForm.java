@@ -49,10 +49,15 @@ public class PIREPForm implements Initializable {
     private long departureFuel;
     private long arrivalFuel;
     
-    private Timer fuelCheckerTimer;
+    private Timer timer;
 
     public void setFlightDataRetrieval(FlightDataRetrieval flightDataRetrieval) {
         this.retrieval = flightDataRetrieval;
+    }
+    
+    public void setDepartureTimeGauge(Calendar cal) {
+        departureTime = cal;
+        departureTimeLbl.setText(TIME_FORMAT.format(departureTime.getTime()));
     }
     
     public void setDepartureFuelGauge(long fuel) {
@@ -78,10 +83,10 @@ public class PIREPForm implements Initializable {
         System.out.println("Startup button pressed");
         
         String airport = retrieval.getAirport();
-        departureTime = retrieval.getTimeUTC();
         
         departureAirportLbl.setText(airport);
-        departureTimeLbl.setText(TIME_FORMAT.format(departureTime.getTime()));
+        
+        setDepartureTimeGauge(retrieval.getTimeUTC());
         setDepartureFuelGauge(retrieval.getFuel());
         
         arrivalAirportLbl.setText("----");
@@ -94,8 +99,9 @@ public class PIREPForm implements Initializable {
         startupBtn.setDisable(true);
         shutdownBtn.setDisable(false);
         
-        fuelCheckerTimer = new Timer("FuelChecker");
-        fuelCheckerTimer.schedule(new FuelChecker(this, retrieval), 5000, 5000);
+        timer = new Timer("PIREP Timer");
+        timer.schedule(new FuelChecker(this, retrieval), 5000, 5000);
+        timer.schedule(new BlockTimeChecker(this, retrieval), 4000, 5000);
                
     }
     
@@ -104,7 +110,7 @@ public class PIREPForm implements Initializable {
     private void shutdownBtnPressed(ActionEvent event) {
         System.out.println("Shutdown button pressed");
         
-        fuelCheckerTimer.cancel();
+        timer.cancel();
         
         arrivalTime = retrieval.getTimeUTC();
         setArrivalFuelGauge(retrieval.getFuel());
