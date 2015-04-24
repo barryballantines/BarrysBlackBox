@@ -24,7 +24,7 @@ public interface FlightDataRetrieval {
     double getGroundspeed();
     
     /** time, represented in UTC **/
-    Calendar getTimeUTC();
+    Calendar getTime();
     
    
     

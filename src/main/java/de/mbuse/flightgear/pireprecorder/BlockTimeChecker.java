@@ -27,7 +27,7 @@ public class BlockTimeChecker extends TimerTask {
     @Override
     public void run() {
         double groundspeed = retrieval.getGroundspeed();
-        final Calendar blockTime = retrieval.getTimeUTC();
+        final Calendar blockTime = retrieval.getTime();
         if (Math.abs(groundspeed) > 3.0) {
             System.out.println("GroundMovementChecker - start of the journey!");
             this.cancel();

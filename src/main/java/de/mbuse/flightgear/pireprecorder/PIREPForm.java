@@ -8,6 +8,7 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.ResourceBundle;
+import java.util.TimeZone;
 import java.util.Timer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -22,6 +23,10 @@ public class PIREPForm implements Initializable {
     private static final DateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm");
     private static final NumberFormat TWO_DIGITS_FORMAT = new DecimalFormat("00");
     private static final NumberFormat FUEL_FORMAT = DecimalFormat.getIntegerInstance();
+    
+    static {
+        TIME_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
+    }
     
     public static Parent create(FlightDataRetrieval retrieval) throws IOException {
         PIREPForm controller = new PIREPForm();
@@ -86,7 +91,7 @@ public class PIREPForm implements Initializable {
         
         departureAirportLbl.setText(airport);
         
-        setDepartureTimeGauge(retrieval.getTimeUTC());
+        setDepartureTimeGauge(retrieval.getTime());
         setDepartureFuelGauge(retrieval.getFuel());
         
         arrivalAirportLbl.setText("----");
@@ -112,7 +117,7 @@ public class PIREPForm implements Initializable {
         
         timer.cancel();
         
-        arrivalTime = retrieval.getTimeUTC();
+        arrivalTime = retrieval.getTime();
         setArrivalFuelGauge(retrieval.getFuel());
        
         arrivalAirportLbl.setText(retrieval.getAirport());

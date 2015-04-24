@@ -112,7 +112,7 @@ public class ConfigurationForm implements Initializable {
         try {
             String airport = retrieval.getAirport();
             long fuel = retrieval.getFuel();
-            Calendar time =retrieval.getTimeUTC();
+            Calendar time =retrieval.getTime();
             
             if (airport!=null) {
                 setFlightGearTestFeedback(true, "Connection successfully tested!");

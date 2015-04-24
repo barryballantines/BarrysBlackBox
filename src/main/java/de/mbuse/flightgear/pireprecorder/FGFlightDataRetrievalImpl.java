@@ -65,7 +65,7 @@ public class FGFlightDataRetrievalImpl implements FlightDataRetrieval, Configura
     }
     
     @Override
-    public Calendar getTimeUTC() {
+    public Calendar getTime() {
         Calendar cal = Calendar.getInstance();
         cal.setTimeZone(UTC);
         return cal;
