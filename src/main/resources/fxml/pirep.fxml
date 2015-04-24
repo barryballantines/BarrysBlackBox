@@ -27,12 +27,12 @@
       <Label fx:id="departureTimeLbl" layoutX="269.0" layoutY="54.0" text="--:--" AnchorPane.rightAnchor="120.0" AnchorPane.topAnchor="54.0" />
       <Label fx:id="departureFuelLbl" layoutX="270.0" layoutY="77.0" text="----" AnchorPane.rightAnchor="120.0" AnchorPane.topAnchor="77.0" />
       <Label fx:id="arrivalFuelLbl" layoutX="360.0" layoutY="77.0" text="----" AnchorPane.rightAnchor="28.0" AnchorPane.topAnchor="77.0" />
-      <Label fx:id="fuelConsumptionLbl" layoutX="360.0" layoutY="146.0" text="----" AnchorPane.rightAnchor="28.0" AnchorPane.topAnchor="146.0">
+      <Label fx:id="flightTimeLbl" layoutX="330.0" layoutY="146.0" text="--:--" AnchorPane.rightAnchor="28.0" AnchorPane.topAnchor="146.0">
 	 <font>
             <Font name="System Bold" size="12.0" />
          </font>
       </Label>
-      <Label fx:id="flightTimeLbl" layoutX="359.0" layoutY="123.0" text="--:--" AnchorPane.rightAnchor="28.0" AnchorPane.topAnchor="123.0">
+      <Label fx:id="fuelConsumptionLbl" layoutX="359.0" layoutY="123.0" text="----" AnchorPane.rightAnchor="28.0" AnchorPane.topAnchor="123.0">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
