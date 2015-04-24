@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane minHeight="210.0" minWidth="330.0" prefHeight="210.0" prefWidth="380.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label fx:id="arrivalTimeLbl" layoutX="359.0" layoutY="54.0" text="--:--" AnchorPane.rightAnchor="28.0" AnchorPane.topAnchor="54.0" />
+      <Label layoutX="20.0" layoutY="77.0" minWidth="140.0" text="Fuel (lbs)" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="77.0" />
+      <Label layoutX="14.0" layoutY="54.0" minWidth="140.0" text="Time (UTC)" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="54.0" />
+      <Label layoutX="235.0" layoutY="14.0" text="Departure" AnchorPane.rightAnchor="120.0" AnchorPane.topAnchor="14.0">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font></Label>
+      <Label layoutX="353.0" layoutY="14.0" text="Arrival" AnchorPane.rightAnchor="28.0" AnchorPane.topAnchor="14.0">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font></Label>
+      <Label layoutX="14.0" layoutY="31.0" minWidth="140.0" text="Airport" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="31.0" />
+      <Label layoutX="14.0" layoutY="123.0" minWidth="140.0" text="Flight Time" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="146.0" />
+      <Label layoutX="12.0" layoutY="146.0" minWidth="140.0" prefHeight="17.0" prefWidth="145.0" text="Fuel Consumption (lbs)" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="123.0" />
+      <Label fx:id="arrivalAirportLbl" layoutX="360.0" layoutY="31.0" text="----" AnchorPane.rightAnchor="28.0" AnchorPane.topAnchor="31.0" />
+      <Label fx:id="departureAirportLbl" layoutX="270.0" layoutY="31.0" text="----" AnchorPane.rightAnchor="120.0" AnchorPane.topAnchor="31.0" />
+      <Label fx:id="departureTimeLbl" layoutX="269.0" layoutY="54.0" text="--:--" AnchorPane.rightAnchor="120.0" AnchorPane.topAnchor="54.0" />
+      <Label fx:id="departureFuelLbl" layoutX="270.0" layoutY="77.0" text="----" AnchorPane.rightAnchor="120.0" AnchorPane.topAnchor="77.0" />
+      <Label fx:id="arrivalFuelLbl" layoutX="360.0" layoutY="77.0" text="----" AnchorPane.rightAnchor="28.0" AnchorPane.topAnchor="77.0" />
+      <Label fx:id="fuelConsumptionLbl" layoutX="360.0" layoutY="146.0" text="----" AnchorPane.rightAnchor="28.0" AnchorPane.topAnchor="146.0">
+	 <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <Label fx:id="flightTimeLbl" layoutX="359.0" layoutY="123.0" text="--:--" AnchorPane.rightAnchor="28.0" AnchorPane.topAnchor="123.0">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <Button fx:id="startupBtn" layoutX="181.0" layoutY="194.0" mnemonicParsing="false" onAction="#startupBtnPressed" prefHeight="25.0" prefWidth="99.0" text="Start-Up" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="130.0" />
+      <Button fx:id="shutdownBtn" layoutX="289.0" layoutY="194.0" mnemonicParsing="false" onAction="#shutdownBtnPressed" prefHeight="25.0" prefWidth="109.0" text="Shut-Down" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="14.0" />
+   </children>
+</AnchorPane>
