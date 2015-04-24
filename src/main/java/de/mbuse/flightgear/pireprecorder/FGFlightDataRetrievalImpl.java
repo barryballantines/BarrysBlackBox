@@ -18,6 +18,8 @@ import org.json.JSONObject;
  */
 public class FGFlightDataRetrievalImpl implements FlightDataRetrieval, Configuration {
     
+    private static final TimeZone UTC = TimeZone.getTimeZone("UTC");
+    
     private String host = "localhost";
     private int port = 5500;
 
@@ -59,8 +61,11 @@ public class FGFlightDataRetrievalImpl implements FlightDataRetrieval, Configura
 
     @Override
     public Calendar getTimeUTC() {
-        return Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeZone(UTC);
+        return cal;
     }
+    
     
     
     
