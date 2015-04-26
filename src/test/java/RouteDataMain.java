@@ -1,5 +1,6 @@
 
 import de.mbuse.flightgear.pireprecorder.FGFlightDataRetrievalImpl;
+import de.mbuse.flightgear.pireprecorder.RouteInformation;
 import java.util.Map;
 
 /*
@@ -19,7 +20,7 @@ public class RouteDataMain {
         retrieval.setHost("localhost");
         retrieval.setPort(5500);
         
-        FGFlightDataRetrievalImpl.RouteInformation info = retrieval.getRouteInformation();
+        RouteInformation info = retrieval.getRouteInformation();
         
         System.out.println(info);
         

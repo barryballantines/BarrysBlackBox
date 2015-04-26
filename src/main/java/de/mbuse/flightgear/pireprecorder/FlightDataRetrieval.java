@@ -26,6 +26,6 @@ public interface FlightDataRetrieval {
     /** time, represented in UTC **/
     Calendar getTime();
     
-   
+    RouteInformation getRouteInformation();
     
 }

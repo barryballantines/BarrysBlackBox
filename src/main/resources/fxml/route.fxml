@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="178.0" prefWidth="418.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <ProgressBar fx:id="flightProgress" layoutX="14.0" layoutY="62.0" prefHeight="18.0" prefWidth="577.0" progress="0.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" />
+      <Label fx:id="departureAirportLbl" layoutX="14.0" layoutY="45.0" text="FROM" AnchorPane.leftAnchor="14.0" />
+      <Label fx:id="destinationAirportLbl" layoutX="558.0" layoutY="45.0" text="TO--" textAlignment="RIGHT" AnchorPane.rightAnchor="14.0" />
+      <GridPane layoutX="14.0" layoutY="91.0" prefHeight="87.0" prefWidth="577.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="91.0">
+        <columnConstraints>
+            <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="198.0" minWidth="10.0" prefWidth="107.0" />
+          <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="185.0" minWidth="10.0" prefWidth="91.0" />
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="218.0" minWidth="10.0" prefWidth="93.0" />
+          <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="299.0" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="39.0" minHeight="10.0" prefHeight="37.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <VBox prefHeight="40.0" prefWidth="169.0">
+               <children>
+                  <Label text="Takeoff" />
+                  <Label fx:id="takeoffTimeLbl" text="--:-- UTC" />
+               </children>
+            </VBox>
+            <VBox alignment="TOP_RIGHT" GridPane.columnIndex="3">
+               <children>
+                  <Label text="ETA" GridPane.columnIndex="2" />
+                  <Label fx:id="estimatedTimeOfArrivalLbl" text="--:-- UTC" GridPane.columnIndex="2" />
+               </children>
+            </VBox>
+            <VBox alignment="TOP_RIGHT" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
+               <children>
+                  <Label text="Elapsed Time" />
+                  <Label fx:id="elapsedTimeLbl" text="--:-- " />
+               </children>
+               <padding>
+                  <Insets right="5.0" />
+               </padding>
+            </VBox>
+            <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2">
+               <children>
+                  <Label text="ETE" />
+                  <Label fx:id="estimatedTimeEnrouteLbl" text="--:--" />
+               </children>
+               <padding>
+                  <Insets left="5.0" />
+               </padding>
+            </VBox>
+            <VBox alignment="TOP_RIGHT" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="3" GridPane.rowIndex="1">
+               <children>
+                  <Label text="Total" />
+                  <Label fx:id="totalDistanceLbl" text="--- nm" />
+               </children>
+            </VBox>
+            <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
+               <children>
+                  <Label text="remaining" />
+                  <Label fx:id="remainingDistanceLbl" text="--- nm" />
+               </children>
+               <padding>
+                  <Insets left="5.0" />
+               </padding>
+            </VBox>
+            <VBox alignment="TOP_RIGHT" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <children>
+                  <Label text="Distance flown" />
+                  <Label fx:id="elapsedDistanceLbl" text="--- nm" />
+               </children>
+               <padding>
+                  <Insets right="5.0" />
+               </padding>
+            </VBox>
+         </children>
+      </GridPane>
+   </children>
+</AnchorPane>

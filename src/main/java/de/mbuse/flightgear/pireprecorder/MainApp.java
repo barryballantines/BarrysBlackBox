@@ -20,9 +20,10 @@ public class MainApp extends Application {
         
         
         Tab pirep = createTab(PIREPForm.create(retrieval), "PIREP Form");
+        Tab route = createTab(RoutePanel.create(retrieval), "Route");
         Tab config = createTab(ConfigurationForm.create(retrieval), "Configuration");
         
-        root.getTabs().addAll(pirep, config);
+        root.getTabs().addAll(pirep, route, config);
         
         Scene scene = new Scene(root);
         scene.getStylesheets().add("/styles/pirep.css");

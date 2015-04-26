@@ -133,14 +133,4 @@ public class FGFlightDataRetrievalImpl implements FlightDataRetrieval, Configura
         
         return info;
     }
-    
-    
-    public static class RouteInformation {
-        public String departure;
-        public String destination;
-        public double totalDistance;
-        public double distanceRemaining;
-        public double flightTime;
-        public double estimatedTimeToDestination;
-    }
 }
