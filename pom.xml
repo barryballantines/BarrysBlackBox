@@ -4,7 +4,7 @@
 
     <groupId>de.mbuse.flightgear</groupId>
     <artifactId>PIREPRecorder</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <packaging>jar</packaging>
 
     <name>PIREPRecorder</name>
@@ -23,7 +23,7 @@
       <connection>scm:git:file://localhost/${project.basedir}</connection>
       <developerConnection>scm:git:file://localhost/${project.basedir}</developerConnection>
       <url>scm:git:file://localhost/${project.basedir}</url>
-      <tag>HEAD</tag>
+      <tag>PIREPRecorder-1.0</tag>
     </scm>
 	
 	<distributionManagement>
