@@ -12,6 +12,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mainClass>de.mbuse.flightgear.pireprecorder.MainApp</mainClass>
+		<deploy.root.directory>${project.build.directory}</deploy.root.directory>
     </properties>
 
     <organization>
@@ -20,9 +21,9 @@
     </organization>
 	
 	<scm>
-      <connection>scm:git:file://localhost/${project.basedir}</connection>
-      <developerConnection>scm:git:file://localhost/${project.basedir}</developerConnection>
-      <url>scm:git:file://localhost/${project.basedir}</url>
+      <connection>scm:git:file://${project.basedir}</connection>
+      <developerConnection>scm:git:file://${project.basedir}</developerConnection>
+      <url>scm:git:file://${project.basedir}</url>
       <tag>HEAD</tag>
     </scm>
 	
@@ -30,12 +31,12 @@
 	  <snapshotRepository>
 		<id>internal.snapshot.repo</id>
 		<name>Internal Snapshot Repository</name>
-		<url>file://${project.basedir}/target/mvn-snapshot-repo</url>
+		<url>file://${deploy.root.directory}/mvn-snapshots-repo</url>
 	  </snapshotRepository>
 	  <repository>
 		<id>internal.repo</id>
 		<name>Internal Staging Repository</name>
-		<url>file://${project.build.directory}/mvn-releases-repo</url>
+		<url>file://${deploy.root.directory}/mvn-releases-repo</url>
 	  </repository>
 	</distributionManagement>
 
