@@ -6,6 +6,7 @@
 
 package de.mbuse.flightgear.pireprecorder;
 
+import de.mbuse.flightgear.connect.Configuration;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;

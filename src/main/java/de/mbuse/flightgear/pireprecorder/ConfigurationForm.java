@@ -6,6 +6,7 @@
 
 package de.mbuse.flightgear.pireprecorder;
 
+import de.mbuse.flightgear.connect.Configuration;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Calendar;
