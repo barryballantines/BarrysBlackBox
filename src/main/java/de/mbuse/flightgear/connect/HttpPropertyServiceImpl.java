@@ -84,7 +84,7 @@ public class HttpPropertyServiceImpl implements Configuration, PropertyService {
     protected void submitUrl(String url) {
         Get response = Http.get(url);
         String txt = response.text();
-        System.out.println(txt);
+        //System.out.println(txt);
     }
     
     protected Map<String, Map<String, Object>> getRequestParamsByParentPath(Map<String, Object> properties) {
