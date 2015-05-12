@@ -1,4 +1,6 @@
 
+import de.mbuse.flightgear.connect.HttpPropertyServiceImpl;
+import de.mbuse.flightgear.connect.PropertyService;
 import de.mbuse.flightgear.pireprecorder.FGFlightDataRetrievalImpl;
 import de.mbuse.flightgear.pireprecorder.RouteInformation;
 import java.util.Map;
@@ -16,9 +18,10 @@ import java.util.Map;
 public class RouteDataMain {
  
     public static void main(String... args) {
-        FGFlightDataRetrievalImpl retrieval = new FGFlightDataRetrievalImpl();
-        retrieval.setHost("localhost");
-        retrieval.setPort(5500);
+        HttpPropertyServiceImpl propertyService = new HttpPropertyServiceImpl();
+        FGFlightDataRetrievalImpl retrieval = new FGFlightDataRetrievalImpl(propertyService);
+        propertyService.setHost("localhost");
+        propertyService.setPort(5500);
         
         RouteInformation info = retrieval.getRouteInformation();
         

@@ -1,5 +1,7 @@
 package de.mbuse.flightgear.pireprecorder;
 
+import de.mbuse.flightgear.connect.HttpPropertyServiceImpl;
+import de.mbuse.flightgear.connect.PropertyService;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.fxml.FXMLLoader;
@@ -14,7 +16,8 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        FlightDataRetrieval retrieval = new FGFlightDataRetrievalImpl();
+        PropertyService propertyService = new HttpPropertyServiceImpl();
+        FlightDataRetrieval retrieval = new FGFlightDataRetrievalImpl(propertyService);
         
         TabPane root = new TabPane();
         

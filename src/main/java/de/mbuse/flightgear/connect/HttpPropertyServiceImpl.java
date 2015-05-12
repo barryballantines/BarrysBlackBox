@@ -114,7 +114,9 @@ public class HttpPropertyServiceImpl implements Configuration, PropertyService {
         }
         String url = getReadBaseURL() + property + "?d=" + depth;
         Get response = Http.get(url);
-        JSONObject json = new JSONObject(response.text());
+        String txt = response.text();
+        //System.out.println("property '" + property + "' = " + txt);
+        JSONObject json = new JSONObject(txt);
         return json;
     }
     
@@ -146,6 +148,7 @@ public class HttpPropertyServiceImpl implements Configuration, PropertyService {
         String type = node.getString("type");
         if (node.has("value")) {
             String value = node.getString("value");
+            //System.out.println("parseValue: '" + value + "' as " + type);
             if ("string".equals(type)) {
                 return value;
             }
@@ -263,6 +266,6 @@ public class HttpPropertyServiceImpl implements Configuration, PropertyService {
 
     // === VARIABLES ===
     
-    private String host;
-    private int port;   
+    private String host = "localhost";
+    private int port = 5500;   
 }

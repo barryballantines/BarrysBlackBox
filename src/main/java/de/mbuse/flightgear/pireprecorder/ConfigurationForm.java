@@ -94,7 +94,7 @@ public class ConfigurationForm implements Initializable {
                 }
             }
             
-            Configuration config = (Configuration) retrieval;
+            Configuration config = (Configuration) ((FGFlightDataRetrievalImpl) retrieval).getPropertyService();
             config.setHost(host);
             config.setPort(port);
             
