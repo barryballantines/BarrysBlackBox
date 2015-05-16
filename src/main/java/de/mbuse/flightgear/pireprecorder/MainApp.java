@@ -33,6 +33,13 @@ public class MainApp extends Application {
         stage.show();
         System.out.println("PIREP Recorder started...");
     }
+
+    @Override
+    public void stop() throws Exception {
+        Services.get().shutdown();
+    }
+    
+    
     
     
     private static Tab createTab(Parent panel, String title) {

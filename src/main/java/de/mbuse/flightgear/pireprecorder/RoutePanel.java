@@ -46,7 +46,6 @@ public class RoutePanel implements Initializable {
     @FXML private Label elapsedDistanceLbl;
     
     private FlightDataRetrieval retrieval;
-    private Timer timer;
 
     
     public void setRetrieval(FlightDataRetrieval retrieval) {
@@ -61,7 +60,7 @@ public class RoutePanel implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        timer = new Timer("Route Information Timer");
+        Timer timer = Services.get().getTimer();
         timer.schedule(new RouteInformationRetrievalTask(), 2000, 10000);
     }
     

@@ -55,7 +55,7 @@ public class ConfigurationForm implements Initializable, PipeUpdateListener<Serv
         fgPortTxt.setText("");
         
         // connecting pipes...
-        Pipes.connect(this.serverConfigPipe, services.serverConfigPipe);
+        Pipes.connect(services.serverConfigPipe, this.serverConfigPipe);
         
     }
 

@@ -10,6 +10,7 @@ import de.mbuse.flightgear.connect.PropertyService;
 import de.mbuse.flightgear.connect.ServerConfig;
 import de.mbuse.pipes.Pipe;
 import de.mbuse.pipes.PipeUpdateListener;
+import java.util.Timer;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
@@ -33,8 +34,12 @@ public class Services implements PipeUpdateListener<Object>{
         ServerConfig serverConfig = getServerConfigFromUserPreferences();
         propertyService = new HttpPropertyServiceImpl(serverConfig); 
         flightDataRetrieval = new FGFlightDataRetrievalImpl(propertyService);
-        
+        timer = new Timer("PIREP Recorder Timer");
         serverConfigPipe.set(serverConfig);
+    }
+    
+    public void shutdown() {
+        timer.cancel();
     }
 
     @Override
@@ -62,6 +67,9 @@ public class Services implements PipeUpdateListener<Object>{
     
     public void writeServerConfigToUserPreferences(ServerConfig serverConfig) {
         try {
+            if (serverConfig==null) {
+                return;
+            }
             System.out.println("[SERVICES] writing server config to user preferences: " + serverConfig);
             Preferences prefs = Preferences.userRoot();
             prefs.put("de.mbuse.flightgear.pireprecorder.fgHost", serverConfig.getHost());
@@ -83,15 +91,23 @@ public class Services implements PipeUpdateListener<Object>{
     public FlightDataRetrieval getFlightDataRetrieval() {
         return flightDataRetrieval;
     }
+
+    public Timer getTimer() {
+        return timer;
+    }
+    
+    
    
     
     // === VARIABLES ===
     
     private HttpPropertyServiceImpl propertyService;
     private FlightDataRetrieval flightDataRetrieval;
+    private Timer timer;
     
     public final Pipe<ServerConfig> serverConfigPipe = Pipe.newInstance("Services.serverConfig", this);
     public final Pipe<Boolean> isRecordingPipe = Pipe.newInstance("Services.isRecording", this);
     public final Pipe<Long> currentFuelPipe = Pipe.newInstance("Services.currentFuel", this);
+    
     
 }

@@ -13,6 +13,7 @@ import java.util.Calendar;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
 import java.util.Timer;
+import java.util.TimerTask;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -57,9 +58,10 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
     private long departureFuel;
     private long arrivalFuel;
     
-    private final Pipe<Boolean> isRecordingPipe = Pipe.newInstance("pirepForm.isRecording", this);
+    private TimerTask fuelChecker;
+    private TimerTask blockTimeChecker;
     
-    private Timer timer;
+    private final Pipe<Boolean> isRecordingPipe = Pipe.newInstance("pirepForm.isRecording", this);
 
     public void setServices(Services services) {
         this.services = services;
@@ -111,9 +113,11 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
         startupBtn.setDisable(true);
         shutdownBtn.setDisable(false);
         
-        timer = new Timer("PIREP Timer");
-        timer.schedule(new FuelChecker(this, retrieval), 5000, 5000);
-        timer.schedule(new BlockTimeChecker(this, retrieval), 4000, 5000);
+        fuelChecker = new FuelChecker(this, retrieval);
+        blockTimeChecker = new BlockTimeChecker(this, retrieval);
+        
+        services.getTimer().schedule(fuelChecker, 5000, 5000);
+        services.getTimer().schedule(blockTimeChecker, 4000, 5000);
         
         isRecordingPipe.set(true);
                
@@ -124,7 +128,9 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
     private void shutdownBtnPressed(ActionEvent event) {
         System.out.println("Shutdown button pressed");
         
-        timer.cancel();
+        fuelChecker.cancel();
+        blockTimeChecker.cancel();
+        services.getTimer().purge();
         
         FlightDataRetrieval retrieval = services.getFlightDataRetrieval();
         
