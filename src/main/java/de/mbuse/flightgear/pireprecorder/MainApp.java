@@ -1,10 +1,7 @@
 package de.mbuse.flightgear.pireprecorder;
 
-import de.mbuse.flightgear.connect.HttpPropertyServiceImpl;
-import de.mbuse.flightgear.connect.PropertyService;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Tab;
