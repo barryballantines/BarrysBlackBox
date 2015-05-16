@@ -1,5 +1,8 @@
 package de.mbuse.flightgear.pireprecorder;
 
+import de.mbuse.pipes.Pipe;
+import de.mbuse.pipes.PipeUpdateListener;
+import de.mbuse.pipes.Pipes;
 import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormat;
@@ -18,7 +21,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
-public class PIREPForm implements Initializable {
+public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
 
     private static final DateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm");
     private static final NumberFormat TWO_DIGITS_FORMAT = new DecimalFormat("00");
@@ -30,7 +33,7 @@ public class PIREPForm implements Initializable {
     
     public static Parent create(Services services) throws IOException {
         PIREPForm controller = new PIREPForm();
-        controller.setFlightDataRetrieval(services.getFlightDataRetrieval());
+        controller.setServices(services);
         FXMLLoader loader = new FXMLLoader(PIREPForm.class.getResource("/fxml/pirep.fxml"));
         loader.setController(controller);
         return (Parent) loader.load();
@@ -48,16 +51,18 @@ public class PIREPForm implements Initializable {
     @FXML private Button startupBtn;
     @FXML private Button shutdownBtn;
     
-    private FlightDataRetrieval retrieval;
+    private Services services;
     private Calendar departureTime;
     private Calendar arrivalTime;
     private long departureFuel;
     private long arrivalFuel;
     
+    private Pipe<Boolean> isRecordingPipe = Pipe.newInstance("pirepForm.isRecording", this);
+    
     private Timer timer;
 
-    public void setFlightDataRetrieval(FlightDataRetrieval flightDataRetrieval) {
-        this.retrieval = flightDataRetrieval;
+    public void setServices(Services services) {
+        this.services = services;
     }
     
     public void setDepartureTimeGauge(Calendar cal) {
@@ -85,7 +90,9 @@ public class PIREPForm implements Initializable {
     
     @FXML
     private void startupBtnPressed(ActionEvent event) {
-        System.out.println("Startup button pressed");
+        System.out.println("[PIREP FORM] Startup button pressed");
+        
+        FlightDataRetrieval retrieval = services.getFlightDataRetrieval();
         
         String airport = retrieval.getAirport();
         
@@ -107,6 +114,8 @@ public class PIREPForm implements Initializable {
         timer = new Timer("PIREP Timer");
         timer.schedule(new FuelChecker(this, retrieval), 5000, 5000);
         timer.schedule(new BlockTimeChecker(this, retrieval), 4000, 5000);
+        
+        isRecordingPipe.set(true);
                
     }
     
@@ -116,6 +125,8 @@ public class PIREPForm implements Initializable {
         System.out.println("Shutdown button pressed");
         
         timer.cancel();
+        
+        FlightDataRetrieval retrieval = services.getFlightDataRetrieval();
         
         arrivalTime = retrieval.getTime();
         setArrivalFuelGauge(retrieval.getFuel());
@@ -140,11 +151,23 @@ public class PIREPForm implements Initializable {
         
         shutdownBtn.setDisable(true); 
         startupBtn.setDisable(false);
+        
+        isRecordingPipe.set(false);
     }
     
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         shutdownBtn.setDisable(true);
+        
+        Pipes.connect(isRecordingPipe, services.isRecordingPipe());
+        
     }    
+
+    @Override
+    public void pipeUpdated(Pipe<Object> pipe) {
+        System.out.println("[PIREP FORM] Model updated : " + pipe.id() + " -> " + pipe.get());
+    }
+    
+    
 }

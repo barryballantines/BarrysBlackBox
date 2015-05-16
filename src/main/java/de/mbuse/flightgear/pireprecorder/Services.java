@@ -89,6 +89,10 @@ public class Services implements PipeUpdateListener<Object>{
         return serverConfig;
     }
     
+    public Pipe<Boolean> isRecordingPipe() {
+        return isRecording;
+    }
+    
     
     // === VARIABLES ===
     
@@ -96,5 +100,6 @@ public class Services implements PipeUpdateListener<Object>{
     private FlightDataRetrieval flightDataRetrieval;
     
     private Pipe<ServerConfig> serverConfig = Pipe.newInstance("Services.serverConfig", this);
+    private Pipe<Boolean> isRecording = Pipe.newInstance("Services.isRecording", this);
     
 }
