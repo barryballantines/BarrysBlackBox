@@ -6,17 +6,10 @@
 
 package de.mbuse.flightgear.pireprecorder;
 
-import de.mbuse.flightgear.connect.Configuration;
-import de.mbuse.flightgear.connect.HttpPropertyServiceImpl;
 import de.mbuse.flightgear.connect.PropertyService;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
-import org.javalite.http.Http;
-import org.javalite.http.Get;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 /**
  *

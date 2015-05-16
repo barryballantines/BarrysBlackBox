@@ -6,6 +6,7 @@
 
 package de.mbuse.flightgear.connect;
 
+import java.net.InetAddress;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -24,9 +25,17 @@ import org.json.JSONObject;
  * 
  * @author mbuse
  */
-public class HttpPropertyServiceImpl implements Configuration, PropertyService {
+public class HttpPropertyServiceImpl implements PropertyService {
 
+    public HttpPropertyServiceImpl(ServerConfig serverConfig) {
+        this.serverConfig = serverConfig;
+    }
 
+    public HttpPropertyServiceImpl() {
+        this(new ServerConfig());
+    }
+    
+    
     @Override
     public Map<String, Object> readProperties(Map<String, Object> properties) {
         RootAndDepth rd = findRootAndDepth(properties.keySet());
@@ -121,11 +130,11 @@ public class HttpPropertyServiceImpl implements Configuration, PropertyService {
     }
     
     protected String getReadBaseURL() {
-        return "http://" + host + ":" + port + "/json";
+        return serverConfig.fullAddress()+ "/json";
     }
     
     protected String getWriteUrl() {
-        return "http://" + host + ":" + port + "/props";
+        return serverConfig.fullAddress() + "/props";
     }
     
     protected void fillPropertyMap(Map<String,Object> properties, JSONObject node) {
@@ -243,29 +252,17 @@ public class HttpPropertyServiceImpl implements Configuration, PropertyService {
     }
     
     // === ACCESSORS ===
+
+    public void setServerConfig(ServerConfig serverConfig) {
+        this.serverConfig = serverConfig;
+    }
+
+    public ServerConfig getServerConfig() {
+        return serverConfig;
+    }
+
     
-    @Override
-    public void setHost(String host) {
-       this.host = host;
-    }
-
-    @Override
-    public String getHost() {
-        return this.host;
-    }
-
-    @Override
-    public void setPort(int port) {
-        this.port = port;
-    }
-
-    @Override
-    public int getPort() {
-        return this.port;
-    }
-
     // === VARIABLES ===
     
-    private String host = "localhost";
-    private int port = 5500;   
+    private ServerConfig serverConfig;
 }

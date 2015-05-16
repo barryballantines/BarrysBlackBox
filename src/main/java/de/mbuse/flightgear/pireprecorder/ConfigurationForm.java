@@ -6,7 +6,8 @@
 
 package de.mbuse.flightgear.pireprecorder;
 
-import de.mbuse.flightgear.connect.Configuration;
+import de.mbuse.flightgear.connect.HttpPropertyServiceImpl;
+import de.mbuse.flightgear.connect.ServerConfig;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Calendar;
@@ -55,6 +56,7 @@ public class ConfigurationForm implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        // TODO: refactor this... move to services class
         Preferences prefs = Preferences.userRoot();
         
         String host = prefs.get("de.mbuse.flightgear.pireprecorder.fgHost", "localhost");
@@ -94,10 +96,12 @@ public class ConfigurationForm implements Initializable {
                 }
             }
             
-            Configuration config = (Configuration) ((FGFlightDataRetrievalImpl) retrieval).getPropertyService();
-            config.setHost(host);
-            config.setPort(port);
+            // TODO: refactor this... use a pipe and a services object...
+            ServerConfig config = new ServerConfig("http", host, port);
+            HttpPropertyServiceImpl propertyService = (HttpPropertyServiceImpl) ((FGFlightDataRetrievalImpl) retrieval).getPropertyService();
+            propertyService.setServerConfig(config);
             
+            // TODO: refactor this... move to services class
             try {
                 Preferences prefs = Preferences.userRoot();
                 prefs.put("de.mbuse.flightgear.pireprecorder.fgHost", host);
