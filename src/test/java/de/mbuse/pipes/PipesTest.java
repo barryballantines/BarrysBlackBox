@@ -67,6 +67,19 @@ public class PipesTest implements PipeUpdateListener<String> {
         }
         
     }
+    
+    @Test
+    public void testPipesConnectPropagation() {
+        Pipe<String> p1 = Pipe.newInstance("P1", this);
+        Pipe<String> p2 = Pipe.newInstance("P2", this);
+        
+        p1.set("Initial Value");
+        
+        Pipes.connect(p1, p2);
+        
+        assertEquals("P1 value has been overriden!", "Initial Value", p1.get());
+        assertEquals("P2 value hasn't been propagated", "Initial Value", p2.get());
+    }
 
     @Override
     public void pipeUpdated(Pipe<String> pipe) {
