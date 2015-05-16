@@ -30,7 +30,8 @@ public class FuelChecker extends TimerTask {
     public void run() {
         try {
             long currentFuel = retrieval.getFuel();
-
+            Services.get().currentFuelPipe().set(currentFuel);
+            
             final long difference = currentFuel - lastReportedFuel;
             lastReportedFuel = currentFuel;
 
