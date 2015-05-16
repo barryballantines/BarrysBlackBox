@@ -1,7 +1,8 @@
+package de.mbuse.flightgear.connect.examples;
 
-import de.mbuse.flightgear.connect.Configuration;
 import de.mbuse.flightgear.connect.HttpPropertyServiceImpl;
 import de.mbuse.flightgear.connect.PropertyService;
+import de.mbuse.flightgear.connect.ServerConfig;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,9 +19,8 @@ import java.util.Map;
 public class SetPositionExample {
     
     public static void main(String... args) {
-        PropertyService service = new HttpPropertyServiceImpl();
-        ((Configuration) service).setHost("localhost");
-        ((Configuration) service).setPort(5500);
+        ServerConfig config = new ServerConfig("localhost", 5500);
+        PropertyService service = new HttpPropertyServiceImpl(config);
         
         Map<String, Object> position = new HashMap<>();
         position.put("/position/latitude-deg", 52.31835581);
