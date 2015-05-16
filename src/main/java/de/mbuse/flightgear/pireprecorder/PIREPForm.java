@@ -28,9 +28,9 @@ public class PIREPForm implements Initializable {
         TIME_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
     }
     
-    public static Parent create(FlightDataRetrieval retrieval) throws IOException {
+    public static Parent create(Services services) throws IOException {
         PIREPForm controller = new PIREPForm();
-        controller.setFlightDataRetrieval(retrieval);
+        controller.setFlightDataRetrieval(services.getFlightDataRetrieval());
         FXMLLoader loader = new FXMLLoader(PIREPForm.class.getResource("/fxml/pirep.fxml"));
         loader.setController(controller);
         return (Parent) loader.load();

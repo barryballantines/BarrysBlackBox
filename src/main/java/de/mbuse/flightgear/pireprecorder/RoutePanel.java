@@ -26,9 +26,9 @@ import javafx.scene.control.ProgressBar;
  */
 public class RoutePanel implements Initializable {
     
-    public static Parent create(FlightDataRetrieval retrieval) throws IOException {
+    public static Parent create(Services services) throws IOException {
         RoutePanel controller = new RoutePanel();
-        controller.setRetrieval(retrieval);
+        controller.setRetrieval(services.getFlightDataRetrieval());
         FXMLLoader loader = new FXMLLoader(PIREPForm.class.getResource("/fxml/route.fxml"));
         loader.setController(controller);
         return (Parent) loader.load();

@@ -34,7 +34,7 @@ public class Services implements PipeUpdateListener<Object>{
         propertyService = new HttpPropertyServiceImpl(serverConfig); 
         flightDataRetrieval = new FGFlightDataRetrievalImpl(propertyService);
         
-        serverConfig().set(serverConfig);
+        serverConfigPipe().set(serverConfig);
     }
 
     @Override
@@ -85,7 +85,7 @@ public class Services implements PipeUpdateListener<Object>{
     }
     
 
-    public Pipe<ServerConfig> serverConfig() {
+    public Pipe<ServerConfig> serverConfigPipe() {
         return serverConfig;
     }
     

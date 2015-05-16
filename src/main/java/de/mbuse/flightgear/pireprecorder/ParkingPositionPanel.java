@@ -27,9 +27,9 @@ import javafx.scene.control.Label;
 public class ParkingPositionPanel implements Initializable {
 
     
-    public static Parent create(PropertyService service) throws IOException {
+    public static Parent create(Services services) throws IOException {
         ParkingPositionPanel controller = new ParkingPositionPanel();
-        controller.propertyService = service;
+        controller.propertyService = services.getPropertyService();
         
         FXMLLoader loader = new FXMLLoader(PIREPForm.class.getResource("/fxml/parking.fxml"));
         loader.setController(controller);

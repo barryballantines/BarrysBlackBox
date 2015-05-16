@@ -8,6 +8,8 @@ package de.mbuse.flightgear.pireprecorder;
 
 import de.mbuse.flightgear.connect.HttpPropertyServiceImpl;
 import de.mbuse.flightgear.connect.ServerConfig;
+import de.mbuse.pipes.Pipe;
+import de.mbuse.pipes.PipeUpdateListener;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Calendar;
@@ -30,11 +32,11 @@ import javafx.scene.paint.Color;
  *
  * @author mbuse
  */
-public class ConfigurationForm implements Initializable {
+public class ConfigurationForm implements Initializable, PipeUpdateListener<ServerConfig> {
     
-    public static Parent create(FlightDataRetrieval retrieval) throws IOException {
+    public static Parent create(Services services) throws IOException {
         ConfigurationForm controller = new ConfigurationForm();
-        controller.setFlightDataRetrieval(retrieval);
+        controller.setServices(services);
         FXMLLoader loader = new FXMLLoader(controller.getClass().getResource("/fxml/configuration.fxml"));
         loader.setController(controller);
         return (Parent) loader.load();
@@ -46,25 +48,34 @@ public class ConfigurationForm implements Initializable {
     @FXML private TextField fgPortTxt;
     @FXML private Label fgTestFeedbackLbl;
     
-    private FlightDataRetrieval retrieval;
-
+    private Services services;
+    private Pipe<ServerConfig> serverConfigPipe = Pipe.newInstance("configurationForm.serverConfig", this);
+    
     // === ===
-    public void setFlightDataRetrieval(FlightDataRetrieval retrieval) {
-        this.retrieval = retrieval;
-    }
 
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO: refactor this... move to services class
-        Preferences prefs = Preferences.userRoot();
+        fgHostnameTxt.setText("");
+        fgPortTxt.setText("");
         
-        String host = prefs.get("de.mbuse.flightgear.pireprecorder.fgHost", "localhost");
-        long port = prefs.getLong("de.mbuse.flightgear.piperecorder.fgPort", 5500);
+        // connecting pipes...
+        this.serverConfigPipe.connectTo(services.serverConfigPipe());
         
-        fgHostnameTxt.setText(host);
-        fgPortTxt.setText(""+port);
+        services.serverConfigPipe().connectTo(this.serverConfigPipe);
     }
+
+    @Override
+    public void pipeUpdated(Pipe<ServerConfig> pipe) {
+        System.out.println("[CONFIGURATION FORM] Model updated : " + pipe.id() + " -> " + pipe.get());
+        if ("configurationForm.serverConfig".equals(pipe.id())) {
+            ServerConfig config = pipe.get();
+            fgHostnameTxt.setText(config.getHost());
+            fgPortTxt.setText("" + config.getPort()); 
+        }
+    }
+    
+    
 
     public void setFlightGearTestFeedback(boolean ok, String msg) {
         if (ok) {
@@ -98,16 +109,7 @@ public class ConfigurationForm implements Initializable {
             
             // TODO: refactor this... use a pipe and a services object...
             ServerConfig config = new ServerConfig("http", host, port);
-            HttpPropertyServiceImpl propertyService = (HttpPropertyServiceImpl) ((FGFlightDataRetrievalImpl) retrieval).getPropertyService();
-            propertyService.setServerConfig(config);
-            
-            // TODO: refactor this... move to services class
-            try {
-                Preferences prefs = Preferences.userRoot();
-                prefs.put("de.mbuse.flightgear.pireprecorder.fgHost", host);
-                prefs.putLong("de.mbuse.flightgear.pireprecorder.fgPort", port);
-                prefs.flush();
-            } catch (BackingStoreException ex) {}
+            serverConfigPipe.set(config);
             
             testFlightgearConnection(event);
     }
@@ -115,6 +117,8 @@ public class ConfigurationForm implements Initializable {
     @FXML
     public void testFlightgearConnection(ActionEvent event) {
         try {
+            FlightDataRetrieval retrieval = services.getFlightDataRetrieval();
+            
             String airport = retrieval.getAirport();
             long fuel = retrieval.getFuel();
             Calendar time =retrieval.getTime();
@@ -125,6 +129,10 @@ public class ConfigurationForm implements Initializable {
             return;
         } catch (Exception e) {}
         setFlightGearTestFeedback(false, "Connection failed!");
+    }
+
+    public void setServices(Services services) {
+        this.services = services;
     }
     
 }

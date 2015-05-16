@@ -48,7 +48,7 @@ public class ServicesTest {
     @Test
     public void testServerConfigPipeSet() {
         ServerConfig newConfig = new ServerConfig("testhost", 1234);
-        services.serverConfig().set(newConfig);
+        services.serverConfigPipe().set(newConfig);
         
         HttpPropertyServiceImpl ps = (HttpPropertyServiceImpl) services.getPropertyService();
         assertEquals("ServerConfig not updated!", newConfig, ps.getServerConfig());

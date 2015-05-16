@@ -16,16 +16,15 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        PropertyService propertyService = new HttpPropertyServiceImpl();
-        FlightDataRetrieval retrieval = new FGFlightDataRetrievalImpl(propertyService);
+        Services services = Services.get();
+        services.init();
         
         TabPane root = new TabPane();
         
-        
-        Tab pirep = createTab(PIREPForm.create(retrieval), "PIREP Form");
-        Tab route = createTab(RoutePanel.create(retrieval), "Route");
-        Tab parking = createTab(ParkingPositionPanel.create(propertyService), "Parking");
-        Tab config = createTab(ConfigurationForm.create(retrieval), "Configuration");
+        Tab pirep = createTab(PIREPForm.create(services), "PIREP Form");
+        Tab route = createTab(RoutePanel.create(services), "Route");
+        Tab parking = createTab(ParkingPositionPanel.create(services), "Parking");
+        Tab config = createTab(ConfigurationForm.create(services), "Configuration");
         
         root.getTabs().addAll(pirep, route, parking, config);
         
