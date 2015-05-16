@@ -34,7 +34,7 @@ public class Services implements PipeUpdateListener<Object>{
         propertyService = new HttpPropertyServiceImpl(serverConfig); 
         flightDataRetrieval = new FGFlightDataRetrievalImpl(propertyService);
         
-        serverConfigPipe().set(serverConfig);
+        serverConfigPipe.set(serverConfig);
     }
 
     @Override
@@ -83,27 +83,15 @@ public class Services implements PipeUpdateListener<Object>{
     public FlightDataRetrieval getFlightDataRetrieval() {
         return flightDataRetrieval;
     }
-    
-
-    public Pipe<ServerConfig> serverConfigPipe() {
-        return serverConfig;
-    }
-    
-    public Pipe<Boolean> isRecordingPipe() {
-        return isRecording;
-    }
-    
-    public Pipe<Long> currentFuelPipe() {
-        return currentFuel;
-    }
+   
     
     // === VARIABLES ===
     
     private HttpPropertyServiceImpl propertyService;
     private FlightDataRetrieval flightDataRetrieval;
     
-    private Pipe<ServerConfig> serverConfig = Pipe.newInstance("Services.serverConfig", this);
-    private Pipe<Boolean> isRecording = Pipe.newInstance("Services.isRecording", this);
-    private Pipe<Long> currentFuel = Pipe.newInstance("Services.currentFuel", this);
+    public final Pipe<ServerConfig> serverConfigPipe = Pipe.newInstance("Services.serverConfig", this);
+    public final Pipe<Boolean> isRecordingPipe = Pipe.newInstance("Services.isRecording", this);
+    public final Pipe<Long> currentFuelPipe = Pipe.newInstance("Services.currentFuel", this);
     
 }

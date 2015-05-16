@@ -10,6 +10,7 @@ import de.mbuse.flightgear.connect.HttpPropertyServiceImpl;
 import de.mbuse.flightgear.connect.ServerConfig;
 import de.mbuse.pipes.Pipe;
 import de.mbuse.pipes.PipeUpdateListener;
+import de.mbuse.pipes.Pipes;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Calendar;
@@ -49,7 +50,7 @@ public class ConfigurationForm implements Initializable, PipeUpdateListener<Serv
     @FXML private Label fgTestFeedbackLbl;
     
     private Services services;
-    private Pipe<ServerConfig> serverConfigPipe = Pipe.newInstance("configurationForm.serverConfig", this);
+    private final Pipe<ServerConfig> serverConfigPipe = Pipe.newInstance("configurationForm.serverConfig", this);
     
     // === ===
 
@@ -60,9 +61,8 @@ public class ConfigurationForm implements Initializable, PipeUpdateListener<Serv
         fgPortTxt.setText("");
         
         // connecting pipes...
-        this.serverConfigPipe.connectTo(services.serverConfigPipe());
+        Pipes.connect(this.serverConfigPipe, services.serverConfigPipe);
         
-        services.serverConfigPipe().connectTo(this.serverConfigPipe);
     }
 
     @Override

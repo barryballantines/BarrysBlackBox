@@ -57,7 +57,7 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
     private long departureFuel;
     private long arrivalFuel;
     
-    private Pipe<Boolean> isRecordingPipe = Pipe.newInstance("pirepForm.isRecording", this);
+    private final Pipe<Boolean> isRecordingPipe = Pipe.newInstance("pirepForm.isRecording", this);
     
     private Timer timer;
 
@@ -160,7 +160,7 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
     public void initialize(URL url, ResourceBundle rb) {
         shutdownBtn.setDisable(true);
         
-        Pipes.connect(isRecordingPipe, services.isRecordingPipe());
+        Pipes.connect(isRecordingPipe, services.isRecordingPipe);
         
     }    
 
