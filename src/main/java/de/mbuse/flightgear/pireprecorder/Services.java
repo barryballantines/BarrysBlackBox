@@ -36,6 +36,9 @@ public class Services implements PipeUpdateListener<Object>{
         flightDataRetrieval = new FGFlightDataRetrievalImpl(propertyService);
         timer = new Timer("PIREP Recorder Timer");
         serverConfigPipe.set(serverConfig);
+        udpServerPortPipe.set(5555);
+        udpServerRunningPipe.set(false);
+        
     }
     
     public void shutdown() {
@@ -108,6 +111,8 @@ public class Services implements PipeUpdateListener<Object>{
     public final Pipe<ServerConfig> serverConfigPipe = Pipe.newInstance("Services.serverConfig", this);
     public final Pipe<Boolean> isRecordingPipe = Pipe.newInstance("Services.isRecording", this);
     public final Pipe<Long> currentFuelPipe = Pipe.newInstance("Services.currentFuel", this);
+    public final Pipe<Boolean> udpServerRunningPipe = Pipe.newInstance("Services.udpServerRunning", this);
+    public final Pipe<Integer> udpServerPortPipe = Pipe.newInstance("Services.udpServerPort", this);
     
     
 }

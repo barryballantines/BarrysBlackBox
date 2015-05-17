@@ -1,5 +1,7 @@
 package de.mbuse.flightgear.pireprecorder;
 
+import de.mbuse.flightgear.pireprecorder.udp.UDPServer;
+import de.mbuse.pipes.Pipes;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.scene.Parent;
@@ -13,6 +15,7 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        System.out.println("PIREP Recorder starting...");
         Services services = Services.get();
         services.init();
         
@@ -31,7 +34,11 @@ public class MainApp extends Application {
         stage.setTitle("PIREP Recorder");
         stage.setScene(scene);
         stage.show();
-        System.out.println("PIREP Recorder started...");
+        
+        UDPServer udpServer = new UDPServer();
+        
+        Pipes.connect(services.udpServerRunningPipe, udpServer.runningPipe);
+        Pipes.connect(services.udpServerPortPipe, udpServer.portPipe);
     }
 
     @Override

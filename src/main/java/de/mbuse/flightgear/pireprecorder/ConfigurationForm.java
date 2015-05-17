@@ -49,7 +49,7 @@ public class ConfigurationForm implements Initializable, PipeUpdateListener<Obje
     private Services services;
     private final Pipe<ServerConfig> serverConfigPipe = Pipe.newInstance("configurationForm.serverConfig", this);
     private final Pipe<Boolean> udpServerRunningPipe = Pipe.newInstance("configurationForm.udpServerRunningPipe", this);
-    private final Pipe<Integer> udpServerPort = Pipe.newInstance("configurationForm.udpServerPort", this);
+    private final Pipe<Integer> udpServerPortPipe = Pipe.newInstance("configurationForm.udpServerPort", this);
     
     // === ===
 
@@ -61,6 +61,9 @@ public class ConfigurationForm implements Initializable, PipeUpdateListener<Obje
         
         // connecting pipes...
         Pipes.connect(services.serverConfigPipe, this.serverConfigPipe);
+        Pipes.connect(services.udpServerPortPipe, this.udpServerPortPipe);
+        Pipes.connect(services.udpServerRunningPipe, this.udpServerRunningPipe);
+        
         
     }
 
@@ -76,6 +79,7 @@ public class ConfigurationForm implements Initializable, PipeUpdateListener<Obje
             boolean running = (boolean) pipe.get();
             udpServerRunningCheck.selectedProperty().set(running);
             udpServerRunningCheck.setText(running ? "Server running" : "Server not running");
+            udpPortText.editableProperty().set(!running);
         }
     }
     
@@ -146,7 +150,7 @@ public class ConfigurationForm implements Initializable, PipeUpdateListener<Obje
         String txt = udpPortText.getText();
         try {
             int port = Integer.parseInt(txt);
-            udpServerPort.set(port);
+            udpServerPortPipe.set(port);
         } catch (NumberFormatException nfe) {}
     }
 
