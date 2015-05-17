@@ -19,6 +19,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
@@ -27,7 +28,7 @@ import javafx.scene.paint.Color;
  *
  * @author mbuse
  */
-public class ConfigurationForm implements Initializable, PipeUpdateListener<ServerConfig> {
+public class ConfigurationForm implements Initializable, PipeUpdateListener<Object> {
     
     public static Parent create(Services services) throws IOException {
         ConfigurationForm controller = new ConfigurationForm();
@@ -42,9 +43,13 @@ public class ConfigurationForm implements Initializable, PipeUpdateListener<Serv
     @FXML private TextField fgHostnameTxt;
     @FXML private TextField fgPortTxt;
     @FXML private Label fgTestFeedbackLbl;
+    @FXML private TextField udpPortText;
+    @FXML private CheckBox udpServerRunningCheck;
     
     private Services services;
     private final Pipe<ServerConfig> serverConfigPipe = Pipe.newInstance("configurationForm.serverConfig", this);
+    private final Pipe<Boolean> udpServerRunningPipe = Pipe.newInstance("configurationForm.udpServerRunningPipe", this);
+    private final Pipe<Integer> udpServerPort = Pipe.newInstance("configurationForm.udpServerPort", this);
     
     // === ===
 
@@ -60,12 +65,17 @@ public class ConfigurationForm implements Initializable, PipeUpdateListener<Serv
     }
 
     @Override
-    public void pipeUpdated(Pipe<ServerConfig> pipe) {
+    public void pipeUpdated(Pipe<Object> pipe) {
         System.out.println("[CONFIGURATION FORM] Model updated : " + pipe.id() + " -> " + pipe.get());
         if ("configurationForm.serverConfig".equals(pipe.id())) {
-            ServerConfig config = pipe.get();
+            ServerConfig config = (ServerConfig) pipe.get();
             fgHostnameTxt.setText(config.getHost());
             fgPortTxt.setText("" + config.getPort()); 
+        }
+        else if ("configurationForm.udpServerRunningPipe".equals(pipe.id())) {
+            boolean running = (boolean) pipe.get();
+            udpServerRunningCheck.selectedProperty().set(running);
+            udpServerRunningCheck.setText(running ? "Server running" : "Server not running");
         }
     }
     
@@ -123,6 +133,21 @@ public class ConfigurationForm implements Initializable, PipeUpdateListener<Serv
             return;
         } catch (Exception e) {}
         setFlightGearTestFeedback(false, "Connection failed!");
+    }
+    
+    @FXML 
+    public void udpRunningStateChanged(ActionEvent event) {
+        boolean isSelected = udpServerRunningCheck.selectedProperty().getValue();
+        udpServerRunningPipe.set(isSelected);
+    }
+    
+    @FXML
+    public void udpServerPortChanged(ActionEvent event) {
+        String txt = udpPortText.getText();
+        try {
+            int port = Integer.parseInt(txt);
+            udpServerPort.set(port);
+        } catch (NumberFormatException nfe) {}
     }
 
     public void setServices(Services services) {
