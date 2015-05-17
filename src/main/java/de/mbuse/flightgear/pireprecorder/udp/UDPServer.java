@@ -17,6 +17,7 @@ import java.nio.channels.Selector;
 import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.Set;
+import org.json.JSONObject;
 
 /**
  *
@@ -28,6 +29,7 @@ public class UDPServer implements PipeUpdateListener<Object>{
     
     public final Pipe<Boolean> runningPipe = Pipe.newInstance("udpServer.running", this);
     public final Pipe<Integer> portPipe = Pipe.newInstance("udpServer.port", this);
+    public final Pipe<JSONObject> resultPipe = Pipe.newInstance("udpServer.output", this);
 
     @Override
     public void pipeUpdated(Pipe<Object> pipe) {
@@ -55,17 +57,21 @@ public class UDPServer implements PipeUpdateListener<Object>{
 
             @Override
             public void run() {
-                System.out.println("Starting UDP Server on port " + port);
+                System.out.println("Starting UDP Server on port " + port + ".");
                 try {
                     DatagramChannel channel = createChannel(port);
                     try {
                         Selector s = createSelector(channel);
                         loop(s);
                     } finally {
+                        selector.close();
                         channel.close();
+                        if (!channel.isOpen()) {
+                            System.out.println("Channel closed on port " + port + ".");
+                        }
                     }
                 } catch (IOException e) {
-                    System.err.println("UDP Server failed...");
+                    System.err.println("UDP Server failed..." + e);
                 }
                 System.out.println("Stopping UDP Server on port " + port);
             }
@@ -113,8 +119,8 @@ public class UDPServer implements PipeUpdateListener<Object>{
                 buffer.flip();
                 CharBuffer chars = Charset.defaultCharset().decode(buffer);
                 String message =chars.toString();
-                System.out.println("> " + message);
-                
+                JSONObject obj = new JSONObject(message);
+                resultPipe.set(obj);
                 //iterator.remove();
             }
         }
