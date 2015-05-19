@@ -55,11 +55,11 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
     private Services services;
     private Calendar departureTime;
     private Calendar arrivalTime;
-    private long departureFuel;
+    private double departureFuel;
     private long arrivalFuel;
     
-    private TimerTask fuelChecker;
-    private TimerTask blockTimeChecker;
+    private FuelChecker fuelChecker;
+    private BlockTimeChecker blockTimeChecker;
     
     private final Pipe<Boolean> isRecordingPipe = Pipe.newInstance("pirepForm.isRecording", this);
 
@@ -72,12 +72,12 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
         departureTimeLbl.setText(TIME_FORMAT.format(departureTime.getTime()));
     }
     
-    public void setDepartureFuelGauge(long fuel) {
+    public void setDepartureFuelGauge(double fuel) {
         departureFuel = fuel;
         departureFuelLbl.setText(FUEL_FORMAT.format(departureFuel));
     }
     
-    public long getDepartureFuelGauge() {
+    public double getDepartureFuelGauge() {
         return departureFuel;
     }
     
@@ -113,11 +113,11 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
         startupBtn.setDisable(true);
         shutdownBtn.setDisable(false);
         
-        fuelChecker = new FuelChecker(this, retrieval);
-        blockTimeChecker = new BlockTimeChecker(this, retrieval);
+        fuelChecker = new FuelChecker(this);
+        blockTimeChecker = new BlockTimeChecker(this);
         
-        services.getTimer().schedule(fuelChecker, 5000, 5000);
-        services.getTimer().schedule(blockTimeChecker, 4000, 5000);
+        services.flightDataPipe.addListener(fuelChecker);
+        services.flightDataPipe.addListener(blockTimeChecker);
         
         isRecordingPipe.set(true);
                
@@ -128,9 +128,8 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
     private void shutdownBtnPressed(ActionEvent event) {
         System.out.println("Shutdown button pressed");
         
-        fuelChecker.cancel();
-        blockTimeChecker.cancel();
-        services.getTimer().purge();
+        services.flightDataPipe.removeChangeListener(fuelChecker);
+        services.flightDataPipe.removeChangeListener(blockTimeChecker);
         
         FlightDataRetrieval retrieval = services.getFlightDataRetrieval();
         
@@ -141,7 +140,7 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
         arrivalTimeLbl.setText(TIME_FORMAT.format(arrivalTime.getTime()));
         
             
-        long fuelConsumption = getDepartureFuelGauge() - getArrivalFuelGauge();
+        double fuelConsumption = getDepartureFuelGauge() - getArrivalFuelGauge();
 
         long diff = arrivalTime.getTimeInMillis() - departureTime.getTimeInMillis();
 

@@ -6,6 +6,9 @@
 
 package de.mbuse.flightgear.pireprecorder;
 
+import de.mbuse.flightgear.pireprecorder.udp.FlightData;
+import de.mbuse.pipes.Pipe;
+import de.mbuse.pipes.PipeUpdateListener;
 import java.util.TimerTask;
 import javafx.application.Platform;
 
@@ -13,31 +16,33 @@ import javafx.application.Platform;
  *
  * @author mbuse
  */
-public class FuelChecker extends TimerTask {
+public class FuelChecker implements PipeUpdateListener<FlightData> {
     
-    private FlightDataRetrieval retrieval;
     private PIREPForm pirepForm;
-    private long lastReportedFuel;
+    private double lastReportedFuel;
     
-    public FuelChecker(PIREPForm form, FlightDataRetrieval retrieval) {
+    public FuelChecker(PIREPForm form) {
         super();
         this.pirepForm = form;
-        this.retrieval = retrieval;
         this.lastReportedFuel = form.getDepartureFuelGauge();
     }
 
     @Override
-    public void run() {
+    public void pipeUpdated(Pipe<FlightData> model) {
+        FlightData data = model.get();
+        if (data==null) {
+            return;
+        }
         try {
-            long currentFuel = retrieval.getFuel();
-            Services.get().currentFuelPipe.set(currentFuel);
+            double currentFuel = data.getFuel();
+            //Services.get().currentFuelPipe.set(currentFuel);
             
-            final long difference = currentFuel - lastReportedFuel;
+            final double difference = currentFuel - lastReportedFuel;
             lastReportedFuel = currentFuel;
 
             if (difference > 0) {
                 System.out.println("FuelChecker detected a fuel gain of " + difference + " lbs.");
-                final long loadedFuel = pirepForm.getDepartureFuelGauge();
+                final double loadedFuel = pirepForm.getDepartureFuelGauge();
                 
                 Platform.runLater(new Runnable() { public void run() {
                     pirepForm.setDepartureFuelGauge(loadedFuel + difference);
