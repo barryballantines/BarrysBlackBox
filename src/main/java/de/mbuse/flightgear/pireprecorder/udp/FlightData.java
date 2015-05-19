@@ -51,7 +51,7 @@ public class FlightData {
         return json.getDouble("route-distance-remaining");
     }
     
-    public double getTotalFlightTime() {
+    public double getFlightTime() {
         return json.getDouble("route-flight-time");
     }
     

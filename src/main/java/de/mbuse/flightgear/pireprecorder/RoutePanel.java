@@ -6,6 +6,9 @@
 
 package de.mbuse.flightgear.pireprecorder;
 
+import de.mbuse.flightgear.pireprecorder.udp.FlightData;
+import de.mbuse.pipes.Pipe;
+import de.mbuse.pipes.PipeUpdateListener;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Calendar;
@@ -24,11 +27,13 @@ import javafx.scene.control.ProgressBar;
  *
  * @author mbuse
  */
-public class RoutePanel implements Initializable {
+public class RoutePanel implements Initializable, PipeUpdateListener<FlightData> {
+    
+    private static final int ONE_DAY = 60 * 60 * 24;
     
     public static Parent create(Services services) throws IOException {
         RoutePanel controller = new RoutePanel();
-        controller.setRetrieval(services.getFlightDataRetrieval());
+        controller.setServices(services);
         FXMLLoader loader = new FXMLLoader(PIREPForm.class.getResource("/fxml/route.fxml"));
         loader.setController(controller);
         return (Parent) loader.load();
@@ -45,71 +50,79 @@ public class RoutePanel implements Initializable {
     @FXML private Label remainingDistanceLbl;
     @FXML private Label elapsedDistanceLbl;
     
-    private FlightDataRetrieval retrieval;
+    private Services services;
+    private Pipe<FlightData> flightDataPipe = Pipe.newInstance("routePanel.flightData", this);
 
-    
-    public void setRetrieval(FlightDataRetrieval retrieval) {
-        this.retrieval = retrieval;
+    public void setServices(Services services) {
+        this.services = services;
     }
 
-    public FlightDataRetrieval getRetrieval() {
-        return retrieval;
+    public Services getServices() {
+        return services;
     }
-    
     
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        Timer timer = Services.get().getTimer();
-        timer.schedule(new RouteInformationRetrievalTask(), 2000, 10000);
+        flightDataPipe.connectTo(services.flightDataPipe);
     }
-    
-    protected void updateData(RouteInformation data) {
-        double progress = (data.totalDistance>0.0)
-                ? 1.0 - data.distanceRemaining / data.totalDistance
-                : 0.0;
+
+    @Override
+    public void pipeUpdated(Pipe<FlightData> pipe) {
+        System.out.println("[SERVICES] Model updated : " + pipe.id() + " -> " + pipe.get());
         
-        flightProgress.setProgress(progress);
-        
-        departureAirportLbl.setText(data.departure);
-        destinationAirportLbl.setText(data.destination);
-        
-        int ete = (int) data.estimatedTimeToDestination;
-        Calendar eta = Calendar.getInstance();
-        eta.add(Calendar.SECOND, ete);
-        
-        estimatedTimeEnrouteLbl.setText(Formats.secondsToHHMM(ete));
-        estimatedTimeOfArrivalLbl.setText(Formats.toUTC(eta));
-        
-        elapsedTimeLbl.setText(Formats.secondsToHHMM((int) data.flightTime));
-        elapsedDistanceLbl.setText(Formats.nauticalMiles(data.totalDistance - data.distanceRemaining));
-        
-        totalDistanceLbl.setText(Formats.nauticalMiles(data.totalDistance));
-        remainingDistanceLbl.setText(Formats.nauticalMiles(data.distanceRemaining));
-        
-        Calendar to = Calendar.getInstance();
-        to.add(Calendar.SECOND, (int) -data.flightTime);
-        
-        takeoffTimeLbl.setText(Formats.toUTC(to));
-        
-        
+        updateData(pipe.get());
     }
     
     
-    class RouteInformationRetrievalTask extends TimerTask {
-
-        @Override
-        public void run() {
-            try {
-                final RouteInformation route = getRetrieval().getRouteInformation();
-
-                Platform.runLater(new Runnable() { @Override public void run() {
-                    updateData(route);
-                }});
-            } catch(Exception e) {
-                System.err.println("Cannot retrieve route information: " + e);
-            }
+    
+    protected void updateData(final FlightData data) {
+        if (data==null) {
+            return;
         }
+        Platform.runLater(new Runnable() { @Override public void run() {
+            double totalDistance = data.getTotalDistance();
+            double remainingDistance = data.getRemainingDistance();
+            double flightTime = data.getFlightTime();
+            double progress = (totalDistance>0.0)
+                    ? 1.0 - remainingDistance / totalDistance
+                    : 0.0;
+
+            if (progress<=0.0 && flightProgress.getProgress()>0.0) {
+                flightProgress.setProgress(-0.01);
+            } 
+            else {
+                flightProgress.setProgress(progress);
+            }
+
+            departureAirportLbl.setText(data.getDeparture());
+            destinationAirportLbl.setText(data.getDestination());
+
+            int ete = (int) data.getETE();
+            if (ete<=ONE_DAY) {
+                Calendar eta = Calendar.getInstance();
+                eta.add(Calendar.SECOND, ete);
+
+                estimatedTimeEnrouteLbl.setText(Formats.secondsToHHMM(ete));
+                estimatedTimeOfArrivalLbl.setText(Formats.toUTC(eta));
+            }
+            else {
+                estimatedTimeEnrouteLbl.setText("unknown");
+                estimatedTimeOfArrivalLbl.setText("unknown");
+            }
+
+            elapsedTimeLbl.setText(Formats.secondsToHHMM((int) flightTime));
+            elapsedDistanceLbl.setText(Formats.nauticalMiles(totalDistance - remainingDistance));
+
+            totalDistanceLbl.setText(Formats.nauticalMiles(totalDistance));
+            remainingDistanceLbl.setText(Formats.nauticalMiles(remainingDistance));
+
+            Calendar to = Calendar.getInstance();
+            to.add(Calendar.SECOND, (int) -flightTime);
+
+            takeoffTimeLbl.setText(Formats.toUTC(to));
+        }});
+        
         
     }
 }
