@@ -6,6 +6,9 @@
 package de.mbuse.flightgear.pireprecorder;
 
 import de.mbuse.flightgear.connect.PropertyService;
+import de.mbuse.flightgear.pireprecorder.udp.FlightData;
+import de.mbuse.pipes.Pipe;
+import de.mbuse.pipes.PipeUpdateListener;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
@@ -13,6 +16,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -24,19 +28,21 @@ import javafx.scene.control.Label;
  *
  * @author mbuse
  */
-public class ParkingPositionPanel implements Initializable {
+public class ParkingPositionPanel implements Initializable, PipeUpdateListener<FlightData> {
 
     
     public static Parent create(Services services) throws IOException {
         ParkingPositionPanel controller = new ParkingPositionPanel();
-        controller.propertyService = services.getPropertyService();
+        controller.setServices(services);
         
         FXMLLoader loader = new FXMLLoader(PIREPForm.class.getResource("/fxml/parking.fxml"));
         loader.setController(controller);
         return (Parent) loader.load();
     }
     
-    private PropertyService propertyService;
+    private Services services;
+    
+    private Pipe<FlightData> flightDataPipe = Pipe.newInstance("parkingPosition.flightData", this);
     
     @FXML private Button relocateBtn;
     @FXML private Button storePositionBtn;
@@ -45,11 +51,34 @@ public class ParkingPositionPanel implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        flightDataPipe.connectTo(services.flightDataPipe);
         
     }
+
+    @Override
+    public void pipeUpdated(Pipe<FlightData> pipe) {
+        System.out.println("[PARKING] Model updated : " + pipe.id() + " -> " + pipe.get());
+        final String airport = pipe.get().getClosestAirport();
+        
+        if(airport != null && !airport.equals(airportLbl.getText())) {
+            final Location l = readLocationFromPreferences(airport);
+            
+            Platform.runLater(new Runnable() { @Override public void run() {
+                
+                airportLbl.setText(airport);
+                positionLbl.setText((l!=null) 
+                        ? l.lat + " " + l.lon 
+                        : "N/A");
+                relocateBtn.setDisable(l==null);
+            }});
+        }
+    }
+    
+    
     
     @FXML
     public void handleStorePositionBtnPressed() {
+        PropertyService propertyService = services.getPropertyService();
         String airport = propertyService.readProperty("/sim/airport/closest-airport-id");
         
         Map<String, Object> position = propertyService.readProperties(
@@ -89,28 +118,48 @@ public class ParkingPositionPanel implements Initializable {
         String hdg = null;
         String alt = null;
         
+        PropertyService propertyService = services.getPropertyService();
+        
         String airport = propertyService.readProperty("/sim/airport/closest-airport-id");
-        Preferences prefs = Preferences.userRoot();
-        String root = "de.mbuse.flightgear.pireprecorder.parking." + airport;
-
-        lon = prefs.get(root + ".longitude", null);
-        lat = prefs.get(root + ".latitude", null);
-        hdg = prefs.get(root + ".heading", null);
-        alt = prefs.get(root + ".altitude", null);
         
-        //System.out.print("Preferences: " + airport + ", " + lat + ", " + lon + ", " + hdg);
+        Location l = readLocationFromPreferences(airport);
         
-        if (lon!=null && lat!=null && hdg!=null && alt!=null) {
+        if (l!=null) {
             Map<String, Object> properties = new HashMap<>();
             
-            properties.put("/position/latitude-deg", Double.parseDouble(lat));
-            properties.put("/position/longitude-deg", Double.parseDouble(lon));
-            properties.put("/position/altitude-ft", Double.parseDouble(alt));
-            properties.put("/orientation/heading-deg", Double.parseDouble(hdg));
+            properties.put("/position/latitude-deg", Double.parseDouble(l.lat));
+            properties.put("/position/longitude-deg", Double.parseDouble(l.lon));
+            properties.put("/position/altitude-ft", Double.parseDouble(l.alt));
+            properties.put("/orientation/heading-deg", Double.parseDouble(l.hdg));
             
             propertyService.writeProperties(properties);
         }
     }
     
- 
+    private Location readLocationFromPreferences(String airport) {
+        Location l = new Location();
+        Preferences prefs = Preferences.userRoot();
+        String root = "de.mbuse.flightgear.pireprecorder.parking." + airport;
+
+        l.lon = prefs.get(root + ".longitude", null);
+        l.lat = prefs.get(root + ".latitude", null);
+        l.hdg = prefs.get(root + ".heading", null);
+        l.alt = prefs.get(root + ".altitude", null);
+        
+        return (l.lon!=null && l.lat!=null && l.hdg!=null && l.alt!=null)
+                ? l : null;
+    }
+
+    public void setServices(Services services) {
+        this.services = services;
+    }
+    
+    
+    private static class Location {
+        String lon = null;
+        String lat = null;
+        String hdg = null;
+        String alt = null;
+    }
+    
 }

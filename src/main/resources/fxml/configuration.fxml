@@ -21,13 +21,13 @@
       <TextField fx:id="fgPortTxt" layoutX="79.0" layoutY="73.0" onAction="#flightgearConnectionChanged" prefHeight="29.0" prefWidth="49.0" promptText="5500" text="5500" AnchorPane.leftAnchor="79.0" AnchorPane.topAnchor="73.0" />
       <Button layoutX="240.0" layoutY="42.0" mnemonicParsing="false" onAction="#testFlightgearConnection" prefHeight="25.0" prefWidth="119.0" text="Test Connection" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="42.0" />
       <Label fx:id="fgTestFeedbackLbl" layoutX="135.0" layoutY="77.0" prefHeight="19.0" prefWidth="217.0" text="Press button to test connection" AnchorPane.leftAnchor="135.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="77.0" />
-      <Label layoutX="14.0" layoutY="120.0" text="UDP Server (experimental)" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="120.0">
+      <Label layoutX="14.0" layoutY="120.0" text="UDP Server" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="120.0">
          <font>
             <Font name="System Bold" size="13.0" />
          </font>
       </Label>
       <CheckBox fx:id="udpServerRunningCheck" layoutX="14.0" layoutY="146.0" mnemonicParsing="false" onAction="#udpRunningStateChanged" text="Server not running" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="146.0" />
-      <TextField fx:id="udpPortText" layoutX="303.0" layoutY="141.0" prefHeight="29.0" prefWidth="49.0" promptText="5550" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="141.0" onAction="#udpServerPortChanged" />
+      <TextField fx:id="udpPortText" layoutX="303.0" layoutY="141.0" onAction="#udpServerPortChanged" prefHeight="29.0" prefWidth="49.0" promptText="5555" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="141.0" />
       <Label layoutX="223.0" layoutY="146.0" prefHeight="19.0" prefWidth="73.0" text="Server Port:" AnchorPane.rightAnchor="71.0" AnchorPane.topAnchor="146.0" />
    </children>
 </AnchorPane>

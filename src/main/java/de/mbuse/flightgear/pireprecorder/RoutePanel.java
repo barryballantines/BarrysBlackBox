@@ -69,7 +69,7 @@ public class RoutePanel implements Initializable, PipeUpdateListener<FlightData>
 
     @Override
     public void pipeUpdated(Pipe<FlightData> pipe) {
-        System.out.println("[SERVICES] Model updated : " + pipe.id() + " -> " + pipe.get());
+        System.out.println("[ROUTE] Model updated : " + pipe.id() + " -> " + pipe.get());
         
         updateData(pipe.get());
     }
@@ -88,8 +88,8 @@ public class RoutePanel implements Initializable, PipeUpdateListener<FlightData>
                     ? 1.0 - remainingDistance / totalDistance
                     : 0.0;
 
-            if (progress<=0.0 && flightProgress.getProgress()>0.0) {
-                flightProgress.setProgress(-0.01);
+            if (progress<=0.0 && flightProgress.getProgress()<0.0) {
+                flightProgress.setProgress(-1.0);
             } 
             else {
                 flightProgress.setProgress(progress);
