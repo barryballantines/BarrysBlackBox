@@ -29,7 +29,7 @@ public class UDPServer implements PipeUpdateListener<Object>{
     
     public final Pipe<Boolean> runningPipe = Pipe.newInstance("udpServer.running", this);
     public final Pipe<Integer> portPipe = Pipe.newInstance("udpServer.port", this);
-    public final Pipe<JSONObject> resultPipe = Pipe.newInstance("udpServer.output", this);
+    public final Pipe<FlightData> flightDataPipe = Pipe.newInstance("udpServer.flightData", this);
 
     @Override
     public void pipeUpdated(Pipe<Object> pipe) {
@@ -120,7 +120,7 @@ public class UDPServer implements PipeUpdateListener<Object>{
                 CharBuffer chars = Charset.defaultCharset().decode(buffer);
                 String message =chars.toString();
                 JSONObject obj = new JSONObject(message);
-                resultPipe.set(obj);
+                flightDataPipe.set(new FlightData(obj));
                 //iterator.remove();
             }
         }

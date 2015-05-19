@@ -8,6 +8,7 @@ package de.mbuse.flightgear.pireprecorder;
 import de.mbuse.flightgear.connect.HttpPropertyServiceImpl;
 import de.mbuse.flightgear.connect.PropertyService;
 import de.mbuse.flightgear.connect.ServerConfig;
+import de.mbuse.flightgear.pireprecorder.udp.FlightData;
 import de.mbuse.pipes.Pipe;
 import de.mbuse.pipes.PipeUpdateListener;
 import java.util.Timer;
@@ -113,6 +114,7 @@ public class Services implements PipeUpdateListener<Object>{
     public final Pipe<Long> currentFuelPipe = Pipe.newInstance("Services.currentFuel", this);
     public final Pipe<Boolean> udpServerRunningPipe = Pipe.newInstance("Services.udpServerRunning", this);
     public final Pipe<Integer> udpServerPortPipe = Pipe.newInstance("Services.udpServerPort", this);
+    public final Pipe<FlightData> flightDataPipe = Pipe.newInstance("Services.flightData", this);
     
     
 }

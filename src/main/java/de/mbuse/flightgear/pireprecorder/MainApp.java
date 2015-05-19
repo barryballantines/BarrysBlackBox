@@ -37,8 +37,11 @@ public class MainApp extends Application {
         
         UDPServer udpServer = new UDPServer();
         
+        services.flightDataPipe.connectTo(udpServer.flightDataPipe);
+        
         Pipes.connect(services.udpServerRunningPipe, udpServer.runningPipe);
         Pipes.connect(services.udpServerPortPipe, udpServer.portPipe);
+        
     }
 
     @Override

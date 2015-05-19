@@ -1,38 +1,83 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
-<output>
-     <line_separator>newline</line_separator>
-     <var_separator>,</var_separator>
+<?xml version="1.0"?>
 
-     <chunk>
-        <name>altitude above ground</name>
-        <node>/position/altitude-agl-ft</node>
-        <type>float</type>
-        <format>{"altitude":%03.2f</format>
-      </chunk>
+<PropertyList>
+    <generic>
+        <output>
+            <line_separator>newline</line_separator>
+            <var_separator>,</var_separator>
 
-     <chunk>
-        <name>closest airport</name>
-        <node>/sim/airport/closest-airport-id</node>
-        <type>string</type>
-        <format>"closest-airport": '%s'</format>
-      </chunk>
+            <chunk>
+                <name>altitude above ground</name>
+                <node>/position/altitude-agl-ft</node>
+                <type>float</type>
+                <format>{"altitude":%03.2f</format>
+            </chunk>
+
+            <chunk>
+                <name>closest airport</name>
+                <node>/sim/airport/closest-airport-id</node>
+                <type>string</type>
+                <format>"closest-airport": '%s'</format>
+            </chunk>
       
-      <chunk>
-        <name>fuel on board</name>
-        <node>/consumables/fuel/total-fuel-lbs</node>
-        <type>float</type>
-        <format>"fuel-lbs": %03.2f</format>
-      </chunk>
+            <chunk>
+                <name>fuel on board</name>
+                <node>/consumables/fuel/total-fuel-lbs</node>
+                <type>float</type>
+                <format>"fuel-lbs": %03.2f</format>
+            </chunk>
       
-      <chunk>
-          <name>groundspeed kts</name>
-          <node>/velocities/groundspeed-kt</node>
-          <type>float</type>
-          <format>"groundspeed": %03.2f}</format>
-      </chunk>
-</output>
+            <chunk>
+                <name>groundspeed kts</name>
+                <node>/velocities/groundspeed-kt</node>
+                <type>float</type>
+                <format>"groundspeed": %03.2f</format>
+            </chunk>
+      
+            <!-- route information -->
+      
+            <chunk>
+                <name>route departure airport</name>
+                <node>/autopilot/route-manager/departure/airport</node>
+                <type>string</type>
+                <format>"route-departure-airport": '%s'</format>
+            </chunk>
+      
+            <chunk>
+                <name>route destination airport</name>
+                <node>/velocities/groundspeed-kt</node>
+                <type>string</type>
+                <format>"route-destination-airport": '%s'</format>
+            </chunk>
+      
+            <chunk>
+                <name>total distance</name>
+                <node>/autopilot/route-manager/total-distance</node>
+                <type>float</type>
+                <format>"route-total-distance": %03.2f</format>
+            </chunk>
+      
+            <chunk>
+                <name>distance remaining</name>
+                <node>/autopilot/route-manager/distance-remaining-nm</node>
+                <type>float</type>
+                <format>"route-distance-remaining": %03.2f</format>
+            </chunk>
+      
+            <chunk>
+                <name>flight time</name>
+                <node>/autopilot/route-manager/flight-time</node>
+                <type>float</type>
+                <format>"route-flight-time": %03.2f</format>
+            </chunk>
+      
+            <chunk>
+                <name>ete</name>
+                <node>/autopilot/route-manager/ete</node>
+                <type>float</type>
+                <format>"route-ete": %03.2f }</format>
+            </chunk>
+      
+        </output>
+    </generic>
+</PropertyList>
