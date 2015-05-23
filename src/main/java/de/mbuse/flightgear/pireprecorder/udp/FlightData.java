@@ -5,6 +5,7 @@
  */
 package de.mbuse.flightgear.pireprecorder.udp;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -57,6 +58,19 @@ public class FlightData {
     
     public double getETE() {
         return json.getDouble("route-ete");
+    }
+    
+    public double[] getWoW() {
+        JSONArray array = json.getJSONArray("wow");
+        double[] result = new double[array.length()];
+        for (int i=0; i<result.length; i++) {
+            result[i] = array.getDouble(i);
+        }
+        return result;
+    }
+    
+    public double getVerticalSpeed() {
+        return json.getDouble("vertical-speed");
     }
 
     @Override
