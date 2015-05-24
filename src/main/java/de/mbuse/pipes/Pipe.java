@@ -17,6 +17,13 @@ public class Pipe<T> {
         m.addListener(listener);
         return m;
     }
+    
+    public static <U> Pipe<U> newInstance(String id, U value, PipeUpdateListener listener) {
+        Pipe<U> m = new Pipe<U>(id);
+        m.set(value);
+        m.addListener(listener);
+        return m;
+    }
 
     private String id;
     private T value;
@@ -67,6 +74,10 @@ public class Pipe<T> {
     public void connectTo(Pipe<T> sourcePipe) {
         sourcePipe.addListener(bindListener);
         set(sourcePipe.get());
+    }
+    
+    public void disconnectFrom(Pipe<T> sourcePipe) {
+        sourcePipe.removeChangeListener(bindListener);
     }
 
     public final void fireUpdateEvent() {
