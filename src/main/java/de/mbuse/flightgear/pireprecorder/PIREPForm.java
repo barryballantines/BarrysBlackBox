@@ -14,6 +14,7 @@ import java.util.ResourceBundle;
 import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -49,6 +50,7 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
     @FXML private Label arrivalFuelLbl;
     @FXML private Label fuelConsumptionLbl;
     @FXML private Label flightTimeLbl;
+    @FXML private Label landingRateLbl;
     @FXML private Button startupBtn;
     @FXML private Button shutdownBtn;
     
@@ -60,8 +62,10 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
     
     private FuelChecker fuelChecker;
     private BlockTimeChecker blockTimeChecker;
+    private LandingRateService landingRateService;
     
     private final Pipe<Boolean> isRecordingPipe = Pipe.newInstance("pirepForm.isRecording", this);
+    private final Pipe<Double> landingRatePipe = Pipe.newInstance("pirepForm.landingRate", this);
 
     public void setServices(Services services) {
         this.services = services;
@@ -109,15 +113,20 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
         
         fuelConsumptionLbl.setText("----");
         flightTimeLbl.setText("--:--");
+        landingRateLbl.setText("----");
         
         startupBtn.setDisable(true);
         shutdownBtn.setDisable(false);
         
         fuelChecker = new FuelChecker(this);
         blockTimeChecker = new BlockTimeChecker(this);
+        landingRateService = new LandingRateService();
         
         services.flightDataPipe.addListener(fuelChecker);
         services.flightDataPipe.addListener(blockTimeChecker);
+        
+        landingRateService.flightDataPipe.connectTo(services.flightDataPipe);
+        this.landingRatePipe.connectTo(landingRateService.landingRate);
         
         isRecordingPipe.set(true);
                
@@ -130,6 +139,9 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
         
         services.flightDataPipe.removeChangeListener(fuelChecker);
         services.flightDataPipe.removeChangeListener(blockTimeChecker);
+        
+        landingRateService.flightDataPipe.disconnectFrom(services.flightDataPipe);
+        landingRatePipe.disconnectFrom(landingRateService.landingRate);
         
         FlightDataRetrieval retrieval = services.getFlightDataRetrieval();
         
@@ -170,8 +182,20 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
     }    
 
     @Override
-    public void pipeUpdated(Pipe<Object> pipe) {
+    public void pipeUpdated(Pipe pipe) {
         System.out.println("[PIREP FORM] Model updated : " + pipe.id() + " -> " + pipe.get());
+        
+        if (pipe == landingRatePipe) {
+            Platform.runLater(new Runnable() {
+
+                @Override
+                public void run() {
+                    long landingRate = Math.round(landingRatePipe.get() * 60);
+                    landingRateLbl.setText("" + landingRate);
+                }
+                
+            });
+        }
     }
     
     

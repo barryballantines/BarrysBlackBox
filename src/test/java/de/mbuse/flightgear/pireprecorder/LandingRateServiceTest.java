@@ -38,45 +38,49 @@ public class LandingRateServiceTest {
     public void testSimulatedFlight() {
         
         LandingRateService lrs = new LandingRateService();
+        Pipe<Double> landingRatePipe = Pipe.newInstance("test.landingRate");
         
         lrs.statusPipe.set(LandingRateService.Status.GROUND);
+        landingRatePipe.connectTo(lrs.landingRate);
+        
         
         // taxi 
         System.out.println("-- taxi --");
-        simulate(lrs.flightDataPipe, 10.0, 0.5, 20);
-        simulate(lrs.flightDataPipe, 10.0, -0.5, 10);
+        simulate(lrs.flightDataPipe, 1, 0.5, 20);
+        simulate(lrs.flightDataPipe, 1, -0.5, 10);
         
         // takeoff
         System.out.println("-- t/o --");
-        simulate(lrs.flightDataPipe, 0.001, 1200.0, 30);
+        simulate(lrs.flightDataPipe, 0, 1200.0, 30);
         
         // cruise
         System.out.println("-- cruise --");
-        simulate(lrs.flightDataPipe, 0.00001, 0., 50);
+        simulate(lrs.flightDataPipe, 0, 0., 50);
         
         // descent
         System.out.println("-- descent --");
-        simulate(lrs.flightDataPipe, 0.001, -1400., 20);
+        simulate(lrs.flightDataPipe, 0, -1400., 20);
         
         // touchdown
         System.out.println("-- touchdown --");
-        simulate(lrs.flightDataPipe, 0.001, -400., 10);
-        simulate(lrs.flightDataPipe, 10.0, -200., 1);
+        simulate(lrs.flightDataPipe, 0, -400., 10);
+        simulate(lrs.flightDataPipe, 1, -200., 1);
         
         // taxi
         System.out.println("-- taxi --");
-        simulate(lrs.flightDataPipe, 10.0, 0.5, 20);
-        simulate(lrs.flightDataPipe, 10.0, -0.5, 10);
+        simulate(lrs.flightDataPipe, 1, 0.5, 20);
+        simulate(lrs.flightDataPipe, 1, -0.5, 10);
         
         assertEquals("Landing Rate is wrong.", -400., lrs.landingRate.get(), 0.01);
+        assertEquals("Pipe is not updated.", -400., landingRatePipe.get(), 0.01);
         
     }
     
     
-    private void simulate(Pipe<FlightData> pipe, double wow, double descentRate, int n) {
+    private void simulate(Pipe<FlightData> pipe, int wow, double descentRate, int n) {
         JSONObject json = new JSONObject();
         json.put("vertical-speed", descentRate);
-        json.put("wow", new JSONArray(new double[] { wow , wow, wow }));
+        json.put("wow", new JSONArray(new int[] { wow , wow, wow }));
         
         for (int i=0; i<n; i++) {
             pipe.set(new FlightData(json));

@@ -18,7 +18,7 @@ import de.mbuse.pipes.PipeUpdateListener;
 public class LandingRateService implements PipeUpdateListener{
     
     public final Pipe<FlightData> flightDataPipe = Pipe.newInstance("landingRateService.flightData", this);
-    public final Pipe<Status> statusPipe = Pipe.newInstance("landingRateService.status", this);
+    public final Pipe<Status> statusPipe = Pipe.newInstance("landingRateService.status", Status.GROUND, this);
     public final Pipe<Double> landingRate = Pipe.newInstance("landingRateService.landingRate", this);
     
     private Buffer descentRateBuffer = new Buffer(4);
@@ -47,12 +47,16 @@ public class LandingRateService implements PipeUpdateListener{
             }
             else {
                 double descentRate = data.getVerticalSpeed();
+                statusPipe.set(Status.AIRBORNE);
                 descentRateBuffer.put(descentRate);
             }
         }
         else {
             if (maxWoW <= 0.1) {
                 statusPipe.set(Status.AIRBORNE);
+            }
+            else {
+                statusPipe.set(Status.GROUND);
             }
         }
     }

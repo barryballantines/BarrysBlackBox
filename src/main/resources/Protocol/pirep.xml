@@ -75,7 +75,37 @@
                 <name>ete</name>
                 <node>/autopilot/route-manager/ete</node>
                 <type>float</type>
-                <format>"route-ete": %03.2f }</format>
+                <format>"route-ete": %03.2f</format>
+            </chunk>
+            
+            <!-- Landing Rate -->
+            
+            <chunk>
+                <name>vertical speed fps</name>
+                <node>/velocities/vertical-speed-fps</node>
+                <type>float</type>
+                <format>"vertical-speed": %03.2f</format>
+            </chunk>
+            
+            <chunk>
+                <name>wow gear 1</name>
+                <node>/gear/gear/wow</node>
+                <type>float</type>
+                <format>"wow": [%03.2f</format>
+            </chunk>
+            
+            <chunk>
+                <name>wow gear 2</name>
+                <node>/gear/gear[1]/wow</node>
+                <type>float</type>
+                <format> %03.2f</format>
+            </chunk>
+            
+            <chunk>
+                <name>wow gear 3</name>
+                <node>/gear/gear[2]/wow</node>
+                <type>float</type>
+                <format>%03.2f]}</format>
             </chunk>
       
         </output>
