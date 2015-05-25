@@ -4,11 +4,13 @@ import de.mbuse.flightgear.pireprecorder.udp.UDPServer;
 import de.mbuse.pipes.Pipes;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
+import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 
 public class MainApp extends Application {
@@ -35,7 +37,14 @@ public class MainApp extends Application {
         stage.setScene(scene);
         stage.show();
         
-        UDPServer udpServer = new UDPServer();
+        final UDPServer udpServer = new UDPServer();
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+
+            @Override
+            public void handle(WindowEvent t) {
+                udpServer.stop();
+            }
+        });
         
         services.flightDataPipe.connectTo(udpServer.flightDataPipe);
         
