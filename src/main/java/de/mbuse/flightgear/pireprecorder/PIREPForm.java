@@ -65,7 +65,7 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
     private LandingRateService landingRateService;
     
     private final Pipe<Boolean> isRecordingPipe = Pipe.newInstance("pirepForm.isRecording", this);
-    private final Pipe<Double> landingRatePipe = Pipe.newInstance("pirepForm.landingRate", this);
+    private final Pipe<Double> landingRatePipe = Pipe.newInstance("pirepForm.landingRate", 0.0, this);
 
     public void setServices(Services services) {
         this.services = services;
@@ -126,7 +126,7 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
         services.flightDataPipe.addListener(blockTimeChecker);
         
         landingRateService.flightDataPipe.connectTo(services.flightDataPipe);
-        this.landingRatePipe.connectTo(landingRateService.landingRate);
+        this.landingRatePipe.connectTo(landingRateService.landingRate, Pipes.MIN_TRANSFORM);
         
         isRecordingPipe.set(true);
                
