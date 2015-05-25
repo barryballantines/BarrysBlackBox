@@ -1,5 +1,7 @@
 package de.mbuse.pipes;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.event.EventListenerList;
 
 public class Pipe<T> {
@@ -28,6 +30,7 @@ public class Pipe<T> {
     private String id;
     private T value;
     private final EventListenerList listenerList = new EventListenerList();
+    private final Map<Pipe, PipeUpdateListener> connectedListeners = new HashMap<>();
 
     private final PipeUpdateListener<T> bindListener = new PipeUpdateListener<T>() {
         public void pipeUpdated(Pipe<T> model) {
@@ -42,6 +45,25 @@ public class Pipe<T> {
             return "Listener[" + Pipe.this.toString() + "]";
         }
     };
+    
+    private <S> PipeUpdateListener<S> createTransformingBindListener(final Transformer<T,S> transformer) {
+      PipeUpdateListener<S> listener =  new PipeUpdateListener<S>() { 
+          public void pipeUpdated(Pipe<S> model) {
+            S incoming = model.get();
+            T current = Pipe.this.value;
+            T transformedIncomming = transformer.transform(current, incoming);
+            if (notEquals(current, transformedIncomming)) {
+                Pipe.this.set(transformedIncomming);
+            }
+          };
+		
+          public String toString() {
+            return "Listener[" + Pipe.this.toString() + ", transformer=" + transformer + "]";
+          }
+      };
+      
+      return listener;
+    }
 
     protected Pipe(String id) {
         this.id = id;
@@ -72,12 +94,23 @@ public class Pipe<T> {
     }
 
     public void connectTo(Pipe<T> sourcePipe) {
+        connectedListeners.put(sourcePipe, bindListener);
         sourcePipe.addListener(bindListener);
         set(sourcePipe.get());
     }
     
-    public void disconnectFrom(Pipe<T> sourcePipe) {
-        sourcePipe.removeChangeListener(bindListener);
+    public <S> void connectTo(Pipe<S> sourcePipe, Transformer<T, S> transformer) {
+        PipeUpdateListener<S> listener = createTransformingBindListener(transformer);
+        connectedListeners.put(sourcePipe, listener);
+        sourcePipe.addListener(listener);
+        set(transformer.transform(get(), sourcePipe.get()));
+    }
+    
+    public void disconnectFrom(Pipe sourcePipe) {
+        PipeUpdateListener listener = connectedListeners.remove(sourcePipe);
+        if (listener!=null) {
+            sourcePipe.removeChangeListener(listener);
+        }
     }
 
     public final void fireUpdateEvent() {

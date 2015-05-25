@@ -27,4 +27,54 @@ public class Pipes {
         }
         firstPipe.connectTo(lastPipe);
     }
+    
+    public static final Transformer<Double, Double> MAX_TRANSFORM =
+            new Transformer<Double, Double>() {
+                @Override
+                public Double transform(Double currentTargetValue, Double newSourceValue) {
+                    if (currentTargetValue==null) {
+                        return (newSourceValue==null) ? null : newSourceValue;
+                    }
+                    else if (newSourceValue==null) {
+                        return (currentTargetValue==null) ? null : currentTargetValue;
+                    }
+                    else {
+                        return Math.max(currentTargetValue, newSourceValue);
+                    }
+                }        
+            };
+    
+    public static final Transformer<Double, Double> MIN_TRANSFORM =
+            new Transformer<Double, Double>() {
+                @Override
+                public Double transform(Double currentTargetValue, Double newSourceValue) {
+                    if (currentTargetValue==null) {
+                        return (newSourceValue==null) ? null : newSourceValue;
+                    }
+                    else if (newSourceValue==null) {
+                        return (currentTargetValue==null) ? null : currentTargetValue;
+                    }
+                    else {
+                        return Math.min(currentTargetValue, newSourceValue);
+                    }
+                }        
+            };
+    
+    public static final Transformer<Double, Double> AVG_TRANSFORM =
+            new Transformer<Double, Double>() {
+                @Override
+                public Double transform(Double currentTargetValue, Double newSourceValue) {
+                    if (currentTargetValue==null) {
+                        return (newSourceValue==null) ? null : newSourceValue;
+                    }
+                    else if (newSourceValue==null) {
+                        return (currentTargetValue==null) ? null : currentTargetValue;
+                    }
+                    else {
+                        return (currentTargetValue + newSourceValue) / 2;
+                    }
+                }        
+            };
+    
+    
 }

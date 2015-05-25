@@ -80,6 +80,70 @@ public class PipesTest implements PipeUpdateListener<String> {
         assertEquals("P1 value has been overriden!", "Initial Value", p1.get());
         assertEquals("P2 value hasn't been propagated", "Initial Value", p2.get());
     }
+    
+    @Test
+    public void testMaxTransformer() {
+        Pipe<Double> input = Pipe.newInstance("input", this);
+        Pipe<Double> output = Pipe.newInstance("output", this);
+        
+        output.connectTo(input, Pipes.MAX_TRANSFORM);
+        
+        input.set(0.1);
+        input.set(2.3);
+        input.set(1.2);
+        
+        assertEquals("output should have max value.", 2.3, output.get(), 0.01);
+    }
+    
+    @Test
+    public void testMinTransformer() {
+        Pipe<Double> input = Pipe.newInstance("input", this);
+        Pipe<Double> output = Pipe.newInstance("output", this);
+        
+        output.connectTo(input, Pipes.MIN_TRANSFORM);
+        
+        input.set(2.3);
+        input.set(0.1);
+        input.set(1.2);
+        
+        assertEquals("output should have min value.", 0.1, output.get(), 0.01);
+    }
+    
+    
+    @Test
+    public void testAvgTransformer() {
+        Pipe<Double> input = Pipe.newInstance("input", this);
+        Pipe<Double> output = Pipe.newInstance("output", this);
+        
+        output.connectTo(input, Pipes.AVG_TRANSFORM);
+        
+        input.set(2.0);
+        input.set(1.0);
+        
+        assertEquals("output should have avg value.", 1.5, output.get(), 0.001);
+    }
+    
+    @Test
+    public void testConvertingTransformer() {
+        Transformer<String, Integer> formatter = new Transformer<String, Integer>() {
+            public String transform(String target, Integer source) {
+                return source + " ft";
+            }
+        };
+        
+        Pipe<Integer> input = Pipe.newInstance("input", this);
+        Pipe<String> output = Pipe.newInstance("output", this);
+        
+        output.connectTo(input, formatter);
+        
+        input.set(1234);
+        
+        assertEquals("output should have been transformed.", "1234 ft", output.get());
+        
+        output.disconnectFrom(input);
+        input.set(4321);
+        assertEquals("output should have been disconnected.", "1234 ft", output.get());
+    }
 
     @Override
     public void pipeUpdated(Pipe<String> pipe) {
