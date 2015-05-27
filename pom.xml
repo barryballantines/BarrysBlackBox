@@ -2,25 +2,24 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>de.mbuse.flightgear</groupId>
-    <artifactId>PIREPRecorder</artifactId>
-    <version>1.6-SNAPSHOT</version>
+    <groupId>ballantines.avionics</groupId>
+    <artifactId>blackbox</artifactId>
+    <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>PIREPRecorder</name>
+    <name>BarrysBlackBox</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <mainClass>de.mbuse.flightgear.pireprecorder.MainApp</mainClass>
-		<deploy.root.directory>${project.build.directory}</deploy.root.directory>
+        <mainClass>ballantines.avionics.blackbox.MainApp</mainClass>
+	<deploy.root.directory>${project.build.directory}</deploy.root.directory>
     </properties>
 
     <organization>
-        <!-- Used as the 'Vendor' for JNLP generation -->
-        <name>Your Organisation</name>
+        <name>Ballantines Avionics</name>
     </organization>
 	
-	<scm>
+    <scm>
       <connection>scm:git:file://${project.basedir}</connection>
       <developerConnection>scm:git:file://${project.basedir}</developerConnection>
       <url>scm:git:file://${project.basedir}</url>
@@ -124,26 +123,26 @@
                 </configuration>
             </plugin>
 			
-			<!--
-			<plugin>
-				<artifactId>maven-deploy-plugin</artifactId>
-				<version>2.8.1</version>
-				<configuration>
-					<altDeploymentRepository>internal.repo::default::file://${project.build.directory}/mvn-repo</altDeploymentRepository>
-				</configuration>
-			</plugin>
-			-->
-			
-			<plugin>
-			  <groupId>org.apache.maven.plugins</groupId>
-			  <artifactId>maven-release-plugin</artifactId>
-			  <version>2.5</version>
-			  <configuration>
-			    <autoVersionSubmodules>true</autoVersionSubmodules>
-			    <localCheckout>true</localCheckout>
-			    <pushChanges>false</pushChanges>
-			  </configuration>
-			</plugin>
+            <!--
+            <plugin>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>2.8.1</version>
+                    <configuration>
+                            <altDeploymentRepository>internal.repo::default::file://${project.build.directory}/mvn-repo</altDeploymentRepository>
+                    </configuration>
+            </plugin>
+            -->
+
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-release-plugin</artifactId>
+              <version>2.5</version>
+              <configuration>
+                <autoVersionSubmodules>true</autoVersionSubmodules>
+                <localCheckout>true</localCheckout>
+                <pushChanges>false</pushChanges>
+              </configuration>
+            </plugin>
         </plugins>
     </build>
 	
@@ -163,10 +162,10 @@
 			  <merge>true</merge>
 			  <noJekyll>true</noJekyll>
 			  <outputDirectory>${project.build.directory}/mvn-releases-repo</outputDirectory>
-			  <branch>refs/heads/releases</branch>
+			  <branch>refs/heads/master</branch>
 			  <includes><include>**/*</include></includes>
 			  <repositoryName>mvn-repository</repositoryName>
-			  <repositoryOwner>mbuse</repositoryOwner>
+			  <repositoryOwner>barryballantines</repositoryOwner>
 			</configuration>
 			<executions>
 			  <!-- run site-maven-plugin's 'site' target as part of the build's normal 'deploy' phase -->
