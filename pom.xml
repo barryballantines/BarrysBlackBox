@@ -157,7 +157,7 @@
 			<artifactId>site-maven-plugin</artifactId>
 			<version>0.11</version>
 			<configuration>
-			  <server>github</server>
+			  <server>barry-ballantines-releases</server>
 			  <message>Release ${project.groupId}::${project.artifactId} Version: ${project.version}</message>
 			  <merge>true</merge>
 			  <noJekyll>true</noJekyll>
