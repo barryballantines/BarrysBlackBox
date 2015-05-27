@@ -17,7 +17,7 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        System.out.println("PIREP Recorder starting...");
+        System.out.println("Barry's BlackBox is starting...");
         Services services = Services.get();
         services.init();
         
@@ -33,7 +33,7 @@ public class MainApp extends Application {
         Scene scene = new Scene(root);
         scene.getStylesheets().add("/styles/pirep.css");
         
-        stage.setTitle("PIREP Recorder");
+        stage.setTitle("Barry's BlackBox");
         stage.setScene(scene);
         stage.show();
         
