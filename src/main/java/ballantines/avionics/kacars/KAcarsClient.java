@@ -6,6 +6,7 @@
 package ballantines.avionics.kacars;
 
 import ballantines.avionics.kacars.model.Flight;
+import ballantines.avionics.kacars.model.LoginStatus;
 import org.javalite.http.Http;
 import org.javalite.http.Post;
 import org.simpleframework.xml.Serializer;
@@ -31,6 +32,11 @@ public class KAcarsClient {
 
     public void setConfig(Config config) {
         this.config = config;
+    }
+    
+    public boolean verify() throws Exception {
+        LoginStatus status = send(LoginStatus.class, VERIFY_TEMPLATE, "verify", config.user, config.password);
+        return status.isLoggedIn();
     }
     
     public Flight getBid() throws Exception {
@@ -65,6 +71,15 @@ public class KAcarsClient {
     private static final String KACARS_BEGIN = "<kacars>";
     private static final String KACARS_END = "</kacars>";
     private static final String SWITCH_FRAGMENT = "<switch><data>%s</data></switch>";
+    
+    private static final String VERIFY_TEMPLATE 
+            = KACARS_BEGIN
+                + SWITCH_FRAGMENT
+                + "<verify>"
+                    + "<pilotID>%s</pilotID>"
+                    + "<password>%s</password>"
+                + "</verify>"
+            + KACARS_END;
     
     private static final String GETFLIGHT_TEMPLATE 
             = KACARS_BEGIN
