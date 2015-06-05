@@ -9,6 +9,9 @@ import ballantines.avionics.kacars.model.AircraftData;
 import ballantines.avionics.kacars.model.AircraftDataList;
 import ballantines.avionics.kacars.model.Flight;
 import ballantines.avionics.kacars.model.LoginStatus;
+import ballantines.avionics.kacars.model.PIREPRequest;
+import ballantines.avionics.kacars.model.PIREPStatus;
+import java.io.StringWriter;
 import java.util.Collections;
 import java.util.List;
 import org.javalite.http.Http;
@@ -66,6 +69,18 @@ public class KAcarsClient {
     public Flight getFlight(String flightNumber) throws Exception {
         Flight flight = send(Flight.class, GETFLIGHT_TEMPLATE, "getflight", flightNumber);
         return flight;
+    }
+    
+    public boolean filePIREP(PIREPRequest pirep) throws Exception {
+        String body = toXML(pirep);
+        PIREPStatus status = send(PIREPStatus.class, body);
+        return status.isSuccess();
+    }
+    
+    protected String toXML(Object request) throws Exception{
+        StringWriter stringWriter = new StringWriter();
+        serializer.write(request, stringWriter);
+        return stringWriter.toString();
     }
     
     protected <T> T send(Class<T> responseType, String template, Object... args) throws Exception{
