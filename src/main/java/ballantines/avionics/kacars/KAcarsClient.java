@@ -5,8 +5,12 @@
  */
 package ballantines.avionics.kacars;
 
+import ballantines.avionics.kacars.model.AircraftData;
+import ballantines.avionics.kacars.model.AircraftDataList;
 import ballantines.avionics.kacars.model.Flight;
 import ballantines.avionics.kacars.model.LoginStatus;
+import java.util.Collections;
+import java.util.List;
 import org.javalite.http.Http;
 import org.javalite.http.Post;
 import org.simpleframework.xml.Serializer;
@@ -39,6 +43,14 @@ public class KAcarsClient {
         return status.isLoggedIn();
     }
     
+    public List<AircraftData> getAllAircrafts() throws Exception {
+        AircraftDataList list = send(AircraftDataList.class, SIMPLE_ACTION_TEMPLATE, "aircraft");
+        
+        return (list!=null) 
+                ? list.getAircrafts()
+                : AircraftDataList.EMPTY_LIST;
+    }
+    
     public Flight getBid() throws Exception {
         return getBid(config.user);
     }
@@ -57,13 +69,20 @@ public class KAcarsClient {
     }
     
     protected <T> T send(Class<T> responseType, String template, Object... args) throws Exception{
+        String responseBody = send(template, args);
+        return serializer.read(responseType, responseBody);
+    }
+
+    protected String send(String template, Object... args) {
         String requestBody = String.format(template, args);
-        
+        return send(requestBody);
+    }
+
+    protected String send(String requestBody) {
         Post response = Http.post(config.url, requestBody);
         String responseBody = response.text();
         System.out.println(responseBody);
-        
-        return serializer.read(responseType, responseBody);
+        return responseBody;
     }
     
     // === XML DEFINITION FOR KACARS ===
@@ -95,5 +114,10 @@ public class KAcarsClient {
                 + "<verify>"
                     + "<pilotID>%s</pilotID>"
                 + "</verify>"
+            + KACARS_END;
+    
+    private static final String SIMPLE_ACTION_TEMPLATE 
+            = KACARS_BEGIN
+                + SWITCH_FRAGMENT
             + KACARS_END;
 }
