@@ -56,6 +56,38 @@ public class PIREPRequest {
     @Element @Path("pirep")
     public String log;
     
+    public PIREPRequest(Flight flight) {
+        if (flight!=null) {
+            this.flightNumber = flight.flightNumber;
+            this.registration = flight.aircraftReg;
+            this.depICAO = flight.depICAO;
+            this.arrICAO = flight.arrICAO;
+            this.pax = flight.aircraftMaxPax;
+            this.cargo = flight.aircraftCargo;
+        }
+    }
+    
+    public PIREPRequest() {
+        
+    }
+
+    @Override
+    public String toString() {
+        return "{ 'class':'" + getClass().getName() 
+                + "', pilotID:'" + pilotID 
+                + "', flightNumber:'" + flightNumber 
+                + "', depICAO:'" + depICAO 
+                + "', arrICAO:'" + arrICAO 
+                + "', registration:'" + registration 
+                + "', pax:" + pax 
+                + ", cargo:" + cargo 
+                + ", fuelUsed:" + fuelUsed 
+                + ", flightTime:'" + flightTime 
+                + "', landing:'" + landing 
+                + "', comments:'" + comments 
+                + "', log:'" + log + "'}";
+    }
+    
     
     
 }

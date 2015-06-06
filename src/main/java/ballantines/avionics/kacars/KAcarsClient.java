@@ -72,6 +72,9 @@ public class KAcarsClient {
     }
     
     public boolean filePIREP(PIREPRequest pirep) throws Exception {
+        if (pirep.pilotID==null) {
+            pirep.pilotID = config.user;
+        }
         String body = toXML(pirep);
         PIREPStatus status = send(PIREPStatus.class, body);
         return status.isSuccess();
