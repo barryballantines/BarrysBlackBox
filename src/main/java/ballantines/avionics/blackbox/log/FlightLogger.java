@@ -87,6 +87,7 @@ public class FlightLogger implements PipeUpdateListener {
     }
     
     private FlightPhase phaseTransition(FlightPhase phase, FlightData data) {
+        double wow;
         int gs = (int) (data.getGroundSpeed());
         switch (phase) {
             case BOARDING :
@@ -118,7 +119,7 @@ public class FlightLogger implements PipeUpdateListener {
                 }
                 break;
             case TAKEOFF :
-                double wow = Calculus.max(data.getWoW());
+                wow = Calculus.max(data.getWoW());
                 if (wow < 0.5) {
                     postEvent("Taking off at %d kts.", gs);
                     return FlightPhase.CLIMB;
@@ -126,9 +127,9 @@ public class FlightLogger implements PipeUpdateListener {
                 break;
             case DESCEND :
             case CRUISE :
-                double wow = Calculus.max(data.getWoW());
+                wow = Calculus.max(data.getWoW());
                 if (wow > 0.5) {
-                    postEvent("Touchdown.", gs);
+                    postEvent("Touchdown.");
                     return FlightPhase.LANDING;
                 }
                 break;
