@@ -51,6 +51,19 @@ public class BufferTest {
         
     }
     
+    @Test
+    public void testAverage() {
+        Buffer buffer = new Buffer(10);
+        
+        
+        for (double d=1.0; d<21.0; d=d+1.0) {
+            buffer.put(d);
+            double average = buffer.getAverage();
+            double expected = Calculus.average(buffer.getValues());
+            assertEquals ("Entry " + d, expected, average, 0.1); 
+        }
+    }
+    
     private void testBuffer(int capacity, int dataLength) {
         System.out.println("Testing buffer[" + capacity +"] with " + dataLength + " puts.");
         Buffer buffer = new Buffer(capacity);
@@ -66,5 +79,7 @@ public class BufferTest {
                     (double) (dataLength - expectedLength + i), values[i], 0.0001);
         }
     }
+    
+    
     
 }

@@ -10,6 +10,7 @@ package ballantines.avionics.blackbox.util;
  * @author mbuse
  */
 public class Buffer {
+    private double average;
     private double[] buffer;
     private int size;
     private int nextIndex;
@@ -20,10 +21,13 @@ public class Buffer {
         this.capacity = capacity;
         this.nextIndex = 0;
         this.size = 0;
+        this.average = 0.0;
     }
 
     public void put(double value) {
+        double oldValue = this.buffer[nextIndex];
         this.buffer[nextIndex] = value;
+        updateAverage(value, oldValue);
         nextIndex = (nextIndex + 1) % capacity;
         if (size < capacity) {
             size++;
@@ -46,6 +50,25 @@ public class Buffer {
 
     public int getSize() {
         return size;
+    }
+    
+    public double getAverage() {
+        return average;
+    }
+    
+    protected void updateAverage(double newValue, double oldValue) {
+        if (size==0) {
+            // first value
+            average = newValue;
+        }
+        else if (size<capacity) {
+            // filling the buffer...
+            average = ((average * (size)) + newValue) / (size+1);
+        }
+        else {
+            // evicting old values...
+            average = ((average * capacity) - oldValue + newValue) / capacity;
+        }
     }
     
 }
