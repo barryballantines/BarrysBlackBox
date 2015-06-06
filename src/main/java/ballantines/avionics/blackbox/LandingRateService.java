@@ -46,7 +46,7 @@ public class LandingRateService implements PipeUpdateListener{
                 statusPipe.set(Status.GROUND);
             }
             else {
-                double descentRate = data.getVerticalSpeed();
+                double descentRate = data.getVerticalSpeedFPS();
                 statusPipe.set(Status.AIRBORNE);
                 descentRateBuffer.put(descentRate);
             }

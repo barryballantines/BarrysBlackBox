@@ -25,10 +25,11 @@ public class MainApp extends Application {
         
         Tab pirep = createTab(PIREPForm.create(services), "PIREP Form");
         Tab route = createTab(RoutePanel.create(services), "Route");
+        Tab acarslog = createTab(ACARSLogPanel.create(services), "Log");
         Tab parking = createTab(ParkingPositionPanel.create(services), "Parking");
         Tab config = createTab(ConfigurationForm.create(services), "Configuration");
         
-        root.getTabs().addAll(pirep, route, parking, config);
+        root.getTabs().addAll(pirep, route, acarslog, parking, config);
         
         Scene scene = new Scene(root);
         scene.getStylesheets().add("/styles/pirep.css");

@@ -20,6 +20,15 @@ public class Calculus {
         }
         return maxValue;
     }
+    
+    public static double min(double... values) {
+        assert values.length >0;
+        double minValue = values[0];
+        for (int i=1; i<values.length; i++) {
+            minValue = Math.min(minValue, values[i]);
+        }
+        return minValue;
+    }
 
     public static double average(double... values) {
         double sum = 0.0;

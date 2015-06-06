@@ -69,8 +69,12 @@ public class FlightData {
         return result;
     }
     
-    public double getVerticalSpeed() {
+    public double getVerticalSpeedFPS() {
         return json.getDouble("vertical-speed");
+    }
+    
+    public int getVerticalSpeedFPM() {
+        return (int) (getVerticalSpeedFPS() * 60);
     }
 
     @Override
