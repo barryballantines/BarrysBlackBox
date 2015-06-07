@@ -58,11 +58,6 @@ public class FGFlightDataRetrievalImpl implements FlightDataRetrieval {
     }
     
     public AircraftInformation getAircraftInformation() {
-        Map<String,Object> p = propertyService.readProperties(
-                "/sim/description",
-                
-        );
-        
         AircraftInformation ac = new AircraftInformation();
         
         ac.name = (String) propertyService.readProperty("/sim/description");
