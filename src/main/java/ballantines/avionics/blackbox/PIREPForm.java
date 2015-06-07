@@ -155,14 +155,16 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
         
             
         double fuelConsumption = getDepartureFuelGauge() - getArrivalFuelGauge();
-        long diff = arrivalTime.getTimeInMillis() - departureTime.getTimeInMillis();
-
-        long hours = (long) (diff / (60 * 60 * 1000));
-        diff = diff - hours * (60 * 60 * 1000);
-        long minutes = (long) (diff / (60 * 1000));
+        long flightTimeMillis = arrivalTime.getTimeInMillis() - departureTime.getTimeInMillis();
         
-        String duration = TWO_DIGITS_FORMAT.format(hours)
-                + ":" + TWO_DIGITS_FORMAT.format(minutes);
+        FlightTrackingResult result = new FlightTrackingResult();
+        result.flightTimeMinutes = (int) (flightTimeMillis /60000);
+        result.fuelConsumption = (long) fuelConsumption;
+        result.landingRateFPM = (int) Math.round(landingRatePipe.get() * 60);
+        
+        int[] hhmm = result.getFlightTimeHoursAndMinutes();
+        String duration = String.format("%d:%02d", hhmm[0], hhmm[1]);;
+        
 
         fuelConsumptionLbl.setText(FUEL_FORMAT.format(fuelConsumption));
         flightTimeLbl.setText(duration);
@@ -170,13 +172,7 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
         shutdownBtn.setDisable(true); 
         startupBtn.setDisable(false);
         
-        FlightTrackingResult result = new FlightTrackingResult();
-        result.flightTimeMinutes = (int) (diff /60000);
-        result.fuelConsumption = (long) fuelConsumption;
-        result.landingRateFPM = (int) Math.round(landingRatePipe.get() * 60);
-        
         resultPipe.set(result);
-        
         isRecordingPipe.set(false);
     }
     
