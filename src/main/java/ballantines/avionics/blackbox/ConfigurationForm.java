@@ -7,6 +7,8 @@
 package ballantines.avionics.blackbox;
 
 import ballantines.avionics.flightgear.connect.ServerConfig;
+import ballantines.avionics.kacars.KAcarsClient;
+import ballantines.avionics.kacars.KAcarsConfig;
 import de.mbuse.pipes.Pipe;
 import de.mbuse.pipes.PipeUpdateListener;
 import de.mbuse.pipes.Pipes;
@@ -21,6 +23,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 
@@ -28,7 +31,7 @@ import javafx.scene.paint.Color;
  *
  * @author mbuse
  */
-public class ConfigurationForm implements Initializable, PipeUpdateListener<Object> {
+public class ConfigurationForm implements Initializable, PipeUpdateListener {
     
     public static Parent create(Services services) throws IOException {
         ConfigurationForm controller = new ConfigurationForm();
@@ -46,10 +49,18 @@ public class ConfigurationForm implements Initializable, PipeUpdateListener<Obje
     @FXML private TextField udpPortText;
     @FXML private CheckBox udpServerRunningCheck;
     
+    @FXML private TextField kacarsUrlTxt;
+    @FXML private TextField kacarsPilotIDTxt;
+    @FXML private PasswordField kacarsPasswordTxt;
+    @FXML private CheckBox kacarsEnabledCheck;
+    @FXML private Label kacarsMessageLbl;
+    
+    
     private Services services;
     private final Pipe<ServerConfig> serverConfigPipe = Pipe.newInstance("configurationForm.serverConfig", this);
     private final Pipe<Boolean> udpServerRunningPipe = Pipe.newInstance("configurationForm.udpServerRunningPipe", this);
     private final Pipe<Integer> udpServerPortPipe = Pipe.newInstance("configurationForm.udpServerPort", this);
+    private final Pipe<KAcarsConfig> kacarsConfigPipe = Pipe.newInstance("configurationForm.kacarsConfig", this);
     
     // === ===
 
@@ -63,12 +74,13 @@ public class ConfigurationForm implements Initializable, PipeUpdateListener<Obje
         Pipes.connect(services.serverConfigPipe, this.serverConfigPipe);
         Pipes.connect(services.udpServerPortPipe, this.udpServerPortPipe);
         Pipes.connect(services.udpServerRunningPipe, this.udpServerRunningPipe);
+        Pipes.connect(services.kacarsConfigPipe, this.kacarsConfigPipe);
         
         
     }
 
     @Override
-    public void pipeUpdated(Pipe<Object> pipe) {
+    public void pipeUpdated(Pipe pipe) {
         System.out.println("[CONFIGURATION FORM] Model updated : " + pipe.id() + " -> " + pipe.get());
         if ("configurationForm.serverConfig".equals(pipe.id())) {
             ServerConfig config = (ServerConfig) pipe.get();
@@ -80,6 +92,17 @@ public class ConfigurationForm implements Initializable, PipeUpdateListener<Obje
             udpServerRunningCheck.selectedProperty().set(running);
             udpServerRunningCheck.setText(running ? "Server running" : "Server not running");
             udpPortText.editableProperty().set(!running);
+        }
+        else if (pipe == this.kacarsConfigPipe) {
+            KAcarsConfig config = kacarsConfigPipe.get();
+            kacarsUrlTxt.setText(config.url);
+            kacarsPilotIDTxt.setText(config.pilotID);
+            kacarsPasswordTxt.setText(config.password);
+            kacarsEnabledCheck.setText(config.enabled ? "Enabled" : "Not enabled");
+            kacarsEnabledCheck.selectedProperty().set(config.enabled);
+            
+            kacarsMessageLbl.setTextFill(Color.BLACK);
+            kacarsMessageLbl.setText("Press button to test connection.");
         }
     }
     
@@ -154,6 +177,29 @@ public class ConfigurationForm implements Initializable, PipeUpdateListener<Obje
         } catch (NumberFormatException nfe) {}
     }
 
+    @FXML void kacarsConfigChanged(ActionEvent event) {
+        KAcarsConfig config = new KAcarsConfig();
+        config.url = kacarsUrlTxt.getText();
+        config.pilotID = kacarsPilotIDTxt.getText();
+        config.password = kacarsPasswordTxt.getText();
+        config.enabled = kacarsEnabledCheck.selectedProperty().getValue();
+        kacarsConfigPipe.set(config);
+    }
+    
+    @FXML void testKacarsConnection(ActionEvent event) {
+        KAcarsClient client = services.getKacarsClient();
+        try {
+            boolean success = client.verify();
+            kacarsMessageLbl.setTextFill(success ? Color.GREEN : Color.ORANGERED);
+            kacarsMessageLbl.setText(success ? "Connection verified" : "Wrong pilotID or password.");
+        } catch(Exception ex) {
+            kacarsMessageLbl.setTextFill(Color.RED);
+            kacarsMessageLbl.setText("Error: " + ex.getMessage());
+            System.err.println("[CONFIGURATION FORM] Error while testing KACARS connection: " + ex);
+            ex.printStackTrace();
+        }
+    }
+    
     public void setServices(Services services) {
         this.services = services;
     }
