@@ -131,6 +131,10 @@ public class Services implements PipeUpdateListener {
     public Timer getTimer() {
         return timer;
     }
+
+    public KAcarsClient getKacarsClient() {
+        return kacarsClient;
+    }
     
     
    
