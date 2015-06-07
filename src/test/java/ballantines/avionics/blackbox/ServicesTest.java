@@ -34,7 +34,7 @@ public class ServicesTest {
     
     @Before
     public void setUp() {
-        initialServerConfig = services.getServerConfigFromUserPreferences();
+        initialServerConfig = services.readServerConfigFromUserPreferences();
         services.init();
     }
     
