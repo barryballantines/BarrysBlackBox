@@ -16,6 +16,7 @@ import ballantines.avionics.kacars.KAcarsClient;
 import ballantines.avionics.kacars.model.Flight;
 import de.mbuse.pipes.Pipe;
 import de.mbuse.pipes.PipeUpdateListener;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,20 +29,23 @@ public class FlightLogger implements PipeUpdateListener {
     private static final double TAKEOFF_THRESHOLD = 50.0;
     private static final double TAXI_THRESHOLD = 0.3;
     
-    private final Pipe<Boolean> isRecordingPipe = Pipe.newInstance("pirepForm.isRecording", false, this);
-    private final Pipe<FlightData> dataPipe = Pipe.newInstance("flightLogger.data");
-    private final Pipe<FlightPhase> phasePipe = Pipe.newInstance("flightLogger.phase", null);
+    // OUTPUT PIPES
     public final Pipe<LogEvent> eventPipe = Pipe.newInstance("flightLogger.event", this);
+    public final Pipe<Flight> flightBidPipe = Pipe.newInstance("flightLogger.flight", this);
+    public final Pipe<FlightPhase> phasePipe = Pipe.newInstance("flightLogger.phase", this);
+    
+    private final Pipe<Boolean> isRecordingPipe = Pipe.newInstance("pirepForm.isRecording", this);
+    private final Pipe<FlightData> dataPipe = Pipe.newInstance("flightLogger.data");
     
     private final Pipe<Double> avgVerticalSpeedPipe = Pipe.newInstance("flightLogger.avgVerticalSpeed", 0.0, this);
     
     private double maxClimbRate = 0.0;
     private double maxDescentRate = 0.0;
     
-    private Buffer averageVerticalSpeedBuffer = new Buffer(30);
+    private Buffer averageVerticalSpeedBuffer = new Buffer(60);
 
     private Services services;
-    private List<LogEvent> events;
+    private List<LogEvent> events = new ArrayList<>();
     
     public FlightLogger(Services services) {
        this.services = services;
@@ -60,10 +64,11 @@ public class FlightLogger implements PipeUpdateListener {
         if (pipe == isRecordingPipe) {
             Boolean isRecording = isRecordingPipe.get();
             if (isRecording!=null && isRecording ) {
+                events.clear();
                 beforeStartRecording();
                 dataPipe.addListener(this);
             }
-            else {
+            else if (isRecording!=null){
                 dataPipe.removeChangeListener(this);
                 afterStopRecording();
             }
@@ -85,10 +90,11 @@ public class FlightLogger implements PipeUpdateListener {
             try {
                 Flight f = client.getBid();
                 if (f!=null) {
+                    flightBidPipe.set(f);
                     postEvent("This is flight %s from %s to %s.", f.flightNumber, f.depICAO, f.arrICAO);
                     postEvent("Block time %s", f.depTime);
-                    postEvent("Assigned aircraft model: %", f.aircraftFullName);
-                    postEvent("Assigned aircraft registration %", f.aircraftReg);
+                    postEvent("Assigned aircraft model: %s", f.aircraftFullName);
+                    postEvent("Assigned aircraft registration: %s", f.aircraftReg);
                     postEvent("Assigned route: %s", f.route);
                 }
             } catch (Exception ex) {
@@ -148,9 +154,11 @@ public class FlightLogger implements PipeUpdateListener {
     
     private void storeVerticalSpeed(FlightData data) {
         averageVerticalSpeedBuffer.put(data.getVerticalSpeedFPM());
-        double avg = averageVerticalSpeedBuffer.getAverage();
-        avg = Math.round(avg/100.0) * 100.0;
-        avgVerticalSpeedPipe.set(avg);
+        if (averageVerticalSpeedBuffer.getCapacity() == averageVerticalSpeedBuffer.getSize()) {
+            double avg = averageVerticalSpeedBuffer.getAverage();
+            avg = Math.round(avg/100.0) * 100.0;
+            avgVerticalSpeedPipe.set(avg);
+        }
     }
     
     private FlightPhase phaseTransition(FlightPhase phase, FlightData data) {
@@ -205,6 +213,7 @@ public class FlightLogger implements PipeUpdateListener {
     }
     
     private FlightPhase phaseTransition(FlightPhase phase, double vsfpm) {
+        FlightData data = dataPipe.get();
         switch (phase) {
             case TAKEOFF :
                 if (vsfpm >= CLIMB_THRESHOLD) {
@@ -215,29 +224,30 @@ public class FlightLogger implements PipeUpdateListener {
             case CLIMB :
                 maxClimbRate = Math.max(vsfpm, maxClimbRate);
                 if (vsfpm <= -CLIMB_THRESHOLD) {
-                    postEvent("TOC reached at %d ft.", (int) dataPipe.get().getAltitude());
+                    postEvent("Top of climb reached at altitude %d ft.", (int) data.getAltitude());
                     postEvent("Starting descend.");
                     return FlightPhase.DESCEND;
                 }
                 if (vsfpm > -CLIMB_THRESHOLD && vsfpm < CLIMB_THRESHOLD) {
-                    postEvent("TOC reached at %d ft.", (int) dataPipe.get().getAltitude());
-                    postEvent("Cruising at ground speed %d kts.", (int) dataPipe.get().getGroundSpeed());
+                    postEvent("Top of climb reached at altitude %d ft.", (int) dataPipe.get().getAltitude());
+                    postEvent("Cruising at ground speed %d kts.", (int) data.getGroundSpeed());
                     return FlightPhase.CRUISE;
                 }
                 break;
             case CRUISE :
                 if (vsfpm >= CLIMB_THRESHOLD) {
-                    postEvent("Climbing at %d ft.", (int) dataPipe.get().getAltitude());
+                    postEvent("Starting climb at %d fpm.", data.getVerticalSpeedFPM());
                     return FlightPhase.CLIMB;
                 }
                 if (vsfpm <= -CLIMB_THRESHOLD) {
-                    postEvent("Top of descent reached at %d ft.", (int) dataPipe.get().getAltitude());
+                    postEvent("Top of descent reached at altitude %d ft.", (int) data.getAltitude());
+                    postEvent("Starting descent at %d fpm.", data.getVerticalSpeedFPM());
                     return FlightPhase.DESCEND;
                 }
                 break;
             case DESCEND :
                 if (vsfpm > -CLIMB_THRESHOLD && vsfpm < CLIMB_THRESHOLD) {
-                    postEvent("Cruising at %d ft, ground speed %d kts.", 
+                    postEvent("End of descent. Cruising at %d ft, ground speed %d kts.", 
                             (int) dataPipe.get().getAltitude(),
                             (int) dataPipe.get().getGroundSpeed());
                     return FlightPhase.CRUISE;

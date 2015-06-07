@@ -21,35 +21,7 @@ public class FlightTrackingResult {
         return hhmm;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 61 * hash + this.flightTimeMinutes;
-        hash = 61 * hash + this.landingRateFPM;
-        hash = 61 * hash + (int) (this.fuelConsumption ^ (this.fuelConsumption >>> 32));
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final FlightTrackingResult other = (FlightTrackingResult) obj;
-        if (this.flightTimeMinutes != other.flightTimeMinutes) {
-            return false;
-        }
-        if (this.landingRateFPM != other.landingRateFPM) {
-            return false;
-        }
-        if (this.fuelConsumption != other.fuelConsumption) {
-            return false;
-        }
-        return true;
-    }
+    
     
     
 }

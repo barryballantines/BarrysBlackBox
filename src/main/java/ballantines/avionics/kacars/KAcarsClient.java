@@ -92,7 +92,18 @@ public class KAcarsClient {
     
     protected <T> T send(Class<T> responseType, String template, Object... args) throws Exception{
         String responseBody = send(template, args);
-        return serializer.read(responseType, responseBody);
+        
+        return serializer.read(responseType, fixResponse(responseBody));
+    }
+    
+    protected String fixResponse(String response) {
+        if (response.startsWith("<?xml")) {
+            return response;
+        }
+        else {
+            int start = response.indexOf("<?xml");
+            return response.substring(start);
+        }
     }
 
     protected String send(String template, Object... args) {
@@ -101,11 +112,18 @@ public class KAcarsClient {
     }
 
     protected String send(String requestBody) {
-        checkEnabled();
-        Post response = Http.post(config.url, requestBody);
-        String responseBody = response.text();
-        System.out.println(responseBody);
-        return responseBody;
+        if (isEnabled()) {
+            System.out.println("Send: " + requestBody);
+            Post response = Http.post(config.url, requestBody);
+            String responseBody = response.text();
+            System.out.println(responseBody);
+            return responseBody;
+        }
+        else {
+            System.out.println("KAcarsClient is not enabled.");
+            System.out.println("Would send: " + requestBody);
+            throw new IllegalStateException("KAcarsClient is not enabled!");
+        }
     }
     
     private void checkEnabled() {

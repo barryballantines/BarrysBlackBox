@@ -42,5 +42,14 @@ public class LogEvent {
     public String getFormattedMessage() {
         return String.format("[%tR] %s", timestamp, message);
     }
+
+    @Override
+    public String toString() {
+        return "{ class:'" + getClass().getName() 
+                + "', timestamp:'" + timestamp.getTime()
+                + "', message: '" + message + "'}";
+    }
+    
+    
     
 }

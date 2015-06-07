@@ -129,7 +129,7 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
         
         landingRateService.flightDataPipe.connectTo(services.flightDataPipe);
         this.landingRatePipe.connectTo(landingRateService.landingRate, Pipes.MIN_TRANSFORM);
-        
+        resultPipe.set(null);
         isRecordingPipe.set(true);
                
     }
@@ -186,7 +186,7 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
         shutdownBtn.setDisable(true);
         
         Pipes.connect(isRecordingPipe, services.isRecordingPipe);
-        Pipes.connect(resultPipe, services.flightTrackingResultPipe);
+        services.flightTrackingResultPipe.connectTo(resultPipe);
         
     }    
 
