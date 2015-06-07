@@ -57,7 +57,21 @@ public class FGFlightDataRetrievalImpl implements FlightDataRetrieval {
         return cal;
     }
     
+    public AircraftInformation getAircraftInformation() {
+        Map<String,Object> p = propertyService.readProperties(
+                "/sim/description",
+                
+        );
+        
+        AircraftInformation ac = new AircraftInformation();
+        
+        ac.name = (String) propertyService.readProperty("/sim/description");
+        ac.fuelLbs = getFuel();
+        
+        return ac;
+    }
     
+    @Override
     public RouteInformation getRouteInformation() {
         String root = "/autopilot/route-manager";
         Map<String,Object> p = propertyService.readProperties(

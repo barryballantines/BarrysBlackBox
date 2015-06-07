@@ -28,4 +28,6 @@ public interface FlightDataRetrieval {
     
     RouteInformation getRouteInformation();
     
+    AircraftInformation getAircraftInformation();
+    
 }
