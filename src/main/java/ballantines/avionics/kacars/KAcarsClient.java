@@ -26,23 +26,27 @@ import org.simpleframework.xml.core.Persister;
 public class KAcarsClient {
     
     
-    private Config config;
+    private KAcarsConfig config = new KAcarsConfig();
     private Serializer serializer = new Persister();
 
     public KAcarsClient() {
         super();
     }
-    public KAcarsClient(Config config) {
+    public KAcarsClient(KAcarsConfig config) {
         this();
         this.config = config;
     }
 
-    public void setConfig(Config config) {
+    public void setConfig(KAcarsConfig config) {
         this.config = config;
     }
     
+    public boolean isEnabled() {
+        return config.enabled;
+    }
+    
     public boolean verify() throws Exception {
-        LoginStatus status = send(LoginStatus.class, VERIFY_TEMPLATE, "verify", config.user, config.password);
+        LoginStatus status = send(LoginStatus.class, VERIFY_TEMPLATE, "verify", config.pilotID, config.password);
         return status.isLoggedIn();
     }
     
@@ -55,7 +59,7 @@ public class KAcarsClient {
     }
     
     public Flight getBid() throws Exception {
-        return getBid(config.user);
+        return getBid(config.pilotID);
     }
     
     public Flight getBid(String pilotID) throws Exception {
@@ -73,7 +77,7 @@ public class KAcarsClient {
     
     public boolean filePIREP(PIREPRequest pirep) throws Exception {
         if (pirep.pilotID==null) {
-            pirep.pilotID = config.user;
+            pirep.pilotID = config.pilotID;
         }
         String body = toXML(pirep);
         PIREPStatus status = send(PIREPStatus.class, body);
@@ -97,10 +101,17 @@ public class KAcarsClient {
     }
 
     protected String send(String requestBody) {
+        checkEnabled();
         Post response = Http.post(config.url, requestBody);
         String responseBody = response.text();
         System.out.println(responseBody);
         return responseBody;
+    }
+    
+    private void checkEnabled() {
+        if (!isEnabled()) {
+            throw new IllegalStateException("KAcarsClient is not enabled!");
+        }
     }
     
     // === XML DEFINITION FOR KACARS ===
