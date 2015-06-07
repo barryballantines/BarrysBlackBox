@@ -159,6 +159,7 @@ public class Services implements PipeUpdateListener {
     public final Pipe<Boolean> udpServerRunningPipe = Pipe.newInstance("Services.udpServerRunning", this);
     public final Pipe<Integer> udpServerPortPipe = Pipe.newInstance("Services.udpServerPort", this);
     public final Pipe<FlightData> flightDataPipe = Pipe.newInstance("Services.flightData", this);
+    public final Pipe<FlightTrackingResult> flightTrackingResultPipe = new Pipe.newInstance("Service.flightTrackingResult", this);
     
     
 }

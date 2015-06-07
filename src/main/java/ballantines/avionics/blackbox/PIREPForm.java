@@ -66,6 +66,8 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
     
     private final Pipe<Boolean> isRecordingPipe = Pipe.newInstance("pirepForm.isRecording", this);
     private final Pipe<Double> landingRatePipe = Pipe.newInstance("pirepForm.landingRate", 0.0, this);
+    
+    private final Pipe<FlightTrackingResult> resultPipe = Pipe.newInstance("pirepForm.result", this);
 
     public void setServices(Services services) {
         this.services = services;
@@ -153,7 +155,6 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
         
             
         double fuelConsumption = getDepartureFuelGauge() - getArrivalFuelGauge();
-
         long diff = arrivalTime.getTimeInMillis() - departureTime.getTimeInMillis();
 
         long hours = (long) (diff / (60 * 60 * 1000));
@@ -169,6 +170,13 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
         shutdownBtn.setDisable(true); 
         startupBtn.setDisable(false);
         
+        FlightTrackingResult result = new FlightTrackingResult();
+        result.flightTimeMinutes = (int) (diff /60000);
+        result.fuelConsumption = (long) fuelConsumption;
+        result.landingRateFPM = (int) Math.round(landingRatePipe.get() * 60);
+        
+        resultPipe.set(result);
+        
         isRecordingPipe.set(false);
     }
     
@@ -178,6 +186,7 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
         shutdownBtn.setDisable(true);
         
         Pipes.connect(isRecordingPipe, services.isRecordingPipe);
+        Pipes.connect(resultPipe, services.flightTrackingResultPipe);
         
     }    
 
