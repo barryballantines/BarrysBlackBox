@@ -16,6 +16,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -98,6 +99,7 @@ public class ACARSLogPanel implements Initializable, PipeUpdateListener {
                     e.writeOn(writer);
                 }
                 pirep.log = logWriter.toString();
+                pirep.log = pirep.log.replaceAll("\n", "<br />");
                 pirep.comments = "";
                 
                 setMessage(Color.BLACK, "Submitting...");
@@ -128,9 +130,22 @@ public class ACARSLogPanel implements Initializable, PipeUpdateListener {
         return services;
     }
     
-    private void setMessage(Color color, String msg) {
-        acarsMessageLbl.setTextFill(color);
-        acarsMessageLbl.setText(msg); 
+    private void appendEvent(final LogEvent event) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                logField.appendText(event.getFormattedMessage() + "\n");
+            }
+        });
+    }
+    
+    private void setMessage(final Color color, final String msg) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {acarsMessageLbl.setTextFill(color);
+            acarsMessageLbl.setText(msg); 
+            }
+        });
     }
     
     // PIPES
