@@ -94,12 +94,12 @@ public class ACARSLogPanel implements Initializable, PipeUpdateListener {
                 int[] hhmm = result.getFlightTimeHoursAndMinutes();
                 pirep.flightTime = String.format("%d.%02d", hhmm[0], hhmm[1]);
                 StringWriter logWriter = new StringWriter();
-                PrintWriter writer = new PrintWriter(logWriter);
+                StringBuilder logBuilder = new StringBuilder();
                 for (LogEvent e : logger.getEvents()) {
-                    e.writeOn(writer);
+                    logBuilder.append(e.getFormattedMessage());
+                    logBuilder.append("<br />");
                 }
-                pirep.log = logWriter.toString();
-                pirep.log = pirep.log.replaceAll("\n", "<br />");
+                pirep.log = logBuilder.toString();
                 pirep.comments = "";
                 
                 setMessage(Color.BLACK, "Submitting...");
