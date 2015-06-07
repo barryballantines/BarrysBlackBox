@@ -115,7 +115,11 @@ public class Pipe<T> {
 
     public final void fireUpdateEvent() {
         for (PipeUpdateListener l : listenerList.getListeners(PipeUpdateListener.class)) {
-            l.pipeUpdated(this);
+            try {
+                l.pipeUpdated(this);
+            } catch (Exception e) {
+                System.err.printf("Failed to fire update event for listener '%s' and %s.\n", l, this );
+            }
         }
     }
 
