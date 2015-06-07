@@ -37,10 +37,8 @@ public class ACARSLogPanel implements Initializable, PipeUpdateListener<LogEvent
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        FlightLogger logger = new FlightLogger();
+        FlightLogger logger = new FlightLogger(services);   
         
-        logger.isRecordingPipe.connectTo(services.isRecordingPipe);
-        logger.dataPipe.connectTo(services.flightDataPipe);
         logger.eventPipe.addListener(this);
         
     }
