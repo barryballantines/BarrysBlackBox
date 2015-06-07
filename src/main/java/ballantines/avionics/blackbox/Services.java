@@ -34,14 +34,20 @@ public class Services implements PipeUpdateListener {
     // === BUSINESS LOGIC ===
     
     public void init() {
-        ServerConfig serverConfig = getServerConfigFromUserPreferences();
-        KAcarsConfig kacarsConfig = readKACARSConfigFromUserPreferences();
+        // FlightGear Properties 
+        ServerConfig serverConfig = readServerConfigFromUserPreferences();
         propertyService = new HttpPropertyServiceImpl(serverConfig); 
         flightDataRetrieval = new FGFlightDataRetrievalImpl(propertyService);
-        timer = new Timer("Barry's BlackBox Timer");
         serverConfigPipe.set(serverConfig);
+        // KACARS
+        KAcarsConfig kacarsConfig = readKACARSConfigFromUserPreferences();
+        kacarsClient = new KAcarsClient(kacarsConfig);
+        kacarsConfigPipe.set(kacarsConfig);
+        // UDP SERVER
         udpServerPortPipe.set(5555);
         udpServerRunningPipe.set(false);
+        // TIMER
+        timer = new Timer("Barry's BlackBox Timer");
         
     }
     
@@ -90,7 +96,7 @@ public class Services implements PipeUpdateListener {
         }
     }
     
-    public ServerConfig getServerConfigFromUserPreferences() {
+    public ServerConfig readServerConfigFromUserPreferences() {
         Preferences prefs = Preferences.userNodeForPackage(ServerConfig.class);
         
         String host = prefs.get("flightgear.httpd.host", "localhost");
