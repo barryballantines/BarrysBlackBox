@@ -81,7 +81,7 @@ public class Services implements PipeUpdateListener {
         config.pilotID = prefs.get("config.user", null);
         config.password = prefs.get("config.password", null);
         config.enabled = prefs.getBoolean("config.enabled", false);
-        L.info("[SERVICES] reading kACARS config from user preferences: %a " , config);
+        L.info("[SERVICES] reading kACARS config from user preferences: %s " , config);
         return config;
     }
     
