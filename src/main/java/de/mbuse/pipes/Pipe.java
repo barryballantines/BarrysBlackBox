@@ -119,6 +119,7 @@ public class Pipe<T> {
                 l.pipeUpdated(this);
             } catch (Exception e) {
                 System.err.printf("Failed to fire update event for listener '%s' and %s.\n", l, this );
+                e.printStackTrace();
             }
         }
     }
