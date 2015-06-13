@@ -115,15 +115,15 @@ public class KAcarsClient {
 
     protected String send(String requestBody) {
         if (isEnabled()) {
-            L.debug("Sending Request: %s", requestBody);
+            L.info("Sending Request: %s", requestBody);
             Post response = Http.post(config.url, requestBody);
             String responseBody = response.text();
-            L.debug("Receiving Response: %s", responseBody);
+            L.info("Receiving Response: %s", responseBody);
             return responseBody;
         }
         else {
-            L.debug("KAcarsClient is not enabled.");
-            L.debug("Would send: %s ", requestBody);
+            L.info("KAcarsClient is not enabled.");
+            L.info("Would send: %s ", requestBody);
             throw new IllegalStateException("KAcarsClient is not enabled!");
         }
     }

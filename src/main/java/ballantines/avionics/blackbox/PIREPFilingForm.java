@@ -134,9 +134,9 @@ public class PIREPFilingForm implements Initializable, PipeUpdateListener {
         request.registration = registrationUI.getText();
         request.depICAO = depIcaoUI.getText();
         request.arrICAO = arrIcaoUI.getText();
-        request.pax = Integer.getInteger(paxUI.getText());
-        request.cargo = Integer.getInteger(cargoUI.getText());
-        request.fuelUsed = Integer.getInteger(fuelUsedUI.getText());
+        request.pax = parseInt(paxUI);
+        request.cargo = parseInt(cargoUI);
+        request.fuelUsed = parseInt(fuelUsedUI);
         request.flightTime = flightTimeUI.getText();
         request.comments = commentsUI.getText();
         
@@ -201,6 +201,16 @@ public class PIREPFilingForm implements Initializable, PipeUpdateListener {
             }
             items.add(event);
         }});
+    }
+    
+    private int parseInt(TextField field) {
+        String value = field.getText();
+        try {
+            return Integer.parseInt(value);
+        } catch (Exception ex) {
+            L.debug("Failed to parse %s to integer: %s", value, ex);
+            return 0;
+        }
     }
     
     private void setMessage(final Color color, final String msg) {

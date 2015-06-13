@@ -154,12 +154,13 @@ public class FlightLogger implements PipeUpdateListener {
         else {
             FlightPhase nextPhase = phaseTransition(phase, data);
             phasePipe.set(nextPhase);
-        }
-        switch (phase) {
-            case CLIMB:
-            case CRUISE:
-            case DESCEND:
-                storeVerticalSpeed(data);
+        
+            switch (phase) {
+                case CLIMB:
+                case CRUISE:
+                case DESCEND:
+                    storeVerticalSpeed(data);
+            }
         }
     }
     
