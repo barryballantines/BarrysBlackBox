@@ -44,7 +44,7 @@ public class Calculus {
         assert a.length == b.length;
         double scalar = 0.0;
         for (int i=0; i<a.length; i++) {
-            scalar += a[i] + b[i];
+            scalar += (a[i] * b[i]);
         }
         return scalar;
     }
