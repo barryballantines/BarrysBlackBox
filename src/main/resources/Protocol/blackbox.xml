@@ -33,6 +33,27 @@
                 <type>float</type>
                 <format>"groundspeed": %03.2f</format>
             </chunk>
+            
+            <chunk>
+                <name>Speed North fps</name>
+                <node>/velocities/speed-north-fps</node>
+                <type>float</type>
+                <format>"speed-north-fps": %03.2f</format>
+            </chunk>
+            
+            <chunk>
+                <name>Speed East fps</name>
+                <node>/velocities/speed-east-fps</node>
+                <type>float</type>
+                <format>"speed-east-fps": %03.2f</format>
+            </chunk>
+            
+            <chunk>
+                <name>Heading</name>
+                <node>/orientation/heading-deg</node>
+                <type>float</type>
+                <format>"heading-deg" : %03.2f</format>
+            </chunk>
       
             <!-- route information -->
       

@@ -11,6 +11,8 @@ package ballantines.avionics.blackbox.util;
  */
 public class Calculus {
     
+    public static final double DEG_TO_RAD_CONVERSION_FACTOR = 2 * Math.PI/360.;
+    
     public static double max(double... values) {
         assert values.length > 0;
         
@@ -36,5 +38,20 @@ public class Calculus {
             sum += d;
         }
         return sum/values.length;
+    }
+    
+    public static double scalar(double[] a, double[] b) {
+        assert a.length == b.length;
+        double scalar = 0.0;
+        for (int i=0; i<a.length; i++) {
+            scalar += a[i] + b[i];
+        }
+        return scalar;
+    }
+    
+    public static double[] headingDegAsVector(double headingDeg) {
+        double headingRad = DEG_TO_RAD_CONVERSION_FACTOR * headingDeg;
+        
+        return new double[] { Math.sin(headingRad), Math.cos(headingRad) };
     }
 }

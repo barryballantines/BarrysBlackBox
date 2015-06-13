@@ -14,6 +14,7 @@ import ballantines.avionics.blackbox.util.Buffer;
 import ballantines.avionics.blackbox.util.Calculus;
 import ballantines.avionics.kacars.KAcarsClient;
 import ballantines.avionics.kacars.model.Flight;
+import ballantines.avionics.blackbox.log.LogEvent.Type;
 import de.mbuse.pipes.Pipe;
 import de.mbuse.pipes.PipeUpdateListener;
 import java.util.ArrayList;
@@ -91,7 +92,7 @@ public class FlightLogger implements PipeUpdateListener {
                 Flight f = client.getBid();
                 if (f!=null) {
                     flightBidPipe.set(f);
-                    postEvent("This is flight %s from %s to %s.", f.flightNumber, f.depICAO, f.arrICAO);
+                    postEvent(Type.FIRST_MESSAGE, "This is flight %s from %s to %s.", f.flightNumber, f.depICAO, f.arrICAO);
                     postEvent("Block time %s", f.depTime);
                     postEvent("Assigned aircraft model: %s", f.aircraftFullName);
                     postEvent("Assigned aircraft registration: %s", f.aircraftReg);
@@ -126,8 +127,8 @@ public class FlightLogger implements PipeUpdateListener {
             postEvent("Flight time: %d:%d", hhmm[0], hhmm[1]);
             postEvent("Landing rate: %d fpm", result.landingRateFPM);
             postEvent("Fuel consumption: %d lbs", result.fuelConsumption);
-            
         }
+        postEvent(Type.LAST_MESSAGE, "Flight recording stopped.");
     }
     
     private void verticalSpeedUpdated() {
@@ -168,7 +169,7 @@ public class FlightLogger implements PipeUpdateListener {
     
     private FlightPhase phaseTransition(FlightPhase phase, FlightData data) {
         double wow;
-        int gs = (int) (data.getGroundSpeed());
+        int gs = (int) (data.getGroundSpeedForward());
         switch (phase) {
             case BOARDING :
                 if (gs < -TAXI_THRESHOLD) {
@@ -310,6 +311,10 @@ public class FlightLogger implements PipeUpdateListener {
     }
     
     protected void postEvent(String msg, Object... data) {
+        postEvent(Type.INFO, msg, data);
+    }
+    
+    protected void postEvent(Type type, String msg, Object... data) {
         LogEvent event = new LogEvent(String.format(msg, data));
         events.add(event);
         eventPipe.set(event);

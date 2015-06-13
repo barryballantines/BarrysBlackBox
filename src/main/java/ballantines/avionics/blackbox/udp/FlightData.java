@@ -5,6 +5,7 @@
  */
 package ballantines.avionics.blackbox.udp;
 
+import ballantines.avionics.blackbox.util.Calculus;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -34,6 +35,18 @@ public class FlightData {
     
     public double getGroundSpeed() {
         return json.getDouble("groundspeed");
+    }
+    
+    public double getGroundSpeedForward() {
+        double[] speedFpsVector = new double[] {
+            json.getDouble("speed-east-fps"),
+            json.getDouble("speed-north-fps")
+        };
+        double headingDeg = json.getDouble("heading-deg");
+        double[] headingVector = Calculus.headingDegAsVector(headingDeg);
+        
+        double fwdSpeedFps = Calculus.scalar(speedFpsVector, headingVector);
+        return 0.592535 * fwdSpeedFps;
     }
     
     public String getDeparture() {
