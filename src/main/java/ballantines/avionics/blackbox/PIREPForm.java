@@ -1,5 +1,6 @@
 package ballantines.avionics.blackbox;
 
+import ballantines.avionics.blackbox.util.Log;
 import de.mbuse.pipes.Pipe;
 import de.mbuse.pipes.PipeUpdateListener;
 import de.mbuse.pipes.Pipes;
@@ -24,6 +25,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
 public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
+    
+    private static Log L = Log.forClass(PIREPForm.class);
 
     private static final DateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm");
     private static final NumberFormat TWO_DIGITS_FORMAT = new DecimalFormat("00");
@@ -98,7 +101,7 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
     
     @FXML
     private void startupBtnPressed(ActionEvent event) {
-        System.out.println("[PIREP FORM] Startup button pressed");
+        L.info("Startup button pressed");
         
         FlightDataRetrieval retrieval = services.getFlightDataRetrieval();
         
@@ -137,7 +140,7 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
     
     @FXML 
     private void shutdownBtnPressed(ActionEvent event) {
-        System.out.println("Shutdown button pressed");
+        L.info("Shutdown button pressed");
         
         services.flightDataPipe.removeChangeListener(fuelChecker);
         services.flightDataPipe.removeChangeListener(blockTimeChecker);
@@ -183,12 +186,12 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
         
         Pipes.connect(isRecordingPipe, services.isRecordingPipe);
         services.flightTrackingResultPipe.connectTo(resultPipe);
-        
+        L.trace("Initialized");
     }    
 
     @Override
     public void pipeUpdated(Pipe pipe) {
-        System.out.println("[PIREP FORM] Model updated : " + pipe.id() + " -> " + pipe.get());
+        L.pipeUpdated(pipe);
         
         if (pipe == landingRatePipe) {
             Platform.runLater(new Runnable() {

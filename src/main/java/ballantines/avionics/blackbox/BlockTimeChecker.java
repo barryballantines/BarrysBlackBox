@@ -7,11 +7,11 @@
 package ballantines.avionics.blackbox;
 
 import ballantines.avionics.blackbox.udp.FlightData;
+import ballantines.avionics.blackbox.util.Log;
 import de.mbuse.pipes.Pipe;
 import de.mbuse.pipes.PipeUpdateListener;
 import java.util.Calendar;
 import java.util.TimeZone;
-import java.util.TimerTask;
 import javafx.application.Platform;
 
 /**
@@ -19,6 +19,8 @@ import javafx.application.Platform;
  * @author mbuse
  */
 public class BlockTimeChecker implements PipeUpdateListener<FlightData> {
+    
+    private static Log L = Log.forClass(BlockTimeChecker.class);
     
     private static final TimeZone UTC = TimeZone.getTimeZone("UTC");
     
@@ -36,6 +38,7 @@ public class BlockTimeChecker implements PipeUpdateListener<FlightData> {
 
     @Override
     public void pipeUpdated(Pipe<FlightData> pipe) {
+        L.pipeUpdated(pipe);
         FlightData data = pipe.get();
         if (data==null) {
             return;
@@ -43,11 +46,11 @@ public class BlockTimeChecker implements PipeUpdateListener<FlightData> {
         double groundspeed = data.getGroundSpeed();
         final Calendar blockTime = getUTCTime();
         if (Math.abs(groundspeed) > 3.0) {
-            System.out.println("GroundMovementChecker - start of the journey!");
+            L.info("GroundMovementChecker - start of the journey!");
             pipe.removeChangeListener(this);
         }
         else {
-            System.out.println("GroundMovementChecker - still in parking position...");
+            L.debug("GroundMovementChecker - still in parking position...");
         }
         Platform.runLater(new Runnable() {@Override public void run() {
             pirepForm.setDepartureTimeGauge(blockTime);

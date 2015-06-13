@@ -7,6 +7,7 @@ package ballantines.avionics.blackbox;
 
 import ballantines.avionics.flightgear.connect.PropertyService;
 import ballantines.avionics.blackbox.udp.FlightData;
+import ballantines.avionics.blackbox.util.Log;
 import de.mbuse.pipes.Pipe;
 import de.mbuse.pipes.PipeUpdateListener;
 import java.io.IOException;
@@ -30,6 +31,7 @@ import javafx.scene.control.Label;
  */
 public class ParkingPositionPanel implements Initializable, PipeUpdateListener<FlightData> {
 
+    private static Log L = Log.forClass(ParkingPositionPanel.class);
     
     public static Parent create(Services services) throws IOException {
         ParkingPositionPanel controller = new ParkingPositionPanel();
@@ -57,7 +59,7 @@ public class ParkingPositionPanel implements Initializable, PipeUpdateListener<F
 
     @Override
     public void pipeUpdated(Pipe<FlightData> pipe) {
-        System.out.println("[PARKING] Model updated : " + pipe.id() + " -> " + pipe.get());
+        L.pipeUpdated(pipe);
         final String airport = pipe.get().getClosestAirport();
         
         if(airport != null && !airport.equals(airportLbl.getText())) {

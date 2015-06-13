@@ -7,6 +7,7 @@
 package ballantines.avionics.blackbox;
 
 import ballantines.avionics.blackbox.udp.FlightData;
+import ballantines.avionics.blackbox.util.Log;
 import de.mbuse.pipes.Pipe;
 import de.mbuse.pipes.PipeUpdateListener;
 import java.io.IOException;
@@ -28,6 +29,7 @@ import javafx.scene.control.ProgressBar;
  * @author mbuse
  */
 public class RoutePanel implements Initializable, PipeUpdateListener<FlightData> {
+    private static Log L = Log.forClass(RoutePanel.class);
     
     private static final int ONE_DAY = 60 * 60 * 24;
     
@@ -69,7 +71,7 @@ public class RoutePanel implements Initializable, PipeUpdateListener<FlightData>
 
     @Override
     public void pipeUpdated(Pipe<FlightData> pipe) {
-        System.out.println("[ROUTE] Model updated : " + pipe.id() + " -> " + pipe.get());
+        L.pipeUpdated(pipe);
         
         updateData(pipe.get());
     }

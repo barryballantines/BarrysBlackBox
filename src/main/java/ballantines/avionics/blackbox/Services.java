@@ -9,6 +9,7 @@ import ballantines.avionics.flightgear.connect.HttpPropertyServiceImpl;
 import ballantines.avionics.flightgear.connect.PropertyService;
 import ballantines.avionics.flightgear.connect.ServerConfig;
 import ballantines.avionics.blackbox.udp.FlightData;
+import ballantines.avionics.blackbox.util.Log;
 import ballantines.avionics.kacars.KAcarsConfig;
 import ballantines.avionics.kacars.KAcarsClient;
 import de.mbuse.pipes.Pipe;
@@ -22,6 +23,8 @@ import java.util.prefs.Preferences;
  * @author mbuse
  */
 public class Services implements PipeUpdateListener {
+    
+    private static Log L = Log.forClass(Services.class);
     
     // === STATICS ===
     
@@ -57,7 +60,7 @@ public class Services implements PipeUpdateListener {
 
     @Override
     public void pipeUpdated(Pipe pipe) {
-        System.out.println("[SERVICES] Model updated : " + pipe.id() + " -> " + pipe.get());
+        L.pipeUpdated(pipe);
         
         if (pipe == this.serverConfigPipe) {
             ServerConfig config = (ServerConfig) pipe.get();
@@ -78,13 +81,13 @@ public class Services implements PipeUpdateListener {
         config.pilotID = prefs.get("config.user", null);
         config.password = prefs.get("config.password", null);
         config.enabled = prefs.getBoolean("config.enabled", false);
-        System.out.println("[SERVICES] reading kACARS config from user preferences: " + config);
+        L.info("[SERVICES] reading kACARS config from user preferences: %a " , config);
         return config;
     }
     
     public void writeKACARSConfigToUserPreferences(KAcarsConfig config) {
         try {
-            System.out.println("[SERVICES] writing kACARS config to user preferences: " + config);
+            L.info("[SERVICES] writing kACARS config to user preferences: %s ", config);
             Preferences prefs = Preferences.userNodeForPackage(KAcarsConfig.class);
             prefs.put("config.url", config.url);
             prefs.put("config.user", config.pilotID);
@@ -92,7 +95,7 @@ public class Services implements PipeUpdateListener {
             prefs.putBoolean("config.enabled", config.enabled);
             prefs.flush();
         } catch (BackingStoreException ex) {
-            System.err.println("[SERVICES] Failed to write kACARS config to User Preferences: " + ex);
+            L.error(ex, "[SERVICES] Failed to write kACARS config to User Preferences");
         }
     }
     
@@ -103,7 +106,7 @@ public class Services implements PipeUpdateListener {
         int port = prefs.getInt("flightgear.httpd.port", 5500);
         final ServerConfig serverConfig = new ServerConfig(host, port);
         
-        System.out.println("[SERVICES] reading server config from user preferences: " + serverConfig);
+        L.info("[SERVICES] reading server config from user preferences: %s", serverConfig);
         return serverConfig;
     }
     
@@ -112,13 +115,13 @@ public class Services implements PipeUpdateListener {
             if (serverConfig==null) {
                 return;
             }
-            System.out.println("[SERVICES] writing server config to user preferences: " + serverConfig);
+            L.info("[SERVICES] writing server config to user preferences: %s", serverConfig);
             Preferences prefs = Preferences.userNodeForPackage(ServerConfig.class);
             prefs.put("flightgear.httpd.host", serverConfig.getHost());
             prefs.putInt("flightgear.httpd.port", serverConfig.getPort());
             prefs.flush();
         } catch (BackingStoreException ex) {
-            System.err.println("[SERVICES] Failed to write ServerConfig to User Preferences: " + ex);
+            L.error(ex, "[SERVICES] Failed to write ServerConfig to User Preferences");
         }
     } 
     

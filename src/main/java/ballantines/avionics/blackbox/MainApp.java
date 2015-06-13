@@ -1,6 +1,7 @@
 package ballantines.avionics.blackbox;
 
 import ballantines.avionics.blackbox.udp.UDPServer;
+import ballantines.avionics.blackbox.util.Log;
 import de.mbuse.pipes.Pipes;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
@@ -14,10 +15,10 @@ import javafx.stage.WindowEvent;
 
 
 public class MainApp extends Application {
-
+    private static Log L = Log.forClass(MainApp.class);
     @Override
     public void start(Stage stage) throws Exception {
-        System.out.println("Barry's BlackBox is starting...");
+        L.info("Barry's BlackBox is starting...");
         Services services = Services.get();
         services.init();
         
@@ -58,6 +59,7 @@ public class MainApp extends Application {
     @Override
     public void stop() throws Exception {
         Services.get().shutdown();
+        L.info("Barry's BlackBox stopped.");
     }
     
     

@@ -15,6 +15,7 @@ import ballantines.avionics.blackbox.util.Calculus;
 import ballantines.avionics.kacars.KAcarsClient;
 import ballantines.avionics.kacars.model.Flight;
 import ballantines.avionics.blackbox.log.LogEvent.Type;
+import ballantines.avionics.blackbox.util.Log;
 import de.mbuse.pipes.Pipe;
 import de.mbuse.pipes.PipeUpdateListener;
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ import java.util.List;
  * @author mbuse
  */
 public class FlightLogger implements PipeUpdateListener {
-    
+    private static Log L = Log.forClass(FlightLogger.class);
     private static final double CLIMB_THRESHOLD = 200.0;
     private static final double TAKEOFF_THRESHOLD = 50.0;
     private static final double TAXI_THRESHOLD = 0.3;
@@ -60,7 +61,7 @@ public class FlightLogger implements PipeUpdateListener {
     
     @Override
     public void pipeUpdated(Pipe pipe) {
-        System.out.println("[FLIGHTLOGGER] Pipe updated : " + pipe.id() + " -> " + pipe.get());   
+        L.pipeUpdated(pipe);
         
         if (pipe == isRecordingPipe) {
             Boolean isRecording = isRecordingPipe.get();
@@ -81,6 +82,10 @@ public class FlightLogger implements PipeUpdateListener {
         
         if (pipe == avgVerticalSpeedPipe) {
             verticalSpeedUpdated();
+        }
+        
+        if (pipe == phasePipe) {
+            L.debug("New flight phase %s", phasePipe.get());
         }
     }
     
@@ -170,6 +175,7 @@ public class FlightLogger implements PipeUpdateListener {
     private FlightPhase phaseTransition(FlightPhase phase, FlightData data) {
         double wow;
         int gs = (int) (data.getGroundSpeedForward());
+        L.debug("Evaluating phase transition: groundspeed %d kts, phase %s", gs, phase);
         switch (phase) {
             case BOARDING :
                 if (gs < -TAXI_THRESHOLD) {

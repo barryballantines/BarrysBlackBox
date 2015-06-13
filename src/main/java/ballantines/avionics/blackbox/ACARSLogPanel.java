@@ -7,6 +7,7 @@ package ballantines.avionics.blackbox;
 
 import ballantines.avionics.blackbox.log.FlightLogger;
 import ballantines.avionics.blackbox.log.LogEvent;
+import ballantines.avionics.blackbox.util.Log;
 import ballantines.avionics.kacars.model.Flight;
 import ballantines.avionics.kacars.model.PIREPRequest;
 import de.mbuse.pipes.Pipe;
@@ -33,6 +34,7 @@ import javafx.scene.paint.Color;
  */
 public class ACARSLogPanel implements Initializable, PipeUpdateListener {
 
+    private static Log L = Log.forClass(ACARSLogPanel.class);
     
     public static Parent create(Services services) throws IOException {
         ACARSLogPanel controller = new ACARSLogPanel();
@@ -104,6 +106,7 @@ public class ACARSLogPanel implements Initializable, PipeUpdateListener {
                 
                 setMessage(Color.BLACK, "Submitting...");
                 
+                L.info("filing PIREP request: %s", pirep);
                 boolean success = services.getKacarsClient().filePIREP(pirep);
                 
                 if (success) {
@@ -115,8 +118,7 @@ public class ACARSLogPanel implements Initializable, PipeUpdateListener {
             }
         } catch (Exception ex) {
             setMessage(Color.RED, "Error: " + ex.getMessage());
-            System.err.println("An error occured" + ex);
-            ex.printStackTrace();
+            L.error(ex, "An error occured while filing the pirep form: %s", ex.getMessage());
         }
     }
     

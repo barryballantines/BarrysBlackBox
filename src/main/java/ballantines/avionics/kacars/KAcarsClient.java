@@ -5,6 +5,7 @@
  */
 package ballantines.avionics.kacars;
 
+import ballantines.avionics.blackbox.util.Log;
 import ballantines.avionics.kacars.model.AircraftData;
 import ballantines.avionics.kacars.model.AircraftDataList;
 import ballantines.avionics.kacars.model.Flight;
@@ -25,6 +26,7 @@ import org.simpleframework.xml.core.Persister;
  */
 public class KAcarsClient {
     
+    private static Log L = Log.forClass(KAcarsClient.class);
     
     private KAcarsConfig config = new KAcarsConfig();
     private Serializer serializer = new Persister();
@@ -113,15 +115,15 @@ public class KAcarsClient {
 
     protected String send(String requestBody) {
         if (isEnabled()) {
-            System.out.println("Send: " + requestBody);
+            L.debug("Sending Request: %s", requestBody);
             Post response = Http.post(config.url, requestBody);
             String responseBody = response.text();
-            System.out.println(responseBody);
+            L.debug("Receiving Response: %s", responseBody);
             return responseBody;
         }
         else {
-            System.out.println("KAcarsClient is not enabled.");
-            System.out.println("Would send: " + requestBody);
+            L.debug("KAcarsClient is not enabled.");
+            L.debug("Would send: %s ", requestBody);
             throw new IllegalStateException("KAcarsClient is not enabled!");
         }
     }

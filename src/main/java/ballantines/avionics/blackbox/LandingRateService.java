@@ -8,6 +8,7 @@ package ballantines.avionics.blackbox;
 import ballantines.avionics.blackbox.udp.FlightData;
 import ballantines.avionics.blackbox.util.Buffer;
 import ballantines.avionics.blackbox.util.Calculus;
+import ballantines.avionics.blackbox.util.Log;
 import de.mbuse.pipes.Pipe;
 import de.mbuse.pipes.PipeUpdateListener;
 
@@ -17,6 +18,8 @@ import de.mbuse.pipes.PipeUpdateListener;
  */
 public class LandingRateService implements PipeUpdateListener{
     
+    private static Log L = Log.forClass(LandingRateService.class);
+    
     public final Pipe<FlightData> flightDataPipe = Pipe.newInstance("landingRateService.flightData", this);
     public final Pipe<Status> statusPipe = Pipe.newInstance("landingRateService.status", Status.GROUND, this);
     public final Pipe<Double> landingRate = Pipe.newInstance("landingRateService.landingRate", this);
@@ -25,7 +28,7 @@ public class LandingRateService implements PipeUpdateListener{
 
     @Override
     public void pipeUpdated(Pipe pipe) {
-        System.out.println("[LANDINGRATESERVICE] updated : " + pipe.id() + " -> " + pipe.get());
+        L.pipeUpdated(pipe);
         if (pipe == flightDataPipe) {
             flightDataUpdated(flightDataPipe.get());
         }
@@ -65,6 +68,7 @@ public class LandingRateService implements PipeUpdateListener{
         if (status==Status.GROUND) {
             // landed...
             double rate = calculateLandingRate();
+            L.info("Landing rate: %.3f fps", rate);
             landingRate.set(rate);
         }
     }

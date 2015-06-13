@@ -5,6 +5,7 @@
  */
 package ballantines.avionics.blackbox.udp;
 
+import ballantines.avionics.blackbox.util.Log;
 import de.mbuse.pipes.Pipe;
 import de.mbuse.pipes.PipeUpdateListener;
 import java.io.IOException;
@@ -25,6 +26,8 @@ import org.json.JSONObject;
  */
 public class UDPServer implements PipeUpdateListener<Object>{
     
+    private static Log L = Log.forClass(UDPServer.class);
+    
     public static final int PORT = 5555;
     
     public final Pipe<Boolean> runningPipe = Pipe.newInstance("udpServer.running", this);
@@ -33,7 +36,7 @@ public class UDPServer implements PipeUpdateListener<Object>{
 
     @Override
     public void pipeUpdated(Pipe<Object> pipe) {
-        System.out.println("[UDP SERVER] Model updated : " + pipe.id() + " -> " + pipe.get());
+        L.pipeUpdated(pipe);
         if ("udpServer.running".equals(pipe.id())) {
             boolean running = (boolean) pipe.get();
             if (running) {
@@ -49,7 +52,7 @@ public class UDPServer implements PipeUpdateListener<Object>{
         final boolean running = runningPipe.get();
         
         if (!running) {
-            System.out.println("Server not starting... " + runningPipe);
+            L.info("Server not starting... %s",runningPipe);
             return;
         }
         
@@ -57,7 +60,7 @@ public class UDPServer implements PipeUpdateListener<Object>{
 
             @Override
             public void run() {
-                System.out.println("Starting UDP Server on port " + port + ".");
+                L.info("Starting UDP Server on port %d.", port);
                 try {
                     DatagramChannel channel = createChannel(port);
                     try {
@@ -67,13 +70,13 @@ public class UDPServer implements PipeUpdateListener<Object>{
                         selector.close();
                         channel.close();
                         if (!channel.isOpen()) {
-                            System.out.println("Channel closed on port " + port + ".");
+                            L.info("Channel closed on port %d. ",port);
                         }
                     }
                 } catch (IOException e) {
-                    System.err.println("UDP Server failed..." + e);
+                    L.error(e, "UDP Server failed...");
                 }
-                System.out.println("Stopping UDP Server on port " + port);
+                L.info("Stopping UDP Server on port %d.", port);
             }
         });
         serverThread.start();
@@ -106,7 +109,7 @@ public class UDPServer implements PipeUpdateListener<Object>{
         ByteBuffer buffer = ByteBuffer.allocate( 1024 );
         while(runningPipe.get()) {
             int n = selector.select();
-            System.out.println(n + " messages received...");
+            L.trace("%d messages received...", n);
             Set<SelectionKey> keys = selector.selectedKeys();
             Iterator<SelectionKey> iterator = keys.iterator();
             while (iterator.hasNext()) {
@@ -124,7 +127,7 @@ public class UDPServer implements PipeUpdateListener<Object>{
                 //iterator.remove();
             }
         }
-        System.out.println("UDP Server loop finished.");
+        L.trace("UDP Server loop finished.");
     }
     
     private Thread serverThread;

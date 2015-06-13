@@ -5,6 +5,7 @@ package ballantines.avionics.blackbox;
 
 import ballantines.avionics.blackbox.log.FlightLogger;
 import ballantines.avionics.blackbox.log.LogEvent;
+import ballantines.avionics.blackbox.util.Log;
 import ballantines.avionics.kacars.model.Flight;
 import ballantines.avionics.kacars.model.PIREPRequest;
 import de.mbuse.pipes.Pipe;
@@ -43,6 +44,7 @@ public class PIREPFilingForm implements Initializable, PipeUpdateListener {
         return (Parent) loader.load();
     }
     
+    private static Log L = Log.forClass(PIREPFilingForm.class);
     // PIPES
     private final Pipe<LogEvent> eventPipe = Pipe.newInstance("PIREPFilingForm.event", this);
     private final Pipe<Flight> flightPipe = Pipe.newInstance("PIREPFilingForm.flight", this);
@@ -84,6 +86,8 @@ public class PIREPFilingForm implements Initializable, PipeUpdateListener {
 
     @Override
     public void pipeUpdated(Pipe model) {
+        L.pipeUpdated(model);
+            
         if (model == flightPipe) {
             Flight flight = flightPipe.get();
             setFlightData(flight);
@@ -146,6 +150,7 @@ public class PIREPFilingForm implements Initializable, PipeUpdateListener {
         setMessage(Color.BLACK, "Submitting PIREP");
         
         try {
+            L.info("Submit PIREP request: %s", request);
             boolean success = services.getKacarsClient().filePIREP(request);
             if (success) {
                 setMessage(Color.GREEN, "PIREP was filed successfully.");
@@ -153,8 +158,7 @@ public class PIREPFilingForm implements Initializable, PipeUpdateListener {
                 setMessage(Color.RED, "Filing PIREP failed.");
             }
         } catch (Exception ex) {
-            System.err.println("Error while filing PIREP report:" + ex);
-            ex.printStackTrace();
+            L.error(ex, "Error while filing PIREP report: %s", ex.getMessage());
             setMessage(Color.RED, "Error: " + ex.getMessage());
         }
         

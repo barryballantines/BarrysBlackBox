@@ -6,6 +6,7 @@
 
 package ballantines.avionics.blackbox;
 
+import ballantines.avionics.blackbox.util.Log;
 import ballantines.avionics.flightgear.connect.ServerConfig;
 import ballantines.avionics.kacars.KAcarsClient;
 import ballantines.avionics.kacars.KAcarsConfig;
@@ -32,6 +33,8 @@ import javafx.scene.paint.Color;
  * @author mbuse
  */
 public class ConfigurationForm implements Initializable, PipeUpdateListener {
+    
+    private static Log L = Log.forClass(ConfigurationForm.class);
     
     public static Parent create(Services services) throws IOException {
         ConfigurationForm controller = new ConfigurationForm();
@@ -81,7 +84,7 @@ public class ConfigurationForm implements Initializable, PipeUpdateListener {
 
     @Override
     public void pipeUpdated(Pipe pipe) {
-        System.out.println("[CONFIGURATION FORM] Model updated : " + pipe.id() + " -> " + pipe.get());
+        L.pipeUpdated(pipe);
         if ("configurationForm.serverConfig".equals(pipe.id())) {
             ServerConfig config = (ServerConfig) pipe.get();
             fgHostnameTxt.setText(config.getHost());
@@ -158,13 +161,16 @@ public class ConfigurationForm implements Initializable, PipeUpdateListener {
                 setFlightGearTestFeedback(true, "Connection successfully tested!");
             }
             return;
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            L.error(e, "testFlightgearConnection failed");
+        }
         setFlightGearTestFeedback(false, "Connection failed!");
     }
     
     @FXML 
     public void udpRunningStateChanged(ActionEvent event) {
         boolean isSelected = udpServerRunningCheck.selectedProperty().getValue();
+        L.info("UDP Server state changed to %b (true = running)", isSelected);
         udpServerRunningPipe.set(isSelected);
     }
     
@@ -173,8 +179,11 @@ public class ConfigurationForm implements Initializable, PipeUpdateListener {
         String txt = udpPortText.getText();
         try {
             int port = Integer.parseInt(txt);
+            L.info("UDP Server port changed to %d", port);
             udpServerPortPipe.set(port);
-        } catch (NumberFormatException nfe) {}
+        } catch (NumberFormatException nfe) {
+            L.error(nfe, "udpServerPortChanged failed");
+        }
     }
 
     @FXML void kacarsConfigChanged(ActionEvent event) {
@@ -183,6 +192,7 @@ public class ConfigurationForm implements Initializable, PipeUpdateListener {
         config.pilotID = kacarsPilotIDTxt.getText();
         config.password = kacarsPasswordTxt.getText();
         config.enabled = kacarsEnabledCheck.selectedProperty().getValue();
+        L.info("kACARS configuration changed: %s", config.toString());
         kacarsConfigPipe.set(config);
     }
     
@@ -195,7 +205,7 @@ public class ConfigurationForm implements Initializable, PipeUpdateListener {
         } catch(Exception ex) {
             kacarsMessageLbl.setTextFill(Color.RED);
             kacarsMessageLbl.setText("Error: " + ex.getMessage());
-            System.err.println("[CONFIGURATION FORM] Error while testing KACARS connection: " + ex);
+            L.error(ex, "Error while testing KACARS connection");
             ex.printStackTrace();
         }
     }

@@ -7,6 +7,7 @@
 package ballantines.avionics.blackbox;
 
 import ballantines.avionics.blackbox.udp.FlightData;
+import ballantines.avionics.blackbox.util.Log;
 import de.mbuse.pipes.Pipe;
 import de.mbuse.pipes.PipeUpdateListener;
 import java.util.TimerTask;
@@ -17,6 +18,8 @@ import javafx.application.Platform;
  * @author mbuse
  */
 public class FuelChecker implements PipeUpdateListener<FlightData> {
+    
+    private static Log L = Log.forClass(FuelChecker.class);
     
     private PIREPForm pirepForm;
     private double lastReportedFuel;
@@ -41,7 +44,7 @@ public class FuelChecker implements PipeUpdateListener<FlightData> {
             lastReportedFuel = currentFuel;
 
             if (difference > 0) {
-                System.out.println("FuelChecker detected a fuel gain of " + difference + " lbs.");
+                L.info("FuelChecker detected a fuel gain of %.3f lbs.", difference);
                 final double loadedFuel = pirepForm.getDepartureFuelGauge();
                 
                 Platform.runLater(new Runnable() { public void run() {
@@ -49,7 +52,7 @@ public class FuelChecker implements PipeUpdateListener<FlightData> {
                 }});
             }
             else {
-                System.out.println("Fuel Checker - everything is okay...");
+                L.trace("Fuel Checker - everything is okay...");
             }
         } catch (Exception ex) {
             ex.printStackTrace();
