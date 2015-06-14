@@ -7,12 +7,19 @@
             <var_separator>,</var_separator>
 
             <chunk>
-                <name>altitude above ground</name>
-                <node>/position/altitude-agl-ft</node>
+                <name>altitude</name>
+                <node>/position/altitude-ft</node>
                 <type>float</type>
                 <format>{"altitude":%03.2f</format>
             </chunk>
-
+            
+            <chunk>
+                <name>altitude above ground</name>
+                <node>/position/altitude-agl-ft</node>
+                <type>float</type>
+                <format>{"altitude-agl":%03.2f</format>
+            </chunk>
+            
             <chunk>
                 <name>closest airport</name>
                 <node>/sim/airport/closest-airport-id</node>
