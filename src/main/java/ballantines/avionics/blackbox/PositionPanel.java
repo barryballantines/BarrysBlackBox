@@ -24,20 +24,22 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import org.json.JSONObject;
 
 /**
  *
  * @author mbuse
  */
-public class ParkingPositionPanel implements Initializable, PipeUpdateListener<FlightData> {
+public class PositionPanel implements Initializable, PipeUpdateListener<FlightData> {
 
-    private static Log L = Log.forClass(ParkingPositionPanel.class);
+    private static Log L = Log.forClass(PositionPanel.class);
     
     public static Parent create(Services services) throws IOException {
-        ParkingPositionPanel controller = new ParkingPositionPanel();
+        PositionPanel controller = new PositionPanel();
         controller.setServices(services);
         
-        FXMLLoader loader = new FXMLLoader(PIREPForm.class.getResource("/fxml/parking.fxml"));
+        FXMLLoader loader = new FXMLLoader(PIREPForm.class.getResource("/fxml/position.fxml"));
         loader.setController(controller);
         return (Parent) loader.load();
     }
@@ -51,6 +53,11 @@ public class ParkingPositionPanel implements Initializable, PipeUpdateListener<F
     @FXML private Label airportLbl;
     @FXML private Label positionLbl;
     
+    @FXML private TextField lastPositionUI;
+    @FXML private TextField lastHeadingUI;
+    @FXML private TextField lastSpeedUI;
+    @FXML private TextField lastFuelUI;
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         flightDataPipe.connectTo(services.flightDataPipe);
@@ -60,13 +67,27 @@ public class ParkingPositionPanel implements Initializable, PipeUpdateListener<F
     @Override
     public void pipeUpdated(Pipe<FlightData> pipe) {
         L.pipeUpdated(pipe);
-        final String airport = pipe.get().getClosestAirport();
+        FlightData data = pipe.get();
+        if (data!=null) {
+            data = restoreLastFlightDataFromPreferences();
+        }
+        else {
+            storeLastFlightDataToPreferences(data);
+        }
         
+        showLastFlightData(data);
+        
+        if (data==null) {
+            return;
+        }
+        
+        final String airport = data.getClosestAirport();
+
         if(airport != null && !airport.equals(airportLbl.getText())) {
             final Location l = readLocationFromPreferences(airport);
-            
+
             Platform.runLater(new Runnable() { @Override public void run() {
-                
+
                 airportLbl.setText(airport);
                 positionLbl.setText((l!=null) 
                         ? l.lat + " " + l.lon 
@@ -74,9 +95,46 @@ public class ParkingPositionPanel implements Initializable, PipeUpdateListener<F
                 relocateBtn.setDisable(l==null);
             }});
         }
+
     }
     
+    private void showLastFlightData(final FlightData data) {
+        Platform.runLater(new Runnable() { public void run() {
+            if (data!=null) {
+                lastPositionUI.setText(String.format("Lat: %.8f  Lon: %.8f", 
+                        data.getLatitude(), data.getLongitude()));
+                lastHeadingUI.setText(String.format("%03.0f", data.getHeading()));
+                lastSpeedUI.setText(String.format("%3.0f", data.getGroundSpeed()));
+                lastFuelUI.setText(String.format("%.0f", data.getFuel()));
+            } else {
+                lastPositionUI.setText("N/A");
+                lastHeadingUI.setText("N/A");
+                lastSpeedUI.setText("N/A");
+                lastFuelUI.setText("N/A");
+            }
+        }});
+    }
     
+    private void storeLastFlightDataToPreferences(FlightData data) {
+        try {
+            Preferences prefs = Preferences.userNodeForPackage(PositionPanel.class);
+            prefs.put("lastKnownFlightData", data.toString());
+            prefs.flush();
+        }
+        catch(BackingStoreException ex) {
+            L.error(ex, "Failed to store lastKnownFlightData to preferences: %s", data);
+        }
+    }
+    
+    private FlightData restoreLastFlightDataFromPreferences() {
+        Preferences prefs = Preferences.userNodeForPackage(PositionPanel.class);
+        String json = prefs.get("lastKnownFlightData", null);
+        if (json==null) {
+            return null;
+        }
+        FlightData data = new FlightData(new JSONObject(json));
+        return data;
+    }
     
     @FXML
     public void handleStorePositionBtnPressed() {
@@ -136,6 +194,11 @@ public class ParkingPositionPanel implements Initializable, PipeUpdateListener<F
             
             propertyService.writeProperties(properties);
         }
+    }
+    
+    @FXML
+    public void handleRecoverLastPositionBtnPressed() {
+        // TODO
     }
     
     private Location readLocationFromPreferences(String airport) {

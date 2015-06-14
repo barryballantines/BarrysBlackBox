@@ -25,6 +25,18 @@ public class FlightData {
         return json.getDouble("altitude");
     }
     
+    public double getHeading() {
+        return json.getDouble("heading");
+    }
+    
+    public double getLatitude() {
+        return json.getDouble("latitude");
+    }
+    
+    public double getLongitude() {
+        return json.getDouble("longitude");
+    }
+    
     public String getClosestAirport() {
         return json.getString("closest-airport");
     }

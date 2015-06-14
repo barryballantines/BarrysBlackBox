@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+
+<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <center>
+      <VBox spacing="14.0">
+         <children>
+            <Label text="Stored Position On Ground">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Label>
+            <AnchorPane BorderPane.alignment="CENTER">
+               <children>
+                  <Label layoutX="14.0" layoutY="14.0" text="Airport:" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Label fx:id="airportLbl" layoutX="71.0" layoutY="14.0" prefHeight="19.0" prefWidth="44.0" text="----" AnchorPane.leftAnchor="100.0" AnchorPane.topAnchor="0.0">
+                     <font>
+                        <Font name="System Bold" size="13.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="14.0" layoutY="42.0" text="Stored Pos.:" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="28.0" />
+                  <Label fx:id="positionLbl" layoutX="100.0" layoutY="42.0" text="N/A" AnchorPane.leftAnchor="100.0" AnchorPane.topAnchor="28.0" />
+               </children>
+            </AnchorPane>
+            <AnchorPane>
+               <children>
+                  <Button fx:id="storeLocationBtn" mnemonicParsing="false" onAction="#handleStorePositionBtnPressed" text="Store Position" AnchorPane.rightAnchor="0.0" />
+                  <Button fx:id="relocateBtn" mnemonicParsing="false" onAction="#handleRelocatePositionBtnPressed" text="Relocate" AnchorPane.rightAnchor="110.0" />
+               </children>
+            </AnchorPane>
+            <Label text="Last Known Flight Data">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Label>
+            <AnchorPane prefHeight="115.0" prefWidth="294.0">
+               <children>
+                  <Label layoutY="5.0" prefHeight="19.0" prefWidth="69.0" text="Position:" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <TextField fx:id="lastPositionUI" editable="false" layoutX="108.0" layoutY="-5.0" style="-fx-padding: 0px;" styleClass="copyable-label" text="N/A" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Label layoutY="19.0" text="Heading:" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="28.0" />
+                  <TextField fx:id="lastHeadingUI" editable="false" layoutX="100.0" layoutY="28.0" prefHeight="19.0" prefWidth="192.0" style="-fx-padding: 0px;" styleClass="copyable-label" text="N/A" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="28.0" />
+                  <Label layoutY="61.0" text="Speed (kts):" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="56.0" />
+                  <TextField fx:id="lastSpeedUI" editable="false" layoutX="100.0" layoutY="56.0" prefHeight="19.0" prefWidth="192.0" style="-fx-padding: 0px;" styleClass="copyable-label" text="N/A" />
+                  <Label layoutX="-1.0" layoutY="75.0" text="Fuel (lbs):" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="84.0" />
+                  <TextField fx:id="lastFuelUI" editable="false" layoutX="100.0" layoutY="84.0" prefHeight="19.0" prefWidth="192.0" style="-fx-padding: 0px;" styleClass="copyable-label" text="N/A" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="84.0" />
+               </children>
+            </AnchorPane>
+            <AnchorPane>
+               <children>
+                  <Button fx:id="recoverLastPositionBtn" mnemonicParsing="false" onAction="#handleRecoverLastPositionBtnPressed" text="Recover" AnchorPane.rightAnchor="0.0" />
+               </children>
+            </AnchorPane>
+         </children>
+         <padding>
+            <Insets left="12.0" right="12.0" top="12.0" />
+         </padding>
+      </VBox>
+   </center>
+   <padding>
+      <Insets bottom="12.0" />
+   </padding>
+</BorderPane>

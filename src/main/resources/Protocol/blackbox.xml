@@ -7,17 +7,33 @@
             <var_separator>,</var_separator>
 
             <chunk>
-                <name>altitude</name>
+                <name>altitude (above sea level)</name>
                 <node>/position/altitude-ft</node>
                 <type>float</type>
                 <format>{"altitude":%03.2f</format>
             </chunk>
             
+            <!-- Position -->
+            
             <chunk>
-                <name>altitude above ground</name>
-                <node>/position/altitude-agl-ft</node>
+                <name>latitude (decimal)</name>
+                <node>/position/latitude-deg</node>
                 <type>float</type>
-                <format>{"altitude-agl":%03.2f</format>
+                <format>"latitude":%.8f</format>
+            </chunk>
+            
+             <chunk>
+                <name>longitude (decimal)</name>
+                <node>/position/longitude-deg</node>
+                <type>float</type>
+                <format>"longitude":%0.8f</format>
+            </chunk>
+            
+            <chunk>
+                <name>heading (degrees)</name>
+                <node>/orientation/heading-deg</node>
+                <type>float</type>
+                <format>"heading":%.2f</format>
             </chunk>
             
             <chunk>
