@@ -68,7 +68,7 @@ public class PositionPanel implements Initializable, PipeUpdateListener<FlightDa
     public void pipeUpdated(Pipe<FlightData> pipe) {
         L.pipeUpdated(pipe);
         FlightData data = pipe.get();
-        if (data!=null) {
+        if (data==null) {
             data = restoreLastFlightDataFromPreferences();
         }
         else {
