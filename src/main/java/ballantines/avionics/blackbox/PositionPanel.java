@@ -55,6 +55,7 @@ public class PositionPanel implements Initializable, PipeUpdateListener<FlightDa
     
     @FXML private TextField lastPositionUI;
     @FXML private TextField lastHeadingUI;
+    @FXML private TextField lastAltitudeUI;
     @FXML private TextField lastSpeedUI;
     @FXML private TextField lastFuelUI;
     
@@ -106,11 +107,13 @@ public class PositionPanel implements Initializable, PipeUpdateListener<FlightDa
                 lastHeadingUI.setText(String.format("%03.0f", data.getHeading()));
                 lastSpeedUI.setText(String.format("%3.0f", data.getGroundSpeed()));
                 lastFuelUI.setText(String.format("%.0f", data.getFuel()));
+                lastAltitudeUI.setText(String.format("%.0f", data.getAltitude()));
             } else {
                 lastPositionUI.setText("N/A");
                 lastHeadingUI.setText("N/A");
                 lastSpeedUI.setText("N/A");
                 lastFuelUI.setText("N/A");
+                lastAltitudeUI.setText("N/A");
             }
         }});
     }
