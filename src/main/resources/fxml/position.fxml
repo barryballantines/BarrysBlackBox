@@ -49,7 +49,7 @@
                   <Label layoutX="-1.0" layoutY="75.0" prefHeight="19.0" prefWidth="74.0" text="Speed (kts)" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="84.0" />
                   <TextField fx:id="lastSpeedUI" editable="false" layoutX="100.0" layoutY="84.0" prefHeight="19.0" prefWidth="192.0" style="-fx-padding: 0px;" styleClass="copyable-label" text="N/A" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="84.0" />
                   <Label layoutY="106.0" prefHeight="19.0" prefWidth="79.0" text="Fuel (lbs)" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="112.0" />
-                  <TextField fx:id="lastFuelUI1" editable="false" layoutX="100.0" layoutY="112.0" prefHeight="19.0" prefWidth="192.0" style="-fx-padding: 0px;" styleClass="copyable-label" text="N/A" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="112.0" />
+                  <TextField fx:id="lastFuelUI" editable="false" layoutX="100.0" layoutY="112.0" prefHeight="19.0" prefWidth="192.0" style="-fx-padding: 0px;" styleClass="copyable-label" text="N/A" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="112.0" />
                </children>
             </AnchorPane>
             <AnchorPane>

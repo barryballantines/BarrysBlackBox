@@ -63,6 +63,8 @@ public class PositionPanel implements Initializable, PipeUpdateListener<FlightDa
     public void initialize(URL url, ResourceBundle rb) {
         flightDataPipe.connectTo(services.flightDataPipe);
         
+        FlightData data = restoreLastFlightDataFromPreferences();
+        showLastFlightData(data);
     }
 
     @Override
