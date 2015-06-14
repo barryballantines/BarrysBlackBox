@@ -138,6 +138,7 @@ public class PIREPFilingForm implements Initializable, PipeUpdateListener {
         request.cargo = parseInt(cargoUI);
         request.fuelUsed = parseInt(fuelUsedUI);
         request.flightTime = flightTimeUI.getText();
+        request.landing = parseInt(landingUI);
         request.comments = commentsUI.getText();
         
         StringBuilder logBuilder = new StringBuilder();
