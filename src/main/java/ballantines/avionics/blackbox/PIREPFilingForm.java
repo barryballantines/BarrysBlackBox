@@ -39,7 +39,7 @@ public class PIREPFilingForm implements Initializable, PipeUpdateListener {
         PIREPFilingForm controller = new PIREPFilingForm();
         controller.setServices(services);
         
-        FXMLLoader loader = new FXMLLoader(ACARSLogPanel.class.getResource("/fxml/pirepfiling.fxml"));
+        FXMLLoader loader = new FXMLLoader(PIREPFilingForm.class.getResource("/fxml/pirepfiling.fxml"));
         loader.setController(controller);
         return (Parent) loader.load();
     }
