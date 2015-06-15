@@ -17,6 +17,7 @@ public class KAcarsConfig {
     public String pilotID = null;
     public String password = null;
     public boolean enabled = false;
+    public int timeout = 10000;
 
     public KAcarsConfig() {
     }
@@ -35,6 +36,7 @@ public class KAcarsConfig {
         hash = 67 * hash + Objects.hashCode(this.pilotID);
         hash = 67 * hash + Objects.hashCode(this.password);
         hash = 67 * hash + (this.enabled ? 1 : 0);
+        hash = 67 * hash + Objects.hashCode(this.timeout);
         return hash;
     }
 
@@ -57,6 +59,9 @@ public class KAcarsConfig {
             return false;
         }
         if (this.enabled != other.enabled) {
+            return false;
+        }
+        if (this.timeout != other.timeout) {
             return false;
         }
         return true;

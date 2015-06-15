@@ -125,7 +125,7 @@ public class KAcarsClient {
     protected String sendBody(String requestBody) {
         if (isEnabled()) {
             L.info("Sending Request: %s", requestBody);
-            Post response = Http.post(config.url, requestBody);
+            Post response = Http.post(config.url, requestBody.getBytes(), config.timeout, config.timeout);
             String responseBody = response.text();
             L.info("Receiving Response: %s", responseBody);
             return responseBody;
