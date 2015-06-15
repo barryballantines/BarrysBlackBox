@@ -6,6 +6,7 @@ import ballantines.avionics.blackbox.service.FuelChecker;
 import ballantines.avionics.blackbox.service.LandingRateService;
 import ballantines.avionics.blackbox.Services;
 import ballantines.avionics.blackbox.model.FlightTrackingResult;
+import ballantines.avionics.blackbox.model.TrackingData;
 import ballantines.avionics.blackbox.util.Log;
 import de.mbuse.pipes.Pipe;
 import de.mbuse.pipes.PipeUpdateListener;
@@ -77,6 +78,7 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
     private final Pipe<Double> landingRatePipe = Pipe.newInstance("pirepForm.landingRate", 0.0, this);
     
     private final Pipe<FlightTrackingResult> resultPipe = Pipe.newInstance("pirepForm.result", this);
+    private final Pipe<TrackingData> trackingDataPipe = Pipe.newInstance("pirepForm.trackingData", this);
 
     public void setServices(Services services) {
         this.services = services;
@@ -114,9 +116,11 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
         String airport = retrieval.getAirport();
         
         departureAirportLbl.setText(airport);
+        departureTime = retrieval.getTime();
+        departureFuel = retrieval.getFuel();
         
-        setDepartureTimeGauge(retrieval.getTime());
-        setDepartureFuelGauge(retrieval.getFuel());
+        setDepartureTimeGauge(departureTime);
+        setDepartureFuelGauge(departureFuel);
         
         arrivalAirportLbl.setText("----");
         arrivalTimeLbl.setText("--:--");
@@ -140,6 +144,14 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
         this.landingRatePipe.connectTo(landingRateService.landingRate, Pipes.MIN_TRANSFORM);
         resultPipe.set(null);
         isRecordingPipe.set(true);
+        
+        TrackingData trackingData = new TrackingData();
+        trackingData.departureAirport = airport;
+        trackingData.departureTime = departureTime;
+        trackingData.departureFuel = (int) departureFuel;
+        trackingData.trackingStarted = true;
+        
+        trackingDataPipe.set(trackingData);
                
     }
     
@@ -148,28 +160,48 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
     private void shutdownBtnPressed(ActionEvent event) {
         L.info("Shutdown button pressed");
         
+        // == DISCONNECT SERVICES ===
+        
         services.flightDataPipe.removeChangeListener(fuelChecker);
         services.flightDataPipe.removeChangeListener(blockTimeChecker);
         
         landingRateService.flightDataPipe.disconnectFrom(services.flightDataPipe);
         landingRatePipe.disconnectFrom(landingRateService.landingRate);
         
+        // === DATA ===
         FlightDataRetrieval retrieval = services.getFlightDataRetrieval();
         
+        String arrivalAirport = retrieval.getAirport();
         arrivalTime = retrieval.getTime();
-        setArrivalFuelGauge(retrieval.getFuel());
-       
-        arrivalAirportLbl.setText(retrieval.getAirport());
-        arrivalTimeLbl.setText(TIME_FORMAT.format(arrivalTime.getTime()));
+        arrivalFuel = retrieval.getFuel();
+        int landingRateFPM = (int) Math.round(landingRatePipe.get() * 60);
         
-            
         double fuelConsumption = getDepartureFuelGauge() - getArrivalFuelGauge();
         long flightTimeMillis = arrivalTime.getTimeInMillis() - departureTime.getTimeInMillis();
         
         FlightTrackingResult result = new FlightTrackingResult();
         result.flightTimeMinutes = (int) (flightTimeMillis /60000);
         result.fuelConsumption = (long) fuelConsumption;
-        result.landingRateFPM = (int) Math.round(landingRatePipe.get() * 60);
+        result.landingRateFPM = landingRateFPM;
+        
+        resultPipe.set(result);
+        isRecordingPipe.set(false);
+        
+        TrackingData trackingData = new TrackingData(trackingDataPipe.get());
+        trackingData.arrivalAirport = arrivalAirport;
+        trackingData.arrivalFuel = (int) arrivalFuel;
+        trackingData.arrivalTime = arrivalTime;
+        trackingData.landingRateFPM = landingRateFPM;
+        trackingData.trackingFinished = true;
+        
+        trackingDataPipe.set(trackingData);
+        
+        // === UI ===
+        
+        setArrivalFuelGauge(arrivalFuel);
+       
+        arrivalAirportLbl.setText(arrivalAirport);
+        arrivalTimeLbl.setText(TIME_FORMAT.format(arrivalTime.getTime()));
         
         int[] hhmm = result.getFlightTimeHoursAndMinutes();
         String duration = String.format("%d:%02d", hhmm[0], hhmm[1]);;
@@ -181,8 +213,6 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
         shutdownBtn.setDisable(true); 
         startupBtn.setDisable(false);
         
-        resultPipe.set(result);
-        isRecordingPipe.set(false);
     }
     
     
@@ -191,7 +221,12 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
         shutdownBtn.setDisable(true);
         
         Pipes.connect(isRecordingPipe, services.isRecordingPipe);
+        // this is source of flight tracking results...
         services.flightTrackingResultPipe.connectTo(resultPipe);
+        
+        // the tracking data is initialized from user prefs in Services...
+        Pipes.connect(services.trackingDataPipe, trackingDataPipe);
+        
         L.trace("Initialized");
     }    
 

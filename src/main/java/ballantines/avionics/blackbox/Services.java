@@ -8,6 +8,7 @@ package ballantines.avionics.blackbox;
 import ballantines.avionics.blackbox.service.FGFlightDataRetrievalImpl;
 import ballantines.avionics.blackbox.service.FlightDataRetrieval;
 import ballantines.avionics.blackbox.model.FlightTrackingResult;
+import ballantines.avionics.blackbox.model.TrackingData;
 import ballantines.avionics.flightgear.connect.HttpPropertyServiceImpl;
 import ballantines.avionics.flightgear.connect.PropertyService;
 import ballantines.avionics.flightgear.connect.ServerConfig;
@@ -52,6 +53,9 @@ public class Services implements PipeUpdateListener {
         // UDP SERVER
         udpServerPortPipe.set(5555);
         udpServerRunningPipe.set(false);
+        // TrackingData
+        TrackingData data = readTrackingDataFromUserPreferences();
+        trackingDataPipe.set(data);
         // TIMER
         timer = new Timer("Barry's BlackBox Timer");
         
@@ -74,6 +78,37 @@ public class Services implements PipeUpdateListener {
             KAcarsConfig config = kacarsConfigPipe.get();
             kacarsClient.setConfig(config);
             writeKACARSConfigToUserPreferences(config);
+        }
+        else if (pipe == this.trackingDataPipe) {
+            TrackingData data = trackingDataPipe.get();
+            writeTrackingDataToUserPreferences(data);
+        }
+    }
+    
+    public TrackingData readTrackingDataFromUserPreferences() {
+        Preferences prefs = Preferences.userNodeForPackage(Services.class);
+        String serialized = prefs.get("trackingData", null);
+        TrackingData data = (serialized==null) 
+                ? new TrackingData()
+                : TrackingData.fromString(serialized);
+        return data;
+    }
+    
+    public void writeTrackingDataToUserPreferences(TrackingData data) {
+        try {
+            Preferences prefs = Preferences.userNodeForPackage(Services.class);
+            if (data==null) {
+                L.info("[SERVICES] removing tracking data from user preferences.");
+                prefs.remove("trackingData");
+            }
+            else {
+                L.info("[SERVICES] writing tracking data to user preferences: %s ", data);
+                prefs.put("trackingData", data.toString());
+            }
+            prefs.flush();
+        }
+        catch (BackingStoreException ex) {
+            L.error(ex, "[SERVICES] Failed to write TrackingData to User Preferences");
         }
     }
     
@@ -166,6 +201,7 @@ public class Services implements PipeUpdateListener {
     public final Pipe<Integer> udpServerPortPipe = Pipe.newInstance("Services.udpServerPort", this);
     public final Pipe<FlightData> flightDataPipe = Pipe.newInstance("Services.flightData", this);
     public final Pipe<FlightTrackingResult> flightTrackingResultPipe = Pipe.newInstance("Service.flightTrackingResult", this);
+    public final Pipe<TrackingData> trackingDataPipe = Pipe.newInstance("Services.trackingData", this);
     
     
 }
