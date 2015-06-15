@@ -31,12 +31,12 @@ public class TrackingData {
     // === DEPARTURE ===
     public String   departureAirport = null;
     public Calendar departureTime    = null;
-    public int      departureFuel    = -1;
+    public int      departureFuel    = 0;
     
     // === ARRIVAL ===
     public String   arrivalAirport   = null;
     public Calendar arrivalTime      = null;
-    public int      arrivalFuel      = -1;
+    public int      arrivalFuel      = 0;
     
     public int landingRateFPM        = 0;
     
@@ -70,17 +70,17 @@ public class TrackingData {
             return departureFuel - arrivalFuel;
         }
         else {
-            return -1;
+            return 0;
         }
     }
     
     public int getFlightTimeInMinutes() {
-        if (trackingFinished) {
+        if (trackingFinished && departureTime!=null && arrivalTime!=null) {
             long flightTimeMillis = arrivalTime.getTimeInMillis() - departureTime.getTimeInMillis();
             return (int) (flightTimeMillis /60000);
         }
         else {
-            return -1;
+            return 0;
         }
     }
     
@@ -119,11 +119,11 @@ public class TrackingData {
             TrackingData data = new TrackingData();
             data.departureAirport = json.optString("departureAirport", null);
             data.departureTime = parseCalendar(json.optLong("departureTime", -1L));
-            data.departureFuel = json.optInt("departureFuel", -1);
+            data.departureFuel = json.optInt("departureFuel", 0);
             data.arrivalAirport = json.optString("arrivalAirport", null);
             data.arrivalTime = parseCalendar(json.optLong("arrivalTime", -1L));
-            data.arrivalFuel = json.optInt("arrivalFuel", -1);
-            data.landingRateFPM = json.optInt("landingRateFPM", -1);
+            data.arrivalFuel = json.optInt("arrivalFuel", 0);
+            data.landingRateFPM = json.optInt("landingRateFPM", 0);
             data.trackingStarted = json.optBoolean("trackingStarted", false);
             data.trackingFinished = json.optBoolean("trackingFinished", false);
             return data;

@@ -65,10 +65,10 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
     @FXML private Button shutdownBtn;
     
     private Services services;
-    private Calendar departureTime;
-    private Calendar arrivalTime;
-    private double departureFuel;
-    private long arrivalFuel;
+    //private Calendar departureTime;
+    //private Calendar arrivalTime;
+    //private double departureFuel;
+    //private long arrivalFuel;
     
     private FuelChecker fuelChecker;
     private BlockTimeChecker blockTimeChecker;
@@ -84,6 +84,7 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
         this.services = services;
     }
     
+    /*
     public void setDepartureTimeGauge(Calendar cal) {
         departureTime = cal;
         departureTimeLbl.setText(TIME_FORMAT.format(departureTime.getTime()));
@@ -106,119 +107,16 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
     public long getArrivalFuelGauge() {
         return arrivalFuel;
     }
-    
-    @FXML
-    private void startupBtnPressed(ActionEvent event) {
-        L.info("Startup button pressed");
-        
-        FlightDataRetrieval retrieval = services.getFlightDataRetrieval();
-        
-        String airport = retrieval.getAirport();
-        
-        departureAirportLbl.setText(airport);
-        departureTime = retrieval.getTime();
-        departureFuel = retrieval.getFuel();
-        
-        setDepartureTimeGauge(departureTime);
-        setDepartureFuelGauge(departureFuel);
-        
-        arrivalAirportLbl.setText("----");
-        arrivalTimeLbl.setText("--:--");
-        arrivalFuelLbl.setText("----");
-        
-        fuelConsumptionLbl.setText("----");
-        flightTimeLbl.setText("--:--");
-        landingRateLbl.setText("----");
-        
-        startupBtn.setDisable(true);
-        shutdownBtn.setDisable(false);
-        
-        fuelChecker = new FuelChecker(this);
-        blockTimeChecker = new BlockTimeChecker(this);
-        landingRateService = new LandingRateService();
-        
-        services.flightDataPipe.addListener(fuelChecker);
-        services.flightDataPipe.addListener(blockTimeChecker);
-        
-        landingRateService.flightDataPipe.connectTo(services.flightDataPipe);
-        this.landingRatePipe.connectTo(landingRateService.landingRate, Pipes.MIN_TRANSFORM);
-        resultPipe.set(null);
-        isRecordingPipe.set(true);
-        
-        TrackingData trackingData = new TrackingData();
-        trackingData.departureAirport = airport;
-        trackingData.departureTime = departureTime;
-        trackingData.departureFuel = (int) departureFuel;
-        trackingData.trackingStarted = true;
-        
-        trackingDataPipe.set(trackingData);
-               
-    }
-    
-    
-    @FXML 
-    private void shutdownBtnPressed(ActionEvent event) {
-        L.info("Shutdown button pressed");
-        
-        // == DISCONNECT SERVICES ===
-        
-        services.flightDataPipe.removeChangeListener(fuelChecker);
-        services.flightDataPipe.removeChangeListener(blockTimeChecker);
-        
-        landingRateService.flightDataPipe.disconnectFrom(services.flightDataPipe);
-        landingRatePipe.disconnectFrom(landingRateService.landingRate);
-        
-        // === DATA ===
-        FlightDataRetrieval retrieval = services.getFlightDataRetrieval();
-        
-        String arrivalAirport = retrieval.getAirport();
-        arrivalTime = retrieval.getTime();
-        arrivalFuel = retrieval.getFuel();
-        int landingRateFPM = (int) Math.round(landingRatePipe.get() * 60);
-        
-        double fuelConsumption = getDepartureFuelGauge() - getArrivalFuelGauge();
-        long flightTimeMillis = arrivalTime.getTimeInMillis() - departureTime.getTimeInMillis();
-        
-        FlightTrackingResult result = new FlightTrackingResult();
-        result.flightTimeMinutes = (int) (flightTimeMillis /60000);
-        result.fuelConsumption = (long) fuelConsumption;
-        result.landingRateFPM = landingRateFPM;
-        
-        resultPipe.set(result);
-        isRecordingPipe.set(false);
-        
-        TrackingData trackingData = new TrackingData(trackingDataPipe.get());
-        trackingData.arrivalAirport = arrivalAirport;
-        trackingData.arrivalFuel = (int) arrivalFuel;
-        trackingData.arrivalTime = arrivalTime;
-        trackingData.landingRateFPM = landingRateFPM;
-        trackingData.trackingFinished = true;
-        
-        trackingDataPipe.set(trackingData);
-        
-        // === UI ===
-        
-        setArrivalFuelGauge(arrivalFuel);
-       
-        arrivalAirportLbl.setText(arrivalAirport);
-        arrivalTimeLbl.setText(TIME_FORMAT.format(arrivalTime.getTime()));
-        
-        int[] hhmm = result.getFlightTimeHoursAndMinutes();
-        String duration = String.format("%d:%02d", hhmm[0], hhmm[1]);;
-        
-
-        fuelConsumptionLbl.setText(FUEL_FORMAT.format(fuelConsumption));
-        flightTimeLbl.setText(duration);
-        
-        shutdownBtn.setDisable(true); 
-        startupBtn.setDisable(false);
-        
-    }
-    
+    */
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         shutdownBtn.setDisable(true);
+        
+        // TODO: FuelChecker and BlockTimeChecker should not use "this", but the trackingDataPipe!!!
+        fuelChecker = new FuelChecker(this.services);
+        blockTimeChecker = new BlockTimeChecker(this.services);
+        landingRateService = new LandingRateService();
         
         Pipes.connect(isRecordingPipe, services.isRecordingPipe);
         // this is source of flight tracking results...
@@ -229,6 +127,70 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
         
         L.trace("Initialized");
     }    
+    
+    @FXML
+    private void startupBtnPressed(ActionEvent event) {
+        L.info("Startup button pressed");
+        
+        FlightDataRetrieval retrieval = services.getFlightDataRetrieval();
+        
+        
+        landingRateService.flightDataPipe.connectTo(services.flightDataPipe);
+        this.landingRatePipe.connectTo(landingRateService.landingRate, Pipes.MIN_TRANSFORM);
+        
+        
+        TrackingData trackingData = new TrackingData();
+        trackingData.departureAirport = retrieval.getAirport();
+        trackingData.departureTime = null;
+        trackingData.departureFuel = 0;
+        trackingData.trackingStarted = true;
+        
+        resultPipe.set(null);
+        trackingDataPipe.set(trackingData);
+        
+        fuelChecker.connect();
+        blockTimeChecker.connect();
+        
+        isRecordingPipe.set(true);
+               
+    }
+    
+    
+    @FXML 
+    private void shutdownBtnPressed(ActionEvent event) {
+        L.info("Shutdown button pressed");
+        
+        // == DISCONNECT SERVICES ===
+        
+        fuelChecker.disconnect();
+        blockTimeChecker.disconnect();
+        
+        landingRateService.flightDataPipe.disconnectFrom(services.flightDataPipe);
+        landingRatePipe.disconnectFrom(landingRateService.landingRate);
+        
+        // === DATA ===
+        FlightDataRetrieval retrieval = services.getFlightDataRetrieval();
+        TrackingData trackingData = new TrackingData(trackingDataPipe.get());
+        
+        trackingData.trackingFinished = true;
+        trackingData.arrivalAirport = retrieval.getAirport();
+        trackingData.arrivalFuel = (int) retrieval.getFuel();
+        trackingData.arrivalTime = retrieval.getTime();
+        trackingData.landingRateFPM = (int) Math.round(landingRatePipe.get() * 60);
+        
+        trackingDataPipe.set(trackingData);
+        
+        FlightTrackingResult result = new FlightTrackingResult();
+        result.flightTimeMinutes = trackingData.getFlightTimeInMinutes();
+        result.fuelConsumption = trackingData.getFuelConsumption();
+        result.landingRateFPM = trackingData.landingRateFPM;
+        
+        resultPipe.set(result);
+        isRecordingPipe.set(false);
+        
+    }
+    
+    
 
     @Override
     public void pipeUpdated(Pipe pipe) {
@@ -245,7 +207,58 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
                 
             });
         }
+        
+        if (pipe == trackingDataPipe) {
+            TrackingData data = trackingDataPipe.get();
+            updateUI(data);
+        }
     }
     
+    private void updateUI(TrackingData trackingData) {
+        final TrackingData data = (trackingData==null)
+                ? new TrackingData() // EMPTY
+                : trackingData;
+        Platform.runLater(new Runnable() { public void run() {
+            if (data.trackingStarted) {
+                departureAirportLbl.setText(data.departureAirport);
+                departureTimeLbl.setText(format(data.departureTime));
+                departureFuelLbl.setText(FUEL_FORMAT.format(data.departureFuel));
+            } 
+            else {
+                departureAirportLbl.setText("----");
+                departureTimeLbl.setText("--:--");
+                departureFuelLbl.setText("----");
+            }
+
+            if (data.trackingFinished) {
+                arrivalAirportLbl.setText(data.arrivalAirport);
+                arrivalTimeLbl.setText(format(data.arrivalTime));
+                arrivalFuelLbl.setText(FUEL_FORMAT.format(data.arrivalFuel));
+
+                fuelConsumptionLbl.setText(FUEL_FORMAT.format(data.getFuelConsumption()));
+                flightTimeLbl.setText(data.getFlightTimeFormatted());
+                landingRateLbl.setText(""+data.landingRateFPM);
+                
+                startupBtn.setDisable(false);
+                shutdownBtn.setDisable(true);
+            }
+            else {
+                arrivalAirportLbl.setText("----");
+                arrivalTimeLbl.setText("--:--");
+                arrivalFuelLbl.setText("----");
+
+                fuelConsumptionLbl.setText("----");
+                flightTimeLbl.setText("--:--");
+                landingRateLbl.setText("----");
+                
+                startupBtn.setDisable(true);
+                shutdownBtn.setDisable(false);
+            }
+        }});
+    }
+    
+    private String format(Calendar date) {
+        return date==null ? "--:--" : TIME_FORMAT.format(date.getTime());
+    }
     
 }

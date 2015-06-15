@@ -6,6 +6,8 @@
 
 package ballantines.avionics.blackbox.service;
 
+import ballantines.avionics.blackbox.Services;
+import ballantines.avionics.blackbox.model.TrackingData;
 import ballantines.avionics.blackbox.panel.PIREPForm;
 import ballantines.avionics.blackbox.udp.FlightData;
 import ballantines.avionics.blackbox.util.Log;
@@ -25,10 +27,19 @@ public class BlockTimeChecker implements PipeUpdateListener<FlightData> {
     
     private static final TimeZone UTC = TimeZone.getTimeZone("UTC");
     
-    private PIREPForm pirepForm;
+    // private PIREPForm pirepForm;
+    private Services services;
     
-    public BlockTimeChecker(PIREPForm form) {
-        this.pirepForm = form;
+    public BlockTimeChecker(Services services) {
+        this.services = services;
+    }
+    
+    public void connect() {
+        this.services.flightDataPipe.addListener(this);
+    }
+    
+    public void disconnect() {
+        this.services.flightDataPipe.removeChangeListener(this);
     }
     
     public Calendar getUTCTime() {
@@ -46,16 +57,22 @@ public class BlockTimeChecker implements PipeUpdateListener<FlightData> {
         }
         double groundspeed = data.getGroundSpeed();
         final Calendar blockTime = getUTCTime();
+        
         if (Math.abs(groundspeed) > 3.0) {
             L.info("GroundMovementChecker - start of the journey!");
-            pipe.removeChangeListener(this);
+            disconnect();
+            TrackingData trackData = new TrackingData(trackingDataPipe().get());
+            trackData.departureTime = getUTCTime();
+            trackingDataPipe().set(trackData);
         }
         else {
             L.debug("GroundMovementChecker - still in parking position...");
         }
-        Platform.runLater(new Runnable() {@Override public void run() {
-            pirepForm.setDepartureTimeGauge(blockTime);
-        }});
+    }
+    
+    
+    protected Pipe<TrackingData> trackingDataPipe() {
+        return services.trackingDataPipe;
     }
     
 }

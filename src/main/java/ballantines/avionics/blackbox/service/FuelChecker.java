@@ -6,6 +6,8 @@
 
 package ballantines.avionics.blackbox.service;
 
+import ballantines.avionics.blackbox.Services;
+import ballantines.avionics.blackbox.model.TrackingData;
 import ballantines.avionics.blackbox.panel.PIREPForm;
 import ballantines.avionics.blackbox.udp.FlightData;
 import ballantines.avionics.blackbox.util.Log;
@@ -22,13 +24,22 @@ public class FuelChecker implements PipeUpdateListener<FlightData> {
     
     private static Log L = Log.forClass(FuelChecker.class);
     
-    private PIREPForm pirepForm;
-    private double lastReportedFuel;
+    private Services services;
+    private int lastReportedFuel;
     
-    public FuelChecker(PIREPForm form) {
+    public FuelChecker(Services services) {
         super();
-        this.pirepForm = form;
-        this.lastReportedFuel = form.getDepartureFuelGauge();
+        this.services = services;
+        this.lastReportedFuel = 0;
+    }
+    
+    public void connect() {
+        this.lastReportedFuel = 0;
+        this.services.flightDataPipe.addListener(this);
+    }
+    
+    public void disconnect() {
+        this.services.flightDataPipe.removeChangeListener(this);
     }
 
     @Override
@@ -38,19 +49,18 @@ public class FuelChecker implements PipeUpdateListener<FlightData> {
             return;
         }
         try {
-            double currentFuel = data.getFuel();
-            //Services.get().currentFuelPipe.set(currentFuel);
-            
-            final double difference = currentFuel - lastReportedFuel;
+            // get fuel from flight data
+            int currentFuel = (int) data.getFuel();
+            // does fuel increase or decrease???
+            int difference = (int) (currentFuel - lastReportedFuel);
             lastReportedFuel = currentFuel;
 
             if (difference > 0) {
-                L.info("FuelChecker detected a fuel gain of %.3f lbs.", difference);
-                final double loadedFuel = pirepForm.getDepartureFuelGauge();
-                
-                Platform.runLater(new Runnable() { public void run() {
-                    pirepForm.setDepartureFuelGauge(loadedFuel + difference);
-                }});
+                L.info("FuelChecker detected a fuel gain of %d lbs.", difference);
+                TrackingData trackData = new TrackingData(trackingDataPipe().get());
+                int loadedFuel = (trackData==null) ? 0 : trackData.departureFuel;
+                trackData.departureFuel = loadedFuel + difference;
+                trackingDataPipe().set(trackData);
             }
             else {
                 L.trace("Fuel Checker - everything is okay...");
@@ -60,4 +70,7 @@ public class FuelChecker implements PipeUpdateListener<FlightData> {
         }
     }
     
+    protected Pipe<TrackingData> trackingDataPipe() {
+        return services.trackingDataPipe;
+    }
 }
