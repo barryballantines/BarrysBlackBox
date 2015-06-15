@@ -4,8 +4,9 @@
  * and open the template in the editor.
  */
 
-package ballantines.avionics.blackbox;
+package ballantines.avionics.blackbox.service;
 
+import ballantines.avionics.blackbox.panel.PIREPForm;
 import ballantines.avionics.blackbox.udp.FlightData;
 import ballantines.avionics.blackbox.util.Log;
 import de.mbuse.pipes.Pipe;

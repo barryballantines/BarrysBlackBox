@@ -1,8 +1,10 @@
 /*
  * 
  */
-package ballantines.avionics.blackbox;
+package ballantines.avionics.blackbox.panel;
 
+import ballantines.avionics.blackbox.Services;
+import ballantines.avionics.blackbox.model.FlightTrackingResult;
 import ballantines.avionics.blackbox.log.FlightLogger;
 import ballantines.avionics.blackbox.log.LogEvent;
 import ballantines.avionics.blackbox.util.Log;

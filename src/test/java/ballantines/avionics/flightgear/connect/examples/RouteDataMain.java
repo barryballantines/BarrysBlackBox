@@ -4,8 +4,8 @@ package ballantines.avionics.flightgear.connect.examples;
 import ballantines.avionics.flightgear.connect.HttpPropertyServiceImpl;
 import ballantines.avionics.flightgear.connect.PropertyService;
 import ballantines.avionics.flightgear.connect.ServerConfig;
-import ballantines.avionics.blackbox.FGFlightDataRetrievalImpl;
-import ballantines.avionics.blackbox.RouteInformation;
+import ballantines.avionics.blackbox.service.FGFlightDataRetrievalImpl;
+import ballantines.avionics.blackbox.model.RouteInformation;
 import java.util.Map;
 
 /*

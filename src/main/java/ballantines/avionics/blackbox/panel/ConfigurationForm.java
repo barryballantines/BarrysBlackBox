@@ -4,8 +4,10 @@
  * and open the template in the editor.
  */
 
-package ballantines.avionics.blackbox;
+package ballantines.avionics.blackbox.panel;
 
+import ballantines.avionics.blackbox.service.FlightDataRetrieval;
+import ballantines.avionics.blackbox.Services;
 import ballantines.avionics.blackbox.util.Log;
 import ballantines.avionics.flightgear.connect.ServerConfig;
 import ballantines.avionics.kacars.KAcarsClient;

@@ -1,5 +1,11 @@
-package ballantines.avionics.blackbox;
+package ballantines.avionics.blackbox.panel;
 
+import ballantines.avionics.blackbox.service.BlockTimeChecker;
+import ballantines.avionics.blackbox.service.FlightDataRetrieval;
+import ballantines.avionics.blackbox.service.FuelChecker;
+import ballantines.avionics.blackbox.service.LandingRateService;
+import ballantines.avionics.blackbox.Services;
+import ballantines.avionics.blackbox.model.FlightTrackingResult;
 import ballantines.avionics.blackbox.util.Log;
 import de.mbuse.pipes.Pipe;
 import de.mbuse.pipes.PipeUpdateListener;

@@ -1,5 +1,10 @@
 package ballantines.avionics.blackbox;
 
+import ballantines.avionics.blackbox.panel.PIREPFilingForm;
+import ballantines.avionics.blackbox.panel.PIREPForm;
+import ballantines.avionics.blackbox.panel.RoutePanel;
+import ballantines.avionics.blackbox.panel.PositionPanel;
+import ballantines.avionics.blackbox.panel.ConfigurationForm;
 import ballantines.avionics.blackbox.udp.UDPServer;
 import ballantines.avionics.blackbox.util.Log;
 import de.mbuse.pipes.Pipes;

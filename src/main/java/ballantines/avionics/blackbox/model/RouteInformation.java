@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package ballantines.avionics.blackbox;
+package ballantines.avionics.blackbox.model;
 
 /**
  *

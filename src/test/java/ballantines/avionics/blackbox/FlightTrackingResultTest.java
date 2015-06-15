@@ -5,6 +5,7 @@
  */
 package ballantines.avionics.blackbox;
 
+import ballantines.avionics.blackbox.model.FlightTrackingResult;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

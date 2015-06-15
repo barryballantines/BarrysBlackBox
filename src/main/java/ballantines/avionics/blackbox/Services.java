@@ -5,6 +5,9 @@
  */
 package ballantines.avionics.blackbox;
 
+import ballantines.avionics.blackbox.service.FGFlightDataRetrievalImpl;
+import ballantines.avionics.blackbox.service.FlightDataRetrieval;
+import ballantines.avionics.blackbox.model.FlightTrackingResult;
 import ballantines.avionics.flightgear.connect.HttpPropertyServiceImpl;
 import ballantines.avionics.flightgear.connect.PropertyService;
 import ballantines.avionics.flightgear.connect.ServerConfig;

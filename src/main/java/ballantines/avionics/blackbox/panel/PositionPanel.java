@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ballantines.avionics.blackbox;
+package ballantines.avionics.blackbox.panel;
 
+import ballantines.avionics.blackbox.Services;
 import ballantines.avionics.flightgear.connect.PropertyService;
 import ballantines.avionics.blackbox.udp.FlightData;
 import ballantines.avionics.blackbox.util.Log;

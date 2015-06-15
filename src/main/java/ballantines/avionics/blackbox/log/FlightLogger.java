@@ -5,9 +5,9 @@
  */
 package ballantines.avionics.blackbox.log;
 
-import ballantines.avionics.blackbox.AircraftInformation;
-import ballantines.avionics.blackbox.FlightDataRetrieval;
-import ballantines.avionics.blackbox.FlightTrackingResult;
+import ballantines.avionics.blackbox.model.AircraftInformation;
+import ballantines.avionics.blackbox.service.FlightDataRetrieval;
+import ballantines.avionics.blackbox.model.FlightTrackingResult;
 import ballantines.avionics.blackbox.Services;
 import ballantines.avionics.blackbox.udp.FlightData;
 import ballantines.avionics.blackbox.util.Buffer;

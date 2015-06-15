@@ -5,7 +5,7 @@
  */
 package ballantines.avionics.blackbox;
 
-import ballantines.avionics.blackbox.LandingRateService;
+import ballantines.avionics.blackbox.service.LandingRateService;
 import ballantines.avionics.blackbox.udp.FlightData;
 import de.mbuse.pipes.Pipe;
 import org.json.JSONArray;

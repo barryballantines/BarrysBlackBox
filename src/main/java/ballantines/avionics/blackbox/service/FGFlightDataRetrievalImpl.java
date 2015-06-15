@@ -4,8 +4,10 @@
  * and open the template in the editor.
  */
 
-package ballantines.avionics.blackbox;
+package ballantines.avionics.blackbox.service;
 
+import ballantines.avionics.blackbox.model.AircraftInformation;
+import ballantines.avionics.blackbox.model.RouteInformation;
 import ballantines.avionics.flightgear.connect.PropertyService;
 import java.util.Calendar;
 import java.util.Map;
