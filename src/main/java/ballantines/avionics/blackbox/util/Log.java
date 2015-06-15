@@ -43,7 +43,8 @@ public class Log {
     }
     
     public void pipeUpdated(Pipe pipe) {
-        trace("Pipe updated: %s -> %s", pipe.id(), pipe.get().toString());
+        Object value = pipe.get();
+        trace("Pipe updated: %s -> %s", pipe.id(), (value==null) ? "null" : value.toString());
     }
     
     public void warn(String msg, Object... args) {
