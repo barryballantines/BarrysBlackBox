@@ -9,6 +9,7 @@ import ballantines.avionics.blackbox.util.Log;
 import ballantines.avionics.kacars.model.AircraftData;
 import ballantines.avionics.kacars.model.AircraftDataList;
 import ballantines.avionics.kacars.model.Flight;
+import ballantines.avionics.kacars.model.LiveUpdateData;
 import ballantines.avionics.kacars.model.LoginStatus;
 import ballantines.avionics.kacars.model.PIREPRequest;
 import ballantines.avionics.kacars.model.PIREPStatus;
@@ -86,6 +87,14 @@ public class KAcarsClient {
         return status.isSuccess();
     }
     
+    public void liveUpdate(LiveUpdateData data) throws Exception {
+        if (data.pilotID==null) {
+            data.pilotID = config.pilotID;
+        }
+        String body = toXML(data);
+        sendBody(body);
+    }
+    
     protected String toXML(Object request) throws Exception{
         StringWriter stringWriter = new StringWriter();
         serializer.write(request, stringWriter);
@@ -110,10 +119,10 @@ public class KAcarsClient {
 
     protected String send(String template, Object... args) {
         String requestBody = String.format(template, args);
-        return send(requestBody);
+        return sendBody(requestBody);
     }
 
-    protected String send(String requestBody) {
+    protected String sendBody(String requestBody) {
         if (isEnabled()) {
             L.info("Sending Request: %s", requestBody);
             Post response = Http.post(config.url, requestBody);
