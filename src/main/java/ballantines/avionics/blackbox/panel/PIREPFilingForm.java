@@ -180,11 +180,18 @@ public class PIREPFilingForm implements Initializable, PipeUpdateListener {
     
     private void setFlightTrackingResultData(final FlightTrackingResult result) {
         Platform.runLater(new Runnable() { public void run() {
-            int[] hhmm = result.getFlightTimeHoursAndMinutes();
-            fuelUsedUI.setText("" + result.fuelConsumption);
-            flightTimeUI.setText(String.format("%d.%02d", hhmm[0], hhmm[1]));
-            landingUI.setText("" + result.landingRateFPM);
-            filePirepBtnUI.setDisable(false);
+            if (result==null) {
+                fuelUsedUI.setText("");
+                flightTimeUI.setText("");
+                landingUI.setText("");
+            }
+            else {
+                int[] hhmm = result.getFlightTimeHoursAndMinutes();
+                fuelUsedUI.setText("" + result.fuelConsumption);
+                flightTimeUI.setText(String.format("%d.%02d", hhmm[0], hhmm[1]));
+                landingUI.setText("" + result.landingRateFPM);
+                filePirepBtnUI.setDisable(false);
+            }
         }});
     }
     

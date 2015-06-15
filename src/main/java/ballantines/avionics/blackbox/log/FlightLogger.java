@@ -129,7 +129,7 @@ public class FlightLogger implements PipeUpdateListener {
         FlightTrackingResult result = services.flightTrackingResultPipe.get();
         if (result!=null) {
             int[] hhmm = result.getFlightTimeHoursAndMinutes();
-            postEvent("Flight time: %d:%d", hhmm[0], hhmm[1]);
+            postEvent("Flight time: %d:%02d", hhmm[0], hhmm[1]);
             postEvent("Landing rate: %d fpm", result.landingRateFPM);
             postEvent("Fuel consumption: %d lbs", result.fuelConsumption);
         }
