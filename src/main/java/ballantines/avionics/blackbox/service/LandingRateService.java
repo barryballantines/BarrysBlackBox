@@ -26,6 +26,13 @@ public class LandingRateService implements PipeUpdateListener{
     
     private Buffer descentRateBuffer = new Buffer(4);
 
+    
+    public void reset() {
+        L.info("Resetting LandingRateService");
+        statusPipe.set(Status.GROUND);
+        landingRate.set(null);
+    }
+    
     @Override
     public void pipeUpdated(Pipe pipe) {
         L.pipeUpdated(pipe);

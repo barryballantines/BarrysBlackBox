@@ -135,6 +135,9 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
         FlightDataRetrieval retrieval = services.getFlightDataRetrieval();
         
         
+        landingRateService.reset();
+        this.landingRatePipe.set(null);
+        
         landingRateService.flightDataPipe.connectTo(services.flightDataPipe);
         this.landingRatePipe.connectTo(landingRateService.landingRate, Pipes.MIN_TRANSFORM);
         
@@ -176,7 +179,10 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
         trackingData.arrivalAirport = retrieval.getAirport();
         trackingData.arrivalFuel = (int) retrieval.getFuel();
         trackingData.arrivalTime = retrieval.getTime();
-        trackingData.landingRateFPM = (int) Math.round(landingRatePipe.get() * 60);
+        Double landingRateFPS = landingRatePipe.get();
+        trackingData.landingRateFPM = (landingRateFPS==null) 
+                ? 0
+                : (int) Math.round(landingRatePipe.get() * 60);
         
         trackingDataPipe.set(trackingData);
         
@@ -195,18 +201,6 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
     @Override
     public void pipeUpdated(Pipe pipe) {
         L.pipeUpdated(pipe);
-        
-        if (pipe == landingRatePipe) {
-            Platform.runLater(new Runnable() {
-
-                @Override
-                public void run() {
-                    long landingRate = Math.round(landingRatePipe.get() * 60);
-                    landingRateLbl.setText("" + landingRate);
-                }
-                
-            });
-        }
         
         if (pipe == trackingDataPipe) {
             TrackingData data = trackingDataPipe.get();
