@@ -58,6 +58,8 @@ public class ConfigurationForm implements Initializable, PipeUpdateListener {
     @FXML private TextField kacarsPilotIDTxt;
     @FXML private PasswordField kacarsPasswordTxt;
     @FXML private CheckBox kacarsEnabledCheck;
+    @FXML private TextField kacarsLUIntervalText;
+    @FXML private CheckBox kacarsLUEnabledCheck;
     @FXML private Label kacarsMessageLbl;
     
     
@@ -108,6 +110,9 @@ public class ConfigurationForm implements Initializable, PipeUpdateListener {
             
             kacarsMessageLbl.setTextFill(Color.BLACK);
             kacarsMessageLbl.setText("Press button to test connection.");
+            
+            kacarsLUIntervalText.setText(String.format("%d", config.liveUpdateIntervalMS / 1000));
+            kacarsLUEnabledCheck.selectedProperty().set(config.liveUpdateEnabled);
         }
     }
     
@@ -194,6 +199,8 @@ public class ConfigurationForm implements Initializable, PipeUpdateListener {
         config.pilotID = kacarsPilotIDTxt.getText();
         config.password = kacarsPasswordTxt.getText();
         config.enabled = kacarsEnabledCheck.selectedProperty().getValue();
+        config.liveUpdateIntervalMS = Integer.parseInt(kacarsLUIntervalText.getText()) * 1000;
+        config.liveUpdateEnabled = kacarsLUEnabledCheck.selectedProperty().getValue();
         L.info("kACARS configuration changed: %s", config.toString());
         kacarsConfigPipe.set(config);
     }

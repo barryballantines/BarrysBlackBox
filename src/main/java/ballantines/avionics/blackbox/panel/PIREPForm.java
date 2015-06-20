@@ -143,10 +143,14 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
         
         
         TrackingData trackingData = new TrackingData();
-        trackingData.departureAirport = retrieval.getAirport();
         trackingData.departureTime = null;
         trackingData.departureFuel = 0;
         trackingData.trackingStarted = true;
+        try {
+            trackingData.departureAirport = retrieval.getAirport();
+        } catch (Exception e) {
+            L.error(e, "Failed to read departure Airport from FlightGear");
+        }
         
         resultPipe.set(null);
         trackingDataPipe.set(trackingData);
@@ -176,9 +180,13 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
         TrackingData trackingData = new TrackingData(trackingDataPipe.get());
         
         trackingData.trackingFinished = true;
-        trackingData.arrivalAirport = retrieval.getAirport();
-        trackingData.arrivalFuel = (int) retrieval.getFuel();
-        trackingData.arrivalTime = retrieval.getTime();
+        try {
+            trackingData.arrivalAirport = retrieval.getAirport();
+            trackingData.arrivalFuel = (int) retrieval.getFuel();
+            trackingData.arrivalTime = retrieval.getTime();
+        } catch (Exception e) {
+            L.error(e, "Failed to get data from FlightGear");
+        }
         Double landingRateFPS = landingRatePipe.get();
         trackingData.landingRateFPM = (landingRateFPS==null) 
                 ? 0

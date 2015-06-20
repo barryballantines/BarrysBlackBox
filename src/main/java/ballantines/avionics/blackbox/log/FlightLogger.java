@@ -15,6 +15,7 @@ import ballantines.avionics.blackbox.util.Calculus;
 import ballantines.avionics.kacars.KAcarsClient;
 import ballantines.avionics.kacars.model.Flight;
 import ballantines.avionics.blackbox.log.LogEvent.Type;
+import ballantines.avionics.blackbox.service.LiveUpdate;
 import ballantines.avionics.blackbox.util.Log;
 import de.mbuse.pipes.Pipe;
 import de.mbuse.pipes.PipeUpdateListener;
@@ -47,12 +48,19 @@ public class FlightLogger implements PipeUpdateListener {
     private Buffer averageVerticalSpeedBuffer = new Buffer(60);
 
     private Services services;
+    private LiveUpdate liveUpdate;
+    
     private List<LogEvent> events = new ArrayList<>();
     
     public FlightLogger(Services services) {
        this.services = services;
+       this.liveUpdate = new LiveUpdate(services);
        this.isRecordingPipe.connectTo(services.isRecordingPipe);
        this.dataPipe.connectTo(services.flightDataPipe); 
+       
+       services.flightPhasePipe.connectTo(phasePipe);
+       services.flightBidPipe.connectTo(flightBidPipe);
+       
     }
 
     public List<LogEvent> getEvents() {
@@ -69,10 +77,12 @@ public class FlightLogger implements PipeUpdateListener {
                 events.clear();
                 beforeStartRecording();
                 dataPipe.addListener(this);
+                liveUpdate.start();
             }
             else if (isRecording!=null){
                 dataPipe.removeChangeListener(this);
                 afterStopRecording();
+                liveUpdate.stop();
             }
         }
         

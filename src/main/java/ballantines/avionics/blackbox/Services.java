@@ -5,6 +5,7 @@
  */
 package ballantines.avionics.blackbox;
 
+import ballantines.avionics.blackbox.log.FlightPhase;
 import ballantines.avionics.blackbox.service.FGFlightDataRetrievalImpl;
 import ballantines.avionics.blackbox.service.FlightDataRetrieval;
 import ballantines.avionics.blackbox.model.FlightTrackingResult;
@@ -16,6 +17,7 @@ import ballantines.avionics.blackbox.udp.FlightData;
 import ballantines.avionics.blackbox.util.Log;
 import ballantines.avionics.kacars.KAcarsConfig;
 import ballantines.avionics.kacars.KAcarsClient;
+import ballantines.avionics.kacars.model.Flight;
 import de.mbuse.pipes.Pipe;
 import de.mbuse.pipes.PipeUpdateListener;
 import java.util.Timer;
@@ -119,6 +121,8 @@ public class Services implements PipeUpdateListener {
         config.pilotID = prefs.get("config.user", null);
         config.password = prefs.get("config.password", null);
         config.enabled = prefs.getBoolean("config.enabled", false);
+        config.liveUpdateIntervalMS = prefs.getInt("config.liveupdate.interval", 30000);
+        config.liveUpdateEnabled = prefs.getBoolean("config.liveupdate.enabled", false);
         L.info("[SERVICES] reading kACARS config from user preferences: %s " , config);
         return config;
     }
@@ -131,6 +135,8 @@ public class Services implements PipeUpdateListener {
             prefs.put("config.user", config.pilotID);
             prefs.put("config.password", config.password);
             prefs.putBoolean("config.enabled", config.enabled);
+            prefs.putInt("config.liveupdate.interval", config.liveUpdateIntervalMS);
+            prefs.putBoolean("config.liveupdate.enabled", config.liveUpdateEnabled);
             prefs.flush();
         } catch (BackingStoreException ex) {
             L.error(ex, "[SERVICES] Failed to write kACARS config to User Preferences");
@@ -202,6 +208,8 @@ public class Services implements PipeUpdateListener {
     public final Pipe<FlightData> flightDataPipe = Pipe.newInstance("Services.flightData", this);
     public final Pipe<FlightTrackingResult> flightTrackingResultPipe = Pipe.newInstance("Service.flightTrackingResult", this);
     public final Pipe<TrackingData> trackingDataPipe = Pipe.newInstance("Services.trackingData", this);
+    public final Pipe<Flight> flightBidPipe = Pipe.newInstance("Services.flightBidPipe", this);
+    public final Pipe<FlightPhase> flightPhasePipe = Pipe.newInstance("Services.phase", this);
     
     
 }

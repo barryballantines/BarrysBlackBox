@@ -5,7 +5,10 @@
  */
 package ballantines.avionics.kacars.model;
 
+import ballantines.avionics.blackbox.log.FlightPhase;
+import ballantines.avionics.blackbox.model.TrackingData;
 import ballantines.avionics.blackbox.udp.FlightData;
+import ballantines.avionics.blackbox.util.JSONUtil;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Path;
 import org.simpleframework.xml.Root;
@@ -15,6 +18,21 @@ import org.simpleframework.xml.Root;
  */
 @Root(name="kacars")
 public class LiveUpdateData {
+    private static final String STRING = "'%s'";
+    private static final String TOSTRINGFORMAT = JSONUtil.createFormatString(LiveUpdateData.class, 
+            "pilotId", STRING,
+            "flightNumber", STRING,
+            "registration", STRING,
+            "depTime", STRING,
+            "depICAO", STRING,
+            "arrICAO", STRING,
+            "route", STRING,
+            "latitude", STRING,
+            "longitude", STRING,
+            "heading", STRING,
+            "altitude", STRING,
+            "groundSpeed", STRING,
+            "status", STRING );
     
     @Element @Path("switch")
     private String data = "pirep";
@@ -61,12 +79,20 @@ public class LiveUpdateData {
     
     public LiveUpdateData() {}
     
-    public LiveUpdateData(Flight flight, FlightData data) {
+    public LiveUpdateData(Flight flight, FlightData data, TrackingData trackingData, FlightPhase phase) {
         if (flight==null) {
             flight = new Flight();
         }
-        this.depICAO = firstNotNull(data.getDeparture(), flight.depICAO, "");
-        this.arrICAO = firstNotNull(data.getDestination(), flight.arrICAO, "");
+        if (trackingData==null) {
+            trackingData = new TrackingData();
+        }
+        
+        this.depICAO = firstNotNull(trackingData.departureAirport, data.getDeparture(), flight.depICAO, "");
+        this.arrICAO = firstNotNull(trackingData.arrivalAirport, data.getDestination(), flight.arrICAO, "");
+        this.depTime = firstNotNull(
+                trackingData==null ? null : String.format("%tR", trackingData.departureTime),
+                flight.depTime,
+                "");
         this.flightNumber = firstNotNull(flight.flightNumber, "");
         this.registration = firstNotNull(flight.aircraftReg, "");
         this.route = firstNotNull(flight.route, "");
@@ -75,6 +101,7 @@ public class LiveUpdateData {
         this.groundSpeed = String.format("%.0f", data.getGroundSpeed());
         this.heading = String.format("%.0f", data.getHeading());
         this.altitude = String.format("%.0f", data.getAltitude());
+        this.status = phase==null ? "" : phase.name();
     }
     
     private String firstNotNull(String... values) {
@@ -84,6 +111,14 @@ public class LiveUpdateData {
             }
         }
         return null;
+    }
+    
+    
+    @Override
+    public String toString() {
+        return String.format(TOSTRINGFORMAT,
+                pilotID, flightNumber, registration, depTime, depICAO, arrICAO,
+                route, latitude, longitude, heading, altitude, groundSpeed, status);
     }
     
 }

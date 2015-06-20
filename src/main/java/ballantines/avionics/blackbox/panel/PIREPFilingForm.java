@@ -82,7 +82,7 @@ public class PIREPFilingForm implements Initializable, PipeUpdateListener {
         logger = new FlightLogger(services);   
         
         eventPipe.connectTo(logger.eventPipe);
-        flightPipe.connectTo(logger.flightBidPipe);
+        flightPipe.connectTo(services.flightBidPipe);
         resultPipe.connectTo(services.flightTrackingResultPipe);
     }
 

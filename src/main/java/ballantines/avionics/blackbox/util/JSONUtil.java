@@ -35,4 +35,14 @@ public class JSONUtil {
             return cal;
         }
     }
+    
+    public static String createFormatString(Class cls, String... propertiesAndFormats) {
+        assert propertiesAndFormats.length % 2 == 0;
+        StringBuilder sb = new StringBuilder("{'class':'" + cls.getName()+"'");
+        for (int i=0; i < propertiesAndFormats.length; i+=2) {
+            sb.append(String.format(",'%s':%s", propertiesAndFormats[i], propertiesAndFormats[i+1]));
+        }
+        sb.append("}");
+        return sb.toString();
+    }
 }
