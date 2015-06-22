@@ -204,7 +204,19 @@ public class PositionPanel implements Initializable, PipeUpdateListener<FlightDa
     
     @FXML
     public void handleRecoverLastPositionBtnPressed() {
-        // TODO
+        FlightData data = restoreLastFlightDataFromPreferences();
+        if (data != null) {
+            Map<String, Object> properties = new HashMap<>();
+            
+            properties.put("/position/latitude-deg", data.getLatitude());
+            properties.put("/position/longitude-deg", data.getLongitude());
+            properties.put("/position/altitude-ft", data.getAltitude());
+            properties.put("/orientation/heading-deg", data.getHeading());
+            properties.put("/velocities/groundspeed-kt", data.getGroundSpeed());
+            
+            PropertyService propertyService = services.getPropertyService();
+            propertyService.writeProperties(properties);
+        }
     }
     
     private Location readLocationFromPreferences(String airport) {
