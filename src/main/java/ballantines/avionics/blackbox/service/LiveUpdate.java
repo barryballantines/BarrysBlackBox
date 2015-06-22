@@ -51,7 +51,9 @@ public class LiveUpdate implements PipeUpdateListener {
         if (pipe == liveUpdateEnabledPipe) {
             Boolean enabled = liveUpdateEnabledPipe.get();
             if (enabled!=null) {
-                if (enabled && (services.isRecordingPipe.get()==true)) {
+                Boolean isRecording = services.isRecordingPipe.get();
+                
+                if (enabled && (isRecording !=null) && isRecording) {
                     start();
                 } else {
                     stop();
