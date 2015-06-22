@@ -35,7 +35,7 @@ public class LiveUpdateData {
             "status", STRING );
     
     @Element @Path("switch")
-    private String data = "pirep";
+    private String data = "liveupdate";
     
     @Element @Path("verify")
     public String pilotID;
