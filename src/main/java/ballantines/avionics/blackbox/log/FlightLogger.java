@@ -45,7 +45,7 @@ public class FlightLogger implements PipeUpdateListener {
     private double maxClimbRate = 0.0;
     private double maxDescentRate = 0.0;
     
-    private Buffer averageVerticalSpeedBuffer = new Buffer(60);
+    private Buffer averageVerticalSpeedBuffer = new Buffer(120);
 
     private Services services;
     private LiveUpdate liveUpdate;
