@@ -168,7 +168,7 @@ public class FlightLogger implements PipeUpdateListener {
             switch (phase) {
                 case CLIMB:
                 case CRUISE:
-                case DESCEND:
+                case DESCENT:
                     storeVerticalSpeed(data);
             }
         }
@@ -223,7 +223,7 @@ public class FlightLogger implements PipeUpdateListener {
                     return FlightPhase.CLIMB;
                 }
                 break;
-            case DESCEND :
+            case DESCENT :
             case CRUISE :
                 wow = Calculus.max(data.getWoW());
                 if (wow > 0.5) {
@@ -249,7 +249,7 @@ public class FlightLogger implements PipeUpdateListener {
                 if (vsfpm <= -CLIMB_THRESHOLD) {
                     postEvent("Top of climb reached at altitude %d ft.", (int) data.getAltitude());
                     postEvent("Starting descend.");
-                    return FlightPhase.DESCEND;
+                    return FlightPhase.DESCENT;
                 }
                 if (vsfpm > -CLIMB_THRESHOLD && vsfpm < CLIMB_THRESHOLD) {
                     postEvent("Top of climb reached at altitude %d ft.", (int) dataPipe.get().getAltitude());
@@ -265,10 +265,10 @@ public class FlightLogger implements PipeUpdateListener {
                 if (vsfpm <= -CLIMB_THRESHOLD) {
                     postEvent("Top of descent reached at altitude %d ft.", (int) data.getAltitude());
                     postEvent("Starting descent at %d fpm.", data.getVerticalSpeedFPM());
-                    return FlightPhase.DESCEND;
+                    return FlightPhase.DESCENT;
                 }
                 break;
-            case DESCEND :
+            case DESCENT :
                 if (vsfpm > -CLIMB_THRESHOLD && vsfpm < CLIMB_THRESHOLD) {
                     postEvent("End of descent. Cruising at %d ft, ground speed %d kts.", 
                             (int) dataPipe.get().getAltitude(),
@@ -316,7 +316,7 @@ public class FlightLogger implements PipeUpdateListener {
             }
             else if (vs < -CLIMB_THRESHOLD) {
                 postEvent("Descending at %d ft.", (int) data.getAltitude());
-                phasePipe.set(FlightPhase.DESCEND);
+                phasePipe.set(FlightPhase.DESCENT);
             }
             else {
                postEvent("Cruising at %d ft, ground speed %d kts.", 
