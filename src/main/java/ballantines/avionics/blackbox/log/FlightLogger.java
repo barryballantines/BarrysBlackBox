@@ -108,10 +108,12 @@ public class FlightLogger implements PipeUpdateListener {
                 if (f!=null) {
                     flightBidPipe.set(f);
                     postEvent(Type.FIRST_MESSAGE, "This is flight %s from %s to %s.", f.flightNumber, f.depICAO, f.arrICAO);
-                    postEvent("Block time %s", f.depTime);
+                    postEvent("Block time %s", (f.depTime != null) ? f.depTime : "N/A");
                     postEvent("Assigned aircraft model: %s", f.aircraftFullName);
                     postEvent("Assigned aircraft registration: %s", f.aircraftReg);
-                    postEvent("Assigned route: %s", f.route);
+                    if (f.route != null) {
+                        postEvent("Assigned route: %s", f.route);
+                    }
                 }
             } catch (Exception ex) {
                 System.err.println("Cannot get flight information:" + ex);

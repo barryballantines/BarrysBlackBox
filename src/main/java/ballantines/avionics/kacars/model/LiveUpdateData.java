@@ -101,7 +101,7 @@ public class LiveUpdateData {
         this.groundSpeed = String.format("%.0f", data.getGroundSpeed());
         this.heading = String.format("%.0f", data.getHeading());
         this.altitude = String.format("%.0f", data.getAltitude());
-        this.status = phase==null ? "" : phase.name();
+        this.status = phase==null ? "" : phase.toString();
     }
     
     private String firstNotNull(String... values) {
