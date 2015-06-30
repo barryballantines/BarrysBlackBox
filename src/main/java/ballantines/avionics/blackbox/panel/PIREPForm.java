@@ -130,7 +130,11 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
     
     @FXML
     private void startupBtnPressed(ActionEvent event) {
-        L.info("Startup button pressed");
+        isRecordingPipe.set(true);
+    }
+    
+    private void startup() {
+        L.info("Recording started...");
         
         FlightDataRetrieval retrieval = services.getFlightDataRetrieval();
         
@@ -156,16 +160,17 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
         trackingDataPipe.set(trackingData);
         
         fuelChecker.connect();
-        blockTimeChecker.connect();
-        
-        isRecordingPipe.set(true);
-               
+        blockTimeChecker.connect();  
     }
     
     
     @FXML 
     private void shutdownBtnPressed(ActionEvent event) {
-        L.info("Shutdown button pressed");
+        isRecordingPipe.set(false);
+    }
+    
+    private void shutdown() {
+        L.info("Shutdown ...");
         
         // == DISCONNECT SERVICES ===
         
@@ -199,9 +204,7 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
         result.fuelConsumption = trackingData.getFuelConsumption();
         result.landingRateFPM = trackingData.landingRateFPM;
         
-        resultPipe.set(result);
-        isRecordingPipe.set(false);
-        
+        resultPipe.set(result);    
     }
     
     
@@ -213,6 +216,19 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
         if (pipe == trackingDataPipe) {
             TrackingData data = trackingDataPipe.get();
             updateUI(data);
+        }
+        
+        if (pipe == isRecordingPipe) {
+            Boolean recording = isRecordingPipe.get();
+            
+            if (recording!=null) {
+                if (recording) {
+                    startup();
+                }
+                else {
+                    shutdown();
+                }
+            }
         }
     }
     

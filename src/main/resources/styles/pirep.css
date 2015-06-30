@@ -6,3 +6,24 @@
     -fx-background-insets: 0px ;
     -fx-padding: 0px;
 }
+
+.toolbar-button {
+    -fx-background-position: center center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: 32px;
+}
+.toolbar-button--upload {
+    -fx-background-image: url('upload-to-cloud.png');
+}
+.toolbar-button--start {
+    -fx-background-image: url('aircraft-take-off.png');
+}
+.toolbar-button--stop {
+    -fx-background-image: url('aircraft-landing.png');
+}
+.toolbar-button--connected {
+    -fx-background-image: url('no-signal.png');
+}
+.toolbar-button--connected:selected {
+    -fx-background-image: url('signal.png');
+}

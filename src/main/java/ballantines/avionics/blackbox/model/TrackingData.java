@@ -65,6 +65,10 @@ public class TrackingData {
     
     // === CALCULATIONS ===
     
+    public boolean isTracking() {
+        return (trackingStarted) ? !trackingFinished : false;
+    }
+    
     public int getFuelConsumption() {
         if (trackingFinished) {
             return departureFuel - arrivalFuel;

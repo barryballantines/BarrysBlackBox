@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+
+<ToolBar prefHeight="48.0" prefWidth="272.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+  <items>
+      <ToggleButton fx:id="connectBtn" mnemonicParsing="false" onAction="#connectBtnPressed" prefHeight="36.0" prefWidth="36.0">
+         <styleClass>
+            <String fx:value="toolbar-button" />
+            <String fx:value="toolbar-button--connected" />
+         </styleClass>
+         <tooltip><Tooltip text="(Dis)connect" /></tooltip>
+      </ToggleButton>
+    <Button fx:id="startRecordingBtn" disable="true" mnemonicParsing="false" onAction="#startRecordingBtnPressed" prefHeight="36.0" prefWidth="36.0">
+         <styleClass>
+            <String fx:value="toolbar-button" />
+            <String fx:value="toolbar-button--start" />
+         </styleClass>
+         <tooltip><Tooltip text="Start recording" /></tooltip>
+    </Button>
+      <Button fx:id="stopRecordingBtn" disable="true" mnemonicParsing="false" onAction="#stopRecordingBtnPressed" prefHeight="36.0" prefWidth="36.0">
+         <styleClass>
+            <String fx:value="toolbar-button" />
+            <String fx:value="toolbar-button--stop" />
+         </styleClass>
+         <tooltip><Tooltip text="Stop recording" /></tooltip>
+      </Button>
+      <Button fx:id="uploadPirepBtn" disable="true" mnemonicParsing="false" onAction="#uploadPirepBtnPressed" prefHeight="36.0" prefWidth="36.0">
+         <styleClass>
+            <String fx:value="toolbar-button" />
+            <String fx:value="toolbar-button--upload" />
+         </styleClass>
+         <tooltip><Tooltip text="Upload PIREP" /></tooltip>
+      </Button>
+  </items>
+</ToolBar>

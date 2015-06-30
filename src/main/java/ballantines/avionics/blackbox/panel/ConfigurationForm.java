@@ -95,7 +95,8 @@ public class ConfigurationForm implements Initializable, PipeUpdateListener {
             fgPortTxt.setText("" + config.getPort()); 
         }
         else if ("configurationForm.udpServerRunningPipe".equals(pipe.id())) {
-            boolean running = (boolean) pipe.get();
+            Boolean running = (Boolean) pipe.get();
+            running = (running==null) ? false : running;
             udpServerRunningCheck.selectedProperty().set(running);
             udpServerRunningCheck.setText(running ? "Server running" : "Server not running");
             udpPortText.editableProperty().set(!running);

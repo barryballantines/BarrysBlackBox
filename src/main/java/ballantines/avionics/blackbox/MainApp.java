@@ -5,6 +5,7 @@ import ballantines.avionics.blackbox.panel.PIREPForm;
 import ballantines.avionics.blackbox.panel.RoutePanel;
 import ballantines.avionics.blackbox.panel.PositionPanel;
 import ballantines.avionics.blackbox.panel.ConfigurationForm;
+import ballantines.avionics.blackbox.panel.Toolbar;
 import ballantines.avionics.blackbox.udp.UDPServer;
 import ballantines.avionics.blackbox.util.Log;
 import de.mbuse.pipes.Pipes;
@@ -15,6 +16,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -26,8 +28,9 @@ public class MainApp extends Application {
         L.info("Barry's BlackBox is starting...");
         Services services = Services.get();
         services.init();
+        BorderPane root = new BorderPane();
         
-        TabPane root = new TabPane();
+        TabPane tabs = new TabPane();
         
         Tab pirep = createTab(PIREPForm.create(services), "Overview");
         Tab route = createTab(RoutePanel.create(services), "Route");
@@ -35,7 +38,10 @@ public class MainApp extends Application {
         Tab position = createTab(PositionPanel.create(services), "Position");
         Tab config = createTab(ConfigurationForm.create(services), "Configuration");
         
-        root.getTabs().addAll(pirep, route, pirepFiling, position, config);
+        tabs.getTabs().addAll(pirep, route, pirepFiling, position, config);
+        
+        root.setTop(Toolbar.create(services));
+        root.setCenter(tabs);
         
         Scene scene = new Scene(root);
         scene.getStylesheets().add("/styles/pirep.css");
