@@ -7,11 +7,13 @@ import ballantines.avionics.blackbox.Services;
 import ballantines.avionics.blackbox.model.FlightTrackingResult;
 import ballantines.avionics.blackbox.log.FlightLogger;
 import ballantines.avionics.blackbox.log.LogEvent;
+import ballantines.avionics.blackbox.model.Command;
 import ballantines.avionics.blackbox.util.Log;
 import ballantines.avionics.kacars.model.Flight;
 import ballantines.avionics.kacars.model.PIREPRequest;
 import de.mbuse.pipes.Pipe;
 import de.mbuse.pipes.PipeUpdateListener;
+import de.mbuse.pipes.Pipes;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -50,6 +52,7 @@ public class PIREPFilingForm implements Initializable, PipeUpdateListener {
     // PIPES
     private final Pipe<LogEvent> eventPipe = Pipe.newInstance("PIREPFilingForm.event", this);
     private final Pipe<Flight> flightPipe = Pipe.newInstance("PIREPFilingForm.flight", this);
+    private final Pipe<Command> commandPipe = Pipe.newInstance("PIREPFilingForm.command", this);
     private final Pipe<FlightTrackingResult> resultPipe = Pipe.newInstance("PIREPFilingForm.flight", this);
 
     @FXML private TextField paxUI;
@@ -84,6 +87,8 @@ public class PIREPFilingForm implements Initializable, PipeUpdateListener {
         eventPipe.connectTo(logger.eventPipe);
         flightPipe.connectTo(services.flightBidPipe);
         resultPipe.connectTo(services.flightTrackingResultPipe);
+        
+        Pipes.connect(services.commandPipe, commandPipe);
     }
 
     @Override
@@ -101,6 +106,11 @@ public class PIREPFilingForm implements Initializable, PipeUpdateListener {
         else if (model == eventPipe) {
             LogEvent event = eventPipe.get();
             addLogEvent(event);
+        }
+        else if (model == commandPipe) {
+            if (commandPipe.get() == Command.UPLOAD_PIREP) {
+                filePirep();
+            }
         }
     }
     
@@ -131,6 +141,10 @@ public class PIREPFilingForm implements Initializable, PipeUpdateListener {
 
     @FXML
     void filePirepBtnPressed(ActionEvent event) {
+        commandPipe.set(Command.UPLOAD_PIREP);
+    }
+    
+    private void filePirep() {
         PIREPRequest request = new PIREPRequest();
         request.flightNumber = flightNumberUI.getText();
         request.registration = registrationUI.getText();
