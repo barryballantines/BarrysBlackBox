@@ -111,6 +111,9 @@ public class PIREPFilingForm implements Initializable, PipeUpdateListener {
             if (commandPipe.get() == Command.UPLOAD_PIREP) {
                 filePirep();
             }
+            else if (commandPipe.get() == Command.START_RECORDING) {
+                refreshPirepData();
+            }
         }
     }
     
@@ -123,6 +126,10 @@ public class PIREPFilingForm implements Initializable, PipeUpdateListener {
     
     @FXML
     void loadDataBtnPressed(ActionEvent event) {
+        refreshPirepData();
+    }
+    
+    private void refreshPirepData() {
         Flight flight = flightPipe.get();
         FlightTrackingResult result = resultPipe.get();
         List<LogEvent> events = logger.getEvents();
