@@ -6,6 +6,7 @@
 package ballantines.avionics.blackbox.panel;
 
 import ballantines.avionics.blackbox.Services;
+import ballantines.avionics.blackbox.model.Command;
 import ballantines.avionics.blackbox.model.TrackingData;
 import ballantines.avionics.blackbox.util.Log;
 import de.mbuse.pipes.Pipe;
@@ -88,17 +89,17 @@ public class Toolbar implements Initializable, PipeUpdateListener {
     
     @FXML 
     public void startRecordingBtnPressed() {
-        recordingControlPipe.set(Boolean.TRUE);
+        services.commandPipe.set(Command.START_RECORDING);
     }
     
     @FXML 
     public void stopRecordingBtnPressed() {
-        recordingControlPipe.set(Boolean.FALSE);
+        services.commandPipe.set(Command.FINISH_RECORDING);
     }
     
     @FXML 
     public void uploadPirepBtnPressed() {
-        
+        services.commandPipe.set(Command.UPLOAD_PIREP);
     }
     
     

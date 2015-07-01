@@ -5,6 +5,7 @@ import ballantines.avionics.blackbox.service.FlightDataRetrieval;
 import ballantines.avionics.blackbox.service.FuelChecker;
 import ballantines.avionics.blackbox.service.LandingRateService;
 import ballantines.avionics.blackbox.Services;
+import ballantines.avionics.blackbox.model.Command;
 import ballantines.avionics.blackbox.model.FlightTrackingResult;
 import ballantines.avionics.blackbox.model.TrackingData;
 import ballantines.avionics.blackbox.util.Log;
@@ -76,6 +77,7 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
     
     private final Pipe<Boolean> isRecordingPipe = Pipe.newInstance("pirepForm.isRecording", this);
     private final Pipe<Double> landingRatePipe = Pipe.newInstance("pirepForm.landingRate", 0.0, this);
+    private final Pipe<Command> commandPipe = Pipe.newInstance("pirepForm.command", this);
     
     private final Pipe<FlightTrackingResult> resultPipe = Pipe.newInstance("pirepForm.result", this);
     private final Pipe<TrackingData> trackingDataPipe = Pipe.newInstance("pirepForm.trackingData", this);
@@ -119,6 +121,7 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
         landingRateService = new LandingRateService();
         
         Pipes.connect(isRecordingPipe, services.isRecordingPipe);
+        Pipes.connect(commandPipe, services.commandPipe);
         // this is source of flight tracking results...
         services.flightTrackingResultPipe.connectTo(resultPipe);
         
@@ -130,7 +133,7 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
     
     @FXML
     private void startupBtnPressed(ActionEvent event) {
-        isRecordingPipe.set(true);
+        commandPipe.set(Command.START_RECORDING);
     }
     
     private void startup() {
@@ -161,17 +164,19 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
         
         fuelChecker.connect();
         blockTimeChecker.connect();  
+        
+        
+        isRecordingPipe.set(true);
     }
     
     
     @FXML 
     private void shutdownBtnPressed(ActionEvent event) {
-        isRecordingPipe.set(false);
+        commandPipe.set(Command.FINISH_RECORDING);
     }
     
     private void shutdown() {
         L.info("Shutdown ...");
-        
         // == DISCONNECT SERVICES ===
         
         fuelChecker.disconnect();
@@ -204,7 +209,9 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
         result.fuelConsumption = trackingData.getFuelConsumption();
         result.landingRateFPM = trackingData.landingRateFPM;
         
-        resultPipe.set(result);    
+        resultPipe.set(result);   
+        
+        isRecordingPipe.set(false); 
     }
     
     
@@ -218,15 +225,18 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
             updateUI(data);
         }
         
-        if (pipe == isRecordingPipe) {
-            Boolean recording = isRecordingPipe.get();
+        if (pipe == commandPipe) {
+            Command cmd = commandPipe.get();
             
-            if (recording!=null) {
-                if (recording) {
-                    startup();
-                }
-                else {
-                    shutdown();
+            if (cmd!=null) {
+                switch(cmd) {
+                    case START_RECORDING :
+                        startup();
+                        break;
+                    case FINISH_RECORDING :
+                        shutdown();
+                        break;
+                    default:
                 }
             }
         }

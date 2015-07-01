@@ -6,6 +6,7 @@
 package ballantines.avionics.blackbox;
 
 import ballantines.avionics.blackbox.log.FlightPhase;
+import ballantines.avionics.blackbox.model.Command;
 import ballantines.avionics.blackbox.service.FGFlightDataRetrievalImpl;
 import ballantines.avionics.blackbox.service.FlightDataRetrieval;
 import ballantines.avionics.blackbox.model.FlightTrackingResult;
@@ -199,6 +200,7 @@ public class Services implements PipeUpdateListener {
     private KAcarsClient kacarsClient;
     private Timer timer;
     
+    public final Pipe<Command> commandPipe = Pipe.newInstance("Services.command", this);
     public final Pipe<KAcarsConfig> kacarsConfigPipe = Pipe.newInstance("Services.kacarsConfig", this);
     public final Pipe<ServerConfig> serverConfigPipe = Pipe.newInstance("Services.serverConfig", this);
     public final Pipe<Boolean> isRecordingPipe = Pipe.newInstance("Services.isRecording", this);
