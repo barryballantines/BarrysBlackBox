@@ -29,6 +29,9 @@ public class LogEvent {
     public LogEvent(String message) {
         this(Calendar.getInstance(UTC), message);
     }
+    public LogEvent(String message, Type type) {
+        this(Calendar.getInstance(UTC), message, type);
+    }
     public LogEvent(Calendar timestamp, String message) {
         this(timestamp, message, Type.INFO);
     }

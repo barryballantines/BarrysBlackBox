@@ -101,13 +101,13 @@ public class FlightLogger implements PipeUpdateListener {
     
     protected void beforeStartRecording() {
         KAcarsClient client = services.getKacarsClient();
-        
+        postEvent(Type.FIRST_MESSAGE, "Starting flight recording.");
         if (client.isEnabled()) {
             try {
                 Flight f = client.getBid();
                 if (f!=null) {
                     flightBidPipe.set(f);
-                    postEvent(Type.FIRST_MESSAGE, "This is flight %s from %s to %s.", f.flightNumber, f.depICAO, f.arrICAO);
+                    postEvent("This is flight %s from %s to %s.", f.flightNumber, f.depICAO, f.arrICAO);
                     postEvent("Block time %s", (f.depTime != null) ? f.depTime : "N/A");
                     postEvent("Assigned aircraft model: %s", f.aircraftFullName);
                     postEvent("Assigned aircraft registration: %s", f.aircraftReg);
@@ -334,7 +334,7 @@ public class FlightLogger implements PipeUpdateListener {
     }
     
     protected void postEvent(Type type, String msg, Object... data) {
-        LogEvent event = new LogEvent(String.format(msg, data));
+        LogEvent event = new LogEvent(String.format(msg, data), type);
         events.add(event);
         eventPipe.set(event);
     }
