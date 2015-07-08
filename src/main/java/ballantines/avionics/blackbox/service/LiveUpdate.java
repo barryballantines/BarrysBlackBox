@@ -77,7 +77,32 @@ public class LiveUpdate implements PipeUpdateListener {
         if (task!=null) {
             task.cancel();
             task = null;
+            
+            FlightData flightData = services.flightDataPipe.get();
+            Flight flight = services.flightBidPipe.get();
+            TrackingData trackingData = services.trackingDataPipe.get();
+            postLiveUpdate(flightData, flight, trackingData, FlightPhase.SHUTDOWN);
+            
+            
             L.info("LiveUpdate stopped");
+        }
+    }
+    
+    protected void postLiveUpdate(FlightData flightData, Flight flight, TrackingData trackingData, FlightPhase phase) {
+        if (flightData!=null) {
+            LiveUpdateData liveUpdate = new LiveUpdateData(flight, flightData, trackingData, phase);
+
+            L.info("LiveUpdate: %s", liveUpdate.toString());
+            if (kacarsConfigPipe.get().enabled && flight!=null) {
+                try {
+                    services.getKacarsClient().liveUpdate(liveUpdate);
+                } catch (Exception e) {
+                    L.error(e, "Live Update failed.");
+                }
+            }
+        }
+        else {
+            L.info("LiveUpdate: No Data");
         }
     }
     
@@ -89,22 +114,10 @@ public class LiveUpdate implements PipeUpdateListener {
             Flight flight = services.flightBidPipe.get();
             TrackingData trackingData = services.trackingDataPipe.get();
             FlightPhase phase = services.flightPhasePipe.get();
-            if (flightData!=null) {
-                LiveUpdateData liveUpdate = new LiveUpdateData(flight, flightData, trackingData, phase);
-
-                L.info("LiveUpdate: %s", liveUpdate.toString());
-                if (kacarsConfigPipe.get().enabled && flight!=null) {
-                    try {
-                        services.getKacarsClient().liveUpdate(liveUpdate);
-                    } catch (Exception e) {
-                        L.error(e, "Live Update failed.");
-                    }
-                }
-            }
-            else {
-                L.info("LiveUpdate: No Data");
-            }
+            postLiveUpdate(flightData, flight, trackingData, phase);
         }
+
+        
     }
     
 }
