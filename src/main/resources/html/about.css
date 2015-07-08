@@ -1,0 +1,39 @@
+body {
+  background: silver;
+  color: #262626;
+  font-family: Verdana, "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Arial, sans serif;
+  font-size: 12px;
+  line-height: 20px;
+  margin: 10px;
+  text-align: left;
+}
+
+h1, h2, h3, h4 {
+  color: dimgray; //#4189DD;
+  margin-bottom: 6px;
+  clear: left;
+}
+h1 {
+  font-weight:bold;
+}
+h2 {
+    
+  font-weight: normal;
+}
+
+a {
+  color: dimgray; //#4189DD;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #4189DD;
+}
+
+.section {
+  background-color: #FFFFFF;
+  border: 1px solid #ECECEC;
+  margin: 0 5px 20px 5px;
+  overflow: hidden;
+  padding: 20px 24px 10px;
+}

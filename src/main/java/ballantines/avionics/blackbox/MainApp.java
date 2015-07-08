@@ -1,5 +1,6 @@
 package ballantines.avionics.blackbox;
 
+import ballantines.avionics.blackbox.panel.AboutPanel;
 import ballantines.avionics.blackbox.panel.PIREPFilingForm;
 import ballantines.avionics.blackbox.panel.PIREPForm;
 import ballantines.avionics.blackbox.panel.RoutePanel;
@@ -37,8 +38,8 @@ public class MainApp extends Application {
         Tab pirepFiling = createTab(PIREPFilingForm.create(services), "PIREP");
         Tab position = createTab(PositionPanel.create(services), "Position");
         Tab config = createTab(ConfigurationForm.create(services), "Configuration");
-        
-        tabs.getTabs().addAll(pirep, route, pirepFiling, position, config);
+        Tab about = createTab(AboutPanel.create(), "About");
+        tabs.getTabs().addAll(pirep, route, pirepFiling, position, config, about);
         
         root.setTop(Toolbar.create(services));
         root.setCenter(tabs);
