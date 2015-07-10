@@ -1,6 +1,5 @@
 ---
 title: Markdown Example
-layout: post
 ---
 
 # Markdown Example
