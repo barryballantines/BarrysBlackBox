@@ -1,9 +1,18 @@
 .boxes {
     position: relative;
 }
+.boxes:last-child::after {
+  content: "";
+  clear: left;
+  display: block;
+}
 .box {
     float: left;
 }
 .box--width150px {
     width: 150px;
+}
+
+.boxes form {
+    padding-top: 0px;
 }
