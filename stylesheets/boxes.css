@@ -1,10 +1,9 @@
 .boxes {
     position: relative;
 }
-.boxes:last-child::after {
-  content: "";
+.boxes--break {
   clear: left;
-  display: block;
+  visibility: hidden;
 }
 .box {
     float: left;
