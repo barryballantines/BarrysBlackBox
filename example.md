@@ -1,6 +1,5 @@
 ---
 title: Markdown Example
-layout: default
 ---
 
 # Markdown Example
