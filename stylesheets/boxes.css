@@ -1,0 +1,9 @@
+.boxes {
+    position: relative;
+}
+.box {
+    float: left;
+}
+.box--width150px {
+    width: 150px;
+}
