@@ -1,5 +1,5 @@
 body {
-  background: silver;
+  background: lightgrey;
   color: #262626;
   font-family: Verdana, "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Arial, sans serif;
   font-size: 12px;
@@ -36,4 +36,11 @@ a:hover {
   margin: 0 5px 20px 5px;
   overflow: hidden;
   padding: 20px 24px 10px;
+}
+.boxes {
+    position: relative;
+}
+.box {
+    float: left;
+    width: 150px;
 }

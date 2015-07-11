@@ -23,8 +23,9 @@
       <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
         <items>
           <Button fx:id="aboutBtn" mnemonicParsing="false" onAction="#aboutButtonPressed" text="About" />
-            <Button fx:id="airlineBtn" mnemonicParsing="false" onAction="#vaHomeButtonPressed" text="VA Home" />
-            <Button fx:id="facebookBtn" mnemonicParsing="false" onAction="#facebookButtonPressed" text="Facebook" />
+          <Button fx:id="donateBtn" mnemonicParsing="false" onAction="#donateButtonPressed" text="Donate" />
+          <Button fx:id="airlineBtn" mnemonicParsing="false" onAction="#vaHomeButtonPressed" text="VA Home" />
+          <Button fx:id="facebookBtn" mnemonicParsing="false" onAction="#facebookButtonPressed" text="Facebook" />
         </items>
       </ToolBar>
    </bottom>
