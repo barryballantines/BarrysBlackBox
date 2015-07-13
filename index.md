@@ -9,12 +9,12 @@ Barry's BlackBox is brought to you by *Ballantines Avionics*
 
 Ballantines Avionics is available on Facebook. So please visit us there and share your ideas with us:
 
-[https://www.facebook.com/BallantinesAvionics]
+[https://www.facebook.com/BallantinesAvionics](https://www.facebook.com/BallantinesAvionics)
 
 
 You can find the source code and the documentation of this software on github: 
 
-[https://github.com/barryballantines/BarrysBlackBox]
+[https://github.com/barryballantines/BarrysBlackBox](https://github.com/barryballantines/BarrysBlackBox)
 
 
 ### Donate
@@ -42,13 +42,13 @@ Barry's BlackBox is free. But if you like it, you might consider a donation.
 
 ### Credits
 
-This software uses the work of others:</p>
+This software uses the work of others:
 
-- [http://javalite.io](JavaLite) by Igor Polevoy, published under [http://www.apache.org/licenses/LICENSE-2.0.html](Apache License, Version 2.0).
-- [http://simple.sourceforge.net/home.php](Simple XML Serialization), published under [http://www.apache.org/licenses/LICENSE-2.0.html](Apache License, Version 2.0).
-- [http://www.json.org/java/](JSON.org for Java), published under [http://www.json.org/license.html](it's own license).
+- [JavaLite](http://javalite.io) by Igor Polevoy, published under [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html).
+- [Simple XML Serialization](http://simple.sourceforge.net/home.php), published under [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html).
+- [JSON.org for Java](http://www.json.org/java/), published under [it's own license](http://www.json.org/license.html).
 
-The pictograms in the toolbar were created by Daniel Bruce ([http://www.entypo.com](www.entypo.com)), published under creative commons</p> 
+The pictograms in the toolbar were created by Daniel Bruce ([www.entypo.com](http://www.entypo.com)), published under creative commons
 
 Thanks!!!
 
@@ -60,7 +60,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at</p>
 
-[http://www.apache.org/licenses/LICENSE-2.0.html]
+[http://www.apache.org/licenses/LICENSE-2.0.html](http://www.apache.org/licenses/LICENSE-2.0.html)
  
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
