@@ -7,10 +7,13 @@ layout: default
 
 Barry's BlackBox is brought to you by *Ballantines Avionics*
 
+Download the latest version of ***Barry's BlackBox*** from the releases page:
+
+[https://github.com/barryballantines/BarrysBlackBox/releases/latest](https://github.com/barryballantines/BarrysBlackBox/releases/latest)
+
 Ballantines Avionics is available on Facebook. So please visit us there and share your ideas with us:
 
 [https://www.facebook.com/BallantinesAvionics](https://www.facebook.com/BallantinesAvionics)
-
 
 You can find the source code and the documentation of this software on github: 
 
