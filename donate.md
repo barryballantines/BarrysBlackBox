@@ -1,6 +1,6 @@
 ---
 title: "Donate"
-template: default
+layout: default
 ---
 
 ### Donate
