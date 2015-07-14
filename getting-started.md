@@ -11,7 +11,10 @@ This is what you need to run Barry's BlackBox:
 
 - Java 6 or Java 7 installation
 - FlightGear
-- the blackbox-<version>.jar file(Check [Releases](https://github.com/barryballantines/BarrysBlackBox/releases) for latest versions)
+- the ***blackbox-<version>.jar*** file.
+- the protocol ***blackbox.xml***
+
+Check [Releases](https://github.com/barryballantines/BarrysBlackBox/releases) for latest versions.
 
 ### Preparing FlightGear:
 
