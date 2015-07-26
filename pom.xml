@@ -41,6 +41,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.controlsfx</groupId>
+            <artifactId>controlsfx</artifactId>
+            <version>8.40.9</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.javalite</groupId>
             <artifactId>javalite-common</artifactId>
             <version>1.4.10</version>

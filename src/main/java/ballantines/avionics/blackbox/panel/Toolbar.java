@@ -9,6 +9,7 @@ import ballantines.avionics.blackbox.Services;
 import ballantines.avionics.blackbox.model.Command;
 import ballantines.avionics.blackbox.model.TrackingData;
 import ballantines.avionics.blackbox.util.Log;
+import com.sun.javafx.stage.StageHelper;
 import de.mbuse.pipes.Pipe;
 import de.mbuse.pipes.PipeUpdateListener;
 import de.mbuse.pipes.Pipes;
@@ -22,6 +23,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ToggleButton;
+import org.controlsfx.control.action.Action;
+import org.controlsfx.dialog.Dialog;
+import org.controlsfx.dialog.Dialogs;
 
 /**
  *
@@ -100,6 +104,7 @@ public class Toolbar implements Initializable, PipeUpdateListener {
     @FXML 
     public void uploadPirepBtnPressed() {
         services.commandPipe.set(Command.UPLOAD_PIREP);
+        services.commandPipe.set(null);
     }
     
     

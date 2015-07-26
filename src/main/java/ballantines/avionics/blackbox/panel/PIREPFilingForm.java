@@ -33,6 +33,9 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.util.Callback;
+import org.controlsfx.control.action.Action;
+import org.controlsfx.dialog.Dialog;
+import org.controlsfx.dialog.Dialogs;
 
 /**
  *
@@ -149,41 +152,68 @@ public class PIREPFilingForm implements Initializable, PipeUpdateListener {
     @FXML
     void filePirepBtnPressed(ActionEvent event) {
         commandPipe.set(Command.UPLOAD_PIREP);
+        commandPipe.set(null);
     }
     
     private void filePirep() {
-        PIREPRequest request = new PIREPRequest();
-        request.flightNumber = flightNumberUI.getText();
-        request.registration = registrationUI.getText();
-        request.depICAO = depIcaoUI.getText();
-        request.arrICAO = arrIcaoUI.getText();
-        request.pax = parseInt(paxUI);
-        request.cargo = parseInt(cargoUI);
-        request.fuelUsed = parseInt(fuelUsedUI);
-        request.flightTime = flightTimeUI.getText();
-        request.landing = parseInt(landingUI);
-        request.comments = commentsUI.getText();
-        
-        StringBuilder logBuilder = new StringBuilder();
-        for (LogEvent e : logUI.getItems()) {
-            logBuilder.append(e.getFormattedMessage());
-            logBuilder.append("<br />");
-        }
-        request.log = logBuilder.toString();
-        
-        setMessage(Color.BLACK, "Submitting PIREP");
-        
-        try {
-            L.info("Submit PIREP request: %s", request);
-            boolean success = services.getKacarsClient().filePIREP(request);
-            if (success) {
-                setMessage(Color.GREEN, "PIREP was filed successfully.");
-            } else {
-                setMessage(Color.RED, "Filing PIREP failed.");
+        Action response = Dialogs.create()
+                .title("Upload PIREP...")
+                .masthead("Upload PIREP")
+                .message("Are you sure you want to upload your PIREP now?")
+                .actions(Dialog.ACTION_YES, Dialog.ACTION_NO)
+                .showConfirm();
+        if (response == Dialog.ACTION_YES) {
+            PIREPRequest request = new PIREPRequest();
+            request.flightNumber = flightNumberUI.getText();
+            request.registration = registrationUI.getText();
+            request.depICAO = depIcaoUI.getText();
+            request.arrICAO = arrIcaoUI.getText();
+            request.pax = parseInt(paxUI);
+            request.cargo = parseInt(cargoUI);
+            request.fuelUsed = parseInt(fuelUsedUI);
+            request.flightTime = flightTimeUI.getText();
+            request.landing = parseInt(landingUI);
+            request.comments = commentsUI.getText();
+
+            StringBuilder logBuilder = new StringBuilder();
+            for (LogEvent e : logUI.getItems()) {
+                logBuilder.append(e.getFormattedMessage());
+                logBuilder.append("<br />");
             }
-        } catch (Exception ex) {
-            L.error(ex, "Error while filing PIREP report: %s", ex.getMessage());
-            setMessage(Color.RED, "Error: " + ex.getMessage());
+            request.log = logBuilder.toString();
+
+            setMessage(Color.BLACK, "Submitting PIREP");
+
+            try {
+                L.info("Submit PIREP request: %s", request);
+                boolean success = services.getKacarsClient().filePIREP(request);
+                if (success) {
+                    setMessage(Color.GREEN, "PIREP was filed successfully.");
+                    Dialogs.create()
+                            .title("PIREP uploaded")
+                            .masthead("PIREP Uploaded")
+                            .message("Your PIREP has been filed sucessfully.")
+                            .showInformation();
+                } else {
+                    setMessage(Color.RED, "Filing PIREP failed.");
+                    Dialogs.create()
+                            .title("PIREP failed")
+                            .masthead("PIREP failed")
+                            .message("Your PIREP was rejected by the virtual airline.")
+                            .showInformation();
+                }
+            } catch (Exception ex) {
+                L.error(ex, "Error while filing PIREP report: %s", ex.getMessage());
+                setMessage(Color.RED, "Error: " + ex.getMessage());
+                Dialogs.create()
+                        .title("Error uploading PIREP")
+                        .masthead("PIREP upload failed:" + ex.getMessage())
+                        .message("The PIREP client reports an error. \n"
+                        + "Please check your configuration and your Virtual Airlines account and try again.")
+                        .showException(ex);
+
+
+            }
         }
         
     }

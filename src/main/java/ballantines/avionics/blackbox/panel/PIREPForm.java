@@ -31,6 +31,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import org.controlsfx.control.action.Action;
+import org.controlsfx.dialog.Dialog;
+import org.controlsfx.dialog.Dialogs;
 
 public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
     
@@ -137,36 +140,44 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
     }
     
     private void startup() {
-        L.info("Recording started...");
-        
-        FlightDataRetrieval retrieval = services.getFlightDataRetrieval();
-        
-        
-        landingRateService.reset();
-        this.landingRatePipe.set(null);
-        
-        landingRateService.flightDataPipe.connectTo(services.flightDataPipe);
-        this.landingRatePipe.connectTo(landingRateService.landingRate, Pipes.MIN_TRANSFORM);
-        
-        
-        TrackingData trackingData = new TrackingData();
-        trackingData.departureTime = null;
-        trackingData.departureFuel = 0;
-        trackingData.trackingStarted = true;
-        try {
-            trackingData.departureAirport = retrieval.getAirport();
-        } catch (Exception e) {
-            L.error(e, "Failed to read departure Airport from FlightGear");
+        Action response = Dialogs.create()
+                .title("Start recording...")
+                .masthead("Start recording")
+                .message("Starting recording will delete all previous PIREP data. Are you sure?")
+                .actions(Dialog.ACTION_YES, Dialog.ACTION_NO)
+                .showConfirm();
+        if (response == Dialog.ACTION_YES) {
+            L.info("Recording started...");
+
+            FlightDataRetrieval retrieval = services.getFlightDataRetrieval();
+
+
+            landingRateService.reset();
+            this.landingRatePipe.set(null);
+
+            landingRateService.flightDataPipe.connectTo(services.flightDataPipe);
+            this.landingRatePipe.connectTo(landingRateService.landingRate, Pipes.MIN_TRANSFORM);
+
+
+            TrackingData trackingData = new TrackingData();
+            trackingData.departureTime = null;
+            trackingData.departureFuel = 0;
+            trackingData.trackingStarted = true;
+            try {
+                trackingData.departureAirport = retrieval.getAirport();
+            } catch (Exception e) {
+                L.error(e, "Failed to read departure Airport from FlightGear");
+            }
+
+            resultPipe.set(null);
+            trackingDataPipe.set(trackingData);
+
+            fuelChecker.connect();
+            blockTimeChecker.connect();  
+
+
+            isRecordingPipe.set(true);
         }
-        
-        resultPipe.set(null);
-        trackingDataPipe.set(trackingData);
-        
-        fuelChecker.connect();
-        blockTimeChecker.connect();  
-        
-        
-        isRecordingPipe.set(true);
     }
     
     
@@ -176,42 +187,50 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
     }
     
     private void shutdown() {
-        L.info("Shutdown ...");
-        // == DISCONNECT SERVICES ===
-        
-        fuelChecker.disconnect();
-        blockTimeChecker.disconnect();
-        
-        landingRateService.flightDataPipe.disconnectFrom(services.flightDataPipe);
-        landingRatePipe.disconnectFrom(landingRateService.landingRate);
-        
-        // === DATA ===
-        FlightDataRetrieval retrieval = services.getFlightDataRetrieval();
-        TrackingData trackingData = new TrackingData(trackingDataPipe.get());
-        
-        trackingData.trackingFinished = true;
-        try {
-            trackingData.arrivalAirport = retrieval.getAirport();
-            trackingData.arrivalFuel = (int) retrieval.getFuel();
-            trackingData.arrivalTime = retrieval.getTime();
-        } catch (Exception e) {
-            L.error(e, "Failed to get data from FlightGear");
+        Action response = Dialogs.create()
+                .title("Finish recording...")
+                .masthead("Finish recording")
+                .message("Are you sure you want to finish recording?")
+                .actions(Dialog.ACTION_YES, Dialog.ACTION_NO)
+                .showConfirm();
+        if (response == Dialog.ACTION_YES) {
+            L.info("Shutdown ...");
+            // == DISCONNECT SERVICES ===
+
+            fuelChecker.disconnect();
+            blockTimeChecker.disconnect();
+
+            landingRateService.flightDataPipe.disconnectFrom(services.flightDataPipe);
+            landingRatePipe.disconnectFrom(landingRateService.landingRate);
+
+            // === DATA ===
+            FlightDataRetrieval retrieval = services.getFlightDataRetrieval();
+            TrackingData trackingData = new TrackingData(trackingDataPipe.get());
+
+            trackingData.trackingFinished = true;
+            try {
+                trackingData.arrivalAirport = retrieval.getAirport();
+                trackingData.arrivalFuel = (int) retrieval.getFuel();
+                trackingData.arrivalTime = retrieval.getTime();
+            } catch (Exception e) {
+                L.error(e, "Failed to get data from FlightGear");
+            }
+            Double landingRateFPS = landingRatePipe.get();
+            trackingData.landingRateFPM = (landingRateFPS==null) 
+                    ? 0
+                    : (int) Math.round(landingRatePipe.get() * 60);
+
+            trackingDataPipe.set(trackingData);
+
+            FlightTrackingResult result = new FlightTrackingResult();
+            result.flightTimeMinutes = trackingData.getFlightTimeInMinutes();
+            result.fuelConsumption = trackingData.getFuelConsumption();
+            result.landingRateFPM = trackingData.landingRateFPM;
+
+            resultPipe.set(result);   
+
+            isRecordingPipe.set(false);
         }
-        Double landingRateFPS = landingRatePipe.get();
-        trackingData.landingRateFPM = (landingRateFPS==null) 
-                ? 0
-                : (int) Math.round(landingRatePipe.get() * 60);
-        
-        trackingDataPipe.set(trackingData);
-        
-        FlightTrackingResult result = new FlightTrackingResult();
-        result.flightTimeMinutes = trackingData.getFlightTimeInMinutes();
-        result.fuelConsumption = trackingData.getFuelConsumption();
-        result.landingRateFPM = trackingData.landingRateFPM;
-        
-        resultPipe.set(result);   
-        
-        isRecordingPipe.set(false); 
     }
     
     
