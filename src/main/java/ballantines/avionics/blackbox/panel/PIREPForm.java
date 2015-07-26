@@ -136,7 +136,7 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
     
     @FXML
     private void startupBtnPressed(ActionEvent event) {
-        commandPipe.set(Command.START_RECORDING);
+        services.fireCommand(Command.START_RECORDING);
     }
     
     private void startup() {
@@ -183,7 +183,7 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
     
     @FXML 
     private void shutdownBtnPressed(ActionEvent event) {
-        commandPipe.set(Command.FINISH_RECORDING);
+        services.fireCommand(Command.FINISH_RECORDING);
     }
     
     private void shutdown() {

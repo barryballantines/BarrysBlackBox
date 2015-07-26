@@ -93,18 +93,17 @@ public class Toolbar implements Initializable, PipeUpdateListener {
     
     @FXML 
     public void startRecordingBtnPressed() {
-        services.commandPipe.set(Command.START_RECORDING);
+        services.fireCommand(Command.START_RECORDING);
     }
     
     @FXML 
     public void stopRecordingBtnPressed() {
-        services.commandPipe.set(Command.FINISH_RECORDING);
+        services.fireCommand(Command.FINISH_RECORDING);
     }
     
     @FXML 
     public void uploadPirepBtnPressed() {
-        services.commandPipe.set(Command.UPLOAD_PIREP);
-        services.commandPipe.set(null);
+        services.fireCommand(Command.UPLOAD_PIREP);
     }
     
     

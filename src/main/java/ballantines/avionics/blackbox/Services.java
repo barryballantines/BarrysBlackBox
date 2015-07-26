@@ -170,6 +170,10 @@ public class Services implements PipeUpdateListener {
         }
     } 
     
+    public void fireCommand(Command cmd) {
+        this.commandPipe.set(null);
+        this.commandPipe.set(cmd);
+    }
     
     
     // === ACCESSORS ===

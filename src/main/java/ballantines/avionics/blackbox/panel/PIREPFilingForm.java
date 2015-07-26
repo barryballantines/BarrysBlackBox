@@ -151,8 +151,7 @@ public class PIREPFilingForm implements Initializable, PipeUpdateListener {
 
     @FXML
     void filePirepBtnPressed(ActionEvent event) {
-        commandPipe.set(Command.UPLOAD_PIREP);
-        commandPipe.set(null);
+        services.fireCommand(Command.UPLOAD_PIREP);
     }
     
     private void filePirep() {
