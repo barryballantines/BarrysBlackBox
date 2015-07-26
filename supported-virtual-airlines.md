@@ -2,6 +2,9 @@
 title: "Supported Virtual Airlines"
 layout: default
 ---
+
+[HOME](..) | [Getting Started](./getting-started) | **Supported VAs** | [Donate](./donate)
+
 ## List of Supported Virtual Airlines
 
 Barry's BlackBox should work with every Virtual Airlines Website which is powered by phpVMS. 
