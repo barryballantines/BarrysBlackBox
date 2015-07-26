@@ -3,6 +3,8 @@ title: "Donate"
 layout: default
 ---
 
+[HOME](..) | [Getting Started](./getting-started) | [Supported VAs](./supported-virtual-airlines) | **Donate**
+
 ### Donate
 
 Barry's BlackBox is free. But if you like it, you might consider a donation.
