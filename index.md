@@ -3,7 +3,7 @@ title: "Barry's BlackBox"
 layout: default
 ---
 
-***HOME*** | [Getting Started](./getting-started) | [Supported VAs](./supported-virtual-airlines) | [Donate](./donate)
+*HOME* | [Getting Started](./getting-started) | [Supported VAs](./supported-virtual-airlines) | [Donate](./donate)
 
 
 ### About
