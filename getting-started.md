@@ -64,13 +64,35 @@ with a predefined frequency. (the default is 30 seconds).
 
 Test your ACARS connection with the test button.
 
+### The Toolbar
+
+The toolbar of Barry's BlackBox consist of 4 buttons and offers the most important functions for tracking your flight. The four buttons are, from left to right: "(Dis)Connect", "Start", "Stop" and "Upload PIREP"
+
+**(Dis)Connect**
+
+This button connects or disconnects Barry's BlackBox with FlightGear. If the button shows a "broadcast" symbol, then you are connected; if the symbol is striked-through, then you are disconnected. Of course Barry's BlackBox will only record your flight while it is connected to FlightGear. When started, Barry's BlackBox will be disconnected, so this button is the first to click.
+
+**Start**
+
+This button starts the flight recording. You should press this button when you are at the gate, ready for departure. When pressing the button, Barry's BlackBox tries to download the current flight bid from your Virtual Airlines website. You will find this data on the PIREP tab.
+
+**Stop**
+
+This button finishes the recording of your flight. You should press it after landing, when you are at the gate and ready for disembarging. Barry's BlackBox will finish the flight log and will calculate the flight time, fuel consumption and landing rate. The data is shown on the PIREP tab.
+
+**Upload PIREP**
+
+This button uploads the recorded PIREP data (from the PIREP tab) to your Virtual Airlines Website. 
+
+
 ### Starting your flight
 
 Taxi to a gate, load some passengers and fuel and enter your route in the Flightgear route manager. When ready 
-for engine startup, open the "Overview" tab and press the "Start-Up" button. The ICAO code of your airport, the 
-current time (UTC) and the current fuel level will appear in the Destination column of your PIREP form.
+for engine startup, use the "(Dis)Connect" button to connect Barry's BlackBox to FlightGear and start your trip with the "Start" button. 
 
-The recording will start as soon as your aircraft starts moving.
+Barry's BlackBox will display the ICAO code of your airport, the current time (UTC) and the current fuel level in the destination column of the Overview tab. If you have an active flight bid, the data from the flight bid (flight number, aircraft, ...) is also shown in the PIREP tab.
+
+Barry's BlackBox is now ready for recording your journey.
 
 ### Cruising
 
@@ -80,15 +102,15 @@ Barry's BlackBox. This tab will also give you the estimated time of arrival (ETA
 
 ### Finishing your flight.
 
-After landing at your destination airport taxi to your gate, shutdown your engines and press the "Shut-Down" button 
-on the "Overview" tab. The form will show you the consumed fuel and the flight time as well as the landing rate in 
+After landing at your destination airport taxi to your gate, shutdown your engines and press the "Stop" button. 
+The PIREP form is automatically updated with the consumed fuel and the flight time as well as the landing rate in 
 feets per minutes.
 
 ### Submitting your PIREP
 
 Open the "PIREP" tab. Here you will see all data which have been tracked during your flight as well as some data that
 has been downloaded from your Virtual Airlines flight bids. You can change some data here, for example the number of 
-PAX or some comments. Finally press the "Submit PIREP" button. It will take a few seconds, and Barry's BlackBox will 
+PAX or some comments. Finally press the "Upload PIREP" button. It will take a few seconds, and Barry's BlackBox will 
 (hopefully) report a successful PIREP submission (Or an error, some Virtual Airlines servers might not respond in time,
 so that Barry's BlackBox will receive a Timeout, which is shown as an error. If this is the case, please check the 
 VA webpage to check, if the PIREP has been submitted.)
