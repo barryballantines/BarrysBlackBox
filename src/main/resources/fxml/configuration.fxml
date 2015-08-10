@@ -36,10 +36,10 @@
       </Label>
       <Label layoutX="11.0" layoutY="218.0" text="URL" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="218.0" />
       <TextField fx:id="kacarsUrlTxt" layoutX="52.0" layoutY="213.0" onAction="#kacarsConfigChanged" prefHeight="29.0" prefWidth="230.0" AnchorPane.leftAnchor="60.0" AnchorPane.rightAnchor="77.0" AnchorPane.topAnchor="213.0" />
-      <CheckBox fx:id="kacarsEnabledCheck" layoutX="194.0" layoutY="282.0" mnemonicParsing="false" onAction="#kacarsConfigChanged" text="Not enabled" AnchorPane.leftAnchor="194.0" AnchorPane.rightAnchor="77.0" AnchorPane.topAnchor="282.0" />
+      <CheckBox fx:id="kacarsEnabledCheck" layoutX="194.0" layoutY="282.0" mnemonicParsing="false" onAction="#kacarsConfigChanged" prefHeight="19.0" prefWidth="198.0" text="Not enabled" AnchorPane.leftAnchor="194.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="282.0" />
       <Label layoutX="16.0" layoutY="249.0" text="Pilot ID" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="250.0" />
       <TextField fx:id="kacarsPilotIDTxt" layoutX="63.0" layoutY="247.0" onAction="#kacarsConfigChanged" prefHeight="29.0" prefWidth="119.0" AnchorPane.leftAnchor="60.0" AnchorPane.topAnchor="245.0" />
-      <Label layoutX="15.0" layoutY="282.0" text="Psw" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="329.0" AnchorPane.topAnchor="282.0" />
+      <Label layoutX="15.0" layoutY="282.0" text="Psw" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="282.0" />
       <PasswordField fx:id="kacarsPasswordTxt" layoutX="60.0" layoutY="275.0" onAction="#kacarsConfigChanged" prefHeight="29.0" prefWidth="119.0" AnchorPane.leftAnchor="60.0" AnchorPane.topAnchor="277.0" />
       <Button fx:id="kacarsTestBtn" layoutX="302.0" layoutY="213.0" mnemonicParsing="false" onAction="#testKacarsConnection" prefHeight="29.0" prefWidth="51.0" text="Test" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="213.0" />
       <Label fx:id="kacarsMessageLbl" layoutX="194.0" layoutY="250.0" prefHeight="19.0" prefWidth="159.0" text="Press button to test connection" AnchorPane.leftAnchor="194.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="250.0" />
