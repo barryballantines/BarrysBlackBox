@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.web.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+
+<BorderPane prefHeight="353.0" prefWidth="407.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <top>
+      <AnchorPane minWidth="400.0" prefHeight="52.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button fx:id="departureBtn" layoutX="14.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleDepartureBtnAction" prefHeight="29.0" prefWidth="65.0" text="Depart" />
+            <Button fx:id="arrivalBtn" layoutX="86.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleArrivalBtnAction" prefHeight="29.0" prefWidth="65.0" text="Arrival" AnchorPane.bottomAnchor="11.0" AnchorPane.leftAnchor="86.0" AnchorPane.topAnchor="12.0" />
+            <Button fx:id="nearestBtn" layoutX="158.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleNearestBtnAction" prefHeight="29.0" prefWidth="65.0" text="Nearest" AnchorPane.bottomAnchor="11.0" AnchorPane.leftAnchor="158.0" AnchorPane.topAnchor="12.0" />
+            <Label layoutX="238.0" layoutY="17.0" text="Airport Code:" AnchorPane.bottomAnchor="16.0" AnchorPane.rightAnchor="92.0" AnchorPane.topAnchor="17.0" />
+            <TextField fx:id="icaoTF" layoutX="326.0" layoutY="12.0" onAction="#handleIcaoTFAction" prefHeight="29.0" prefWidth="70.0" text="ICAO" AnchorPane.bottomAnchor="11.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="12.0" />
+         </children>
+      </AnchorPane>
+   </top>
+   <center>
+      <WebView fx:id="metarBrowser" prefHeight="301.0" prefWidth="600.0" BorderPane.alignment="CENTER" />
+   </center>
+</BorderPane>

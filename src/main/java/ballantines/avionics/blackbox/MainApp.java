@@ -6,6 +6,7 @@ import ballantines.avionics.blackbox.panel.PIREPForm;
 import ballantines.avionics.blackbox.panel.RoutePanel;
 import ballantines.avionics.blackbox.panel.PositionPanel;
 import ballantines.avionics.blackbox.panel.ConfigurationForm;
+import ballantines.avionics.blackbox.panel.MetarPanel;
 import ballantines.avionics.blackbox.panel.Toolbar;
 import ballantines.avionics.blackbox.udp.UDPServer;
 import ballantines.avionics.blackbox.util.Log;
@@ -37,9 +38,10 @@ public class MainApp extends Application {
         Tab route = createTab(RoutePanel.create(services), "Route");
         Tab pirepFiling = createTab(PIREPFilingForm.create(services), "PIREP");
         Tab position = createTab(PositionPanel.create(services), "Position");
+        Tab metar = createTab(MetarPanel.create(services), "METAR");
         Tab config = createTab(ConfigurationForm.create(services), "Configuration");
         Tab about = createTab(AboutPanel.create(), "About");
-        tabs.getTabs().addAll(pirep, route, pirepFiling, position, config, about);
+        tabs.getTabs().addAll(pirep, route, pirepFiling, position, metar, config, about);
         
         root.setTop(Toolbar.create(services));
         root.setCenter(tabs);
