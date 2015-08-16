@@ -28,7 +28,6 @@ public class MetarPanel implements PipeUpdateListener, Initializable {
 
     private static Log L = Log.forClass(MetarPanel.class);
     private static final String METAR_URL_PATTERN = "http://www.aviationweather.gov/metar/data?ids=%s&format=decoded&date=0&hours=0&taf=on&layout=off";
-                                                    //"http://weather.noaa.gov/weather/current/%s.html";
     
     @FXML private Button nearestBtn;
     @FXML private Button arrivalBtn;
@@ -53,7 +52,7 @@ public class MetarPanel implements PipeUpdateListener, Initializable {
         updateIcaoTF(null);
         updateMetarBrowser(null);
         
-        /** fix for www.aviationweather.gov:
+        /** fix for 'www.aviationweather.gov':
          * we are removing the head element to get rid of the stylesheets,
          * so the layout will be more 'responsive'...
          **/
