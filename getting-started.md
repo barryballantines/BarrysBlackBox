@@ -3,7 +3,7 @@ title: "Getting Started"
 layout: default
 ---
 
-[HOME](.) | **Getting Started** | [Supported VAs](./supported-virtual-airlines) | [Donate](./donate)
+[HOME](.) | **Getting Started** | [Supported VAs](./supported-virtual-airlines) | [Report an Issue](https://github.com/barryballantines/BarrysBlackBox/issues)
 
 ## Getting Started with Barry's BlackBox
 

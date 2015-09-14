@@ -3,7 +3,7 @@ title: "Supported Virtual Airlines"
 layout: default
 ---
 
-[HOME](.) | [Getting Started](./getting-started) | **Supported VAs** | [Donate](./donate)
+[HOME](.) | [Getting Started](./getting-started) | **Supported VAs** | [Report an Issue](https://github.com/barryballantines/BarrysBlackBox/issues)
 
 ## List of Supported Virtual Airlines
 

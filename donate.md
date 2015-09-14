@@ -3,7 +3,7 @@ title: "Donate"
 layout: default
 ---
 
-[HOME](.) | [Getting Started](./getting-started) | [Supported VAs](./supported-virtual-airlines) | **Donate**
+[HOME](.) | [Getting Started](./getting-started) | [Supported VAs](./supported-virtual-airlines) | **Donate** | [Report an Issue](https://github.com/barryballantines/BarrysBlackBox/issues)
 
 ### Donate
 
