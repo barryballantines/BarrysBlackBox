@@ -156,7 +156,7 @@ public class HttpPropertyServiceImpl implements PropertyService {
     protected Object parseValue(JSONObject node) {
         String type = node.getString("type");
         if (node.has("value")) {
-            String value = node.getString("value");
+            String value = "" + node.get("value"); // BUGFIX
             //System.out.println("parseValue: '" + value + "' as " + type);
             if ("string".equals(type)) {
                 return value;
