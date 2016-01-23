@@ -63,6 +63,13 @@ public class FlightLogger implements PipeUpdateListener {
        
     }
 
+    public void restoreLogEvents() {
+        List<LogEvent> storedEvents = services.readEventLogFromUserPreferences();
+        for (LogEvent e : storedEvents) {
+            postEvent(e);
+        }
+    }
+
     public List<LogEvent> getEvents() {
         return events;
     }
@@ -96,6 +103,10 @@ public class FlightLogger implements PipeUpdateListener {
         
         if (pipe == phasePipe) {
             L.debug("New flight phase %s", phasePipe.get());
+        }
+        
+        if (pipe == eventPipe) {
+            services.writeEventLogToUserPreferences(events);
         }
     }
     
@@ -335,6 +346,10 @@ public class FlightLogger implements PipeUpdateListener {
     
     protected void postEvent(Type type, String msg, Object... data) {
         LogEvent event = new LogEvent(String.format(msg, data), type);
+        postEvent(event);
+    }
+
+    protected void postEvent(LogEvent event) {
         events.add(event);
         eventPipe.set(event);
     }

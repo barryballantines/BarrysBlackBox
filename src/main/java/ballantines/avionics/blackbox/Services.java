@@ -6,6 +6,7 @@
 package ballantines.avionics.blackbox;
 
 import ballantines.avionics.blackbox.log.FlightPhase;
+import ballantines.avionics.blackbox.log.LogEvent;
 import ballantines.avionics.blackbox.model.Command;
 import ballantines.avionics.blackbox.service.FGFlightDataRetrievalImpl;
 import ballantines.avionics.blackbox.service.FlightDataRetrieval;
@@ -21,6 +22,9 @@ import ballantines.avionics.kacars.KAcarsClient;
 import ballantines.avionics.kacars.model.Flight;
 import de.mbuse.pipes.Pipe;
 import de.mbuse.pipes.PipeUpdateListener;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Timer;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
@@ -112,6 +116,49 @@ public class Services implements PipeUpdateListener {
         }
         catch (BackingStoreException ex) {
             L.error(ex, "[SERVICES] Failed to write TrackingData to User Preferences");
+        }
+    }
+    
+    public List<LogEvent> readEventLogFromUserPreferences() {
+        Preferences prefs = Preferences.userNodeForPackage(Services.class);
+        try {
+            
+            String serialized = prefs.get("eventLog", null);
+            if (serialized==null) {
+                return new ArrayList<>();
+            }
+            else {
+                return LogEvent.deserializeEvents(serialized);
+            }
+        } catch (Exception ex) {
+            L.error(ex, "[SERVICES] Error reading event log from user preferences... data corrupt???");
+            try {
+                prefs.remove("eventLog");
+                prefs.flush();
+            }
+            catch (BackingStoreException fex) {
+                L.error(ex, "[SERVICES] Failed to remove corrupted event log from user preferences.");
+            }
+            return new ArrayList<>();
+        }
+    }
+    
+    public void writeEventLogToUserPreferences(List<LogEvent> events) {
+        try {
+            Preferences prefs = Preferences.userNodeForPackage(Services.class);
+            if (events==null) {
+                L.info("[SERVICES] removing event log from User Preferences.");
+                prefs.remove("eventLog");
+            }
+            else {
+                L.info("[SERVICES] writing event log to user preferences");
+                String serializedEvents = LogEvent.serializeEvents(events);
+                prefs.put("eventLog", serializedEvents);
+            }
+            prefs.flush();
+        }
+        catch (BackingStoreException ex) {
+            L.error(ex, "[SERVICES] Failed to write Event log to User Preferences");
         }
     }
     

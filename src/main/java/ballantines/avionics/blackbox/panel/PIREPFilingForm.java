@@ -92,6 +92,8 @@ public class PIREPFilingForm implements Initializable, PipeUpdateListener {
         resultPipe.connectTo(services.flightTrackingResultPipe);
         
         Pipes.connect(services.commandPipe, commandPipe);
+        
+        logger.restoreLogEvents();
     }
 
     @Override

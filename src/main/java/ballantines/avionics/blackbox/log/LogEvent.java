@@ -6,9 +6,13 @@
 package ballantines.avionics.blackbox.log;
 
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  *
@@ -55,6 +59,14 @@ public class LogEvent {
     
     
     
+    public JSONObject asJSONObject() {
+        JSONObject json = new JSONObject();
+        json.put("timestamp", timestamp.getTime().getTime());
+        json.put("message", message);
+        json.put("type", type.name());
+        return json;
+    }
+    
     public void writeOn(PrintWriter writer) {
         writer.println(getFormattedMessage());
     }
@@ -71,6 +83,32 @@ public class LogEvent {
                 + "', type: '" + type + "'}";
     }
     
+    public static LogEvent fromJSONObject(JSONObject json) {
+        Calendar ts = Calendar.getInstance(UTC);
+        ts.setTimeInMillis(json.optLong("timestamp", ts.getTimeInMillis()));
+        String message = json.optString("message");
+        String typeString = json.optString("type");
+        LogEvent.Type type = typeString == null ? LogEvent.Type.INFO : LogEvent.Type.valueOf(typeString);
+        return new LogEvent(ts, message, type);
+    } 
     
+    public static String serializeEvents(List<LogEvent> events) {
+        List<JSONObject> jsonEvents = new ArrayList<>();
+        for (LogEvent e : events) {
+            jsonEvents.add(e.asJSONObject());
+        }
+        return new JSONArray(jsonEvents).toString();
+    }
+    
+    public static List<LogEvent> deserializeEvents(String jsonString) {
+        JSONArray jsonArray = new JSONArray(jsonString);
+        List<LogEvent> logEvents = new ArrayList<>();
+        for (int i=0;i<jsonArray.length();i++) {
+            JSONObject json = jsonArray.getJSONObject(i);
+            LogEvent event = LogEvent.fromJSONObject(json);
+            logEvents.add(event);
+        }
+        return logEvents;
+    }
     
 }
