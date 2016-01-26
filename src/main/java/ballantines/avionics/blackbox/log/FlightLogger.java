@@ -64,7 +64,7 @@ public class FlightLogger implements PipeUpdateListener {
     }
 
     public void restoreLogEvents() {
-        List<LogEvent> storedEvents = services.readEventLogFromUserPreferences();
+        List<LogEvent> storedEvents = services.getPersistenceService().readEventLog();
         for (LogEvent e : storedEvents) {
             postEvent(e);
         }
@@ -106,7 +106,7 @@ public class FlightLogger implements PipeUpdateListener {
         }
         
         if (pipe == eventPipe) {
-            services.writeEventLogToUserPreferences(events);
+            services.getPersistenceService().writeEventLog(events);
         }
     }
     

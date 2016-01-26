@@ -34,13 +34,13 @@ public class ServicesTest {
     
     @Before
     public void setUp() {
-        initialServerConfig = services.readServerConfigFromUserPreferences();
+        initialServerConfig = services.getPersistenceService().readServerConfig();
         services.init();
     }
     
     @After
     public void tearDown() {
-        services.writeServerConfigToUserPreferences(initialServerConfig);
+        services.getPersistenceService().writeServerConfig(initialServerConfig);
     }
 
     /**

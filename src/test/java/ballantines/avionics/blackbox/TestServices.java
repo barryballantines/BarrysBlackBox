@@ -5,9 +5,13 @@
  */
 package ballantines.avionics.blackbox;
 
+import ballantines.avionics.blackbox.log.LogEvent;
 import ballantines.avionics.blackbox.model.TrackingData;
+import ballantines.avionics.blackbox.service.PersistenceService;
 import ballantines.avionics.flightgear.connect.ServerConfig;
 import ballantines.avionics.kacars.KAcarsConfig;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -21,38 +25,57 @@ public class TestServices extends Services {
     
     private static Services INSTANCE = new TestServices(); 
 
-    @Override
-    public void writeServerConfigToUserPreferences(ServerConfig serverConfig) {
-        // NOTHING 
-    }
+    private PersistenceService noopPersistenceService = new NoopPersistenceService();
 
     @Override
-    public ServerConfig readServerConfigFromUserPreferences() {
-        return new ServerConfig();
-    }
-
-    @Override
-    public void writeKACARSConfigToUserPreferences(KAcarsConfig config) {
-        // NOTHING 
-    }
-
-    @Override
-    public KAcarsConfig readKACARSConfigFromUserPreferences() {
-        return new KAcarsConfig();
-    }
-
-    @Override
-    public void writeTrackingDataToUserPreferences(TrackingData data) {
-        // NOTHING 
-    }
-
-    @Override
-    public TrackingData readTrackingDataFromUserPreferences() {
-        return new TrackingData();
+    public PersistenceService getPersistenceService() {
+        return noopPersistenceService;
     }
     
     
     
-   
-    
+    private class NoopPersistenceService implements PersistenceService {
+
+        @Override
+        public void writeServerConfig(ServerConfig serverConfig) {
+            // NOTHING 
+        }
+
+        @Override
+        public ServerConfig readServerConfig() {
+            return new ServerConfig();
+        }
+
+        @Override
+        public void writeKACARSConfig(KAcarsConfig config) {
+            // NOTHING 
+        }
+
+        @Override
+        public KAcarsConfig readKACARSConfig() {
+            return new KAcarsConfig();
+        }
+
+        @Override
+        public void writeTrackingData(TrackingData data) {
+            // NOTHING 
+        }
+
+        @Override
+        public TrackingData readTrackingData() {
+            return new TrackingData();
+        }
+
+        @Override
+        public void writeEventLog(List<LogEvent> events) {
+            // NOTHING
+        }
+
+        @Override
+        public List<LogEvent> readEventLog() {
+            return new ArrayList<>();
+        }
+        
+        
+    }
 }

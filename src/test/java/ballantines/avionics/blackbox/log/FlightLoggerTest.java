@@ -7,7 +7,7 @@ package ballantines.avionics.blackbox.log;
 
 import ballantines.avionics.blackbox.FlightSimulator;
 import ballantines.avionics.blackbox.Services;
-import ballantines.avionics.blackbox.udp.FlightData;
+import ballantines.avionics.blackbox.TestServices;
 import de.mbuse.pipes.Pipe;
 import de.mbuse.pipes.PipeUpdateListener;
 import org.junit.Test;
@@ -18,11 +18,10 @@ import org.junit.Test;
  */
 public class FlightLoggerTest implements PipeUpdateListener<LogEvent>{
     
-    private FlightLogger logger;
     
     @Test
     public void testNormalFlight() {
-        Services services = Services.get();
+        Services services = TestServices.get();
         services.init();
         FlightLogger logger = new FlightLogger(services);
         FlightSimulator sim = new FlightSimulator(services.flightDataPipe);
