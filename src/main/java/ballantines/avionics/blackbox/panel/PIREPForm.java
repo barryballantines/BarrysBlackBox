@@ -143,7 +143,7 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
         Action response = Dialogs.create()
                 .title("Start recording...")
                 .masthead("Start recording")
-                .message("Starting recording will delete all previous PIREP data. Are you sure?")
+                .message("Starting recording will delete all previous PIREP performance data. Are you sure?")
                 .actions(Dialog.ACTION_YES, Dialog.ACTION_NO)
                 .showConfirm();
         if (response == Dialog.ACTION_YES) {
