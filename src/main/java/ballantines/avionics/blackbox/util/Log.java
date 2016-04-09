@@ -59,5 +59,13 @@ public class Log {
         }
     }
     
+    public boolean isInfo() {
+        return logger.isLoggable(Level.INFO);
+    }
+    
+    public boolean isTrace() {
+        return logger.isLoggable(Level.FINER);
+    }
+    
     private Logger logger;
 }

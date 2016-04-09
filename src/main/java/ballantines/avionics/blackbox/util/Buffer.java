@@ -5,6 +5,8 @@
  */
 package ballantines.avionics.blackbox.util;
 
+import java.util.Arrays;
+
 /**
  *
  * @author mbuse
@@ -69,6 +71,10 @@ public class Buffer {
             // evicting old values...
             average = ((average * capacity) - oldValue + newValue) / capacity;
         }
+    }
+    
+    public String toString() {
+        return Arrays.toString(getValues());
     }
     
 }

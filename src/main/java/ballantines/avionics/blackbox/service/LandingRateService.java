@@ -11,6 +11,7 @@ import ballantines.avionics.blackbox.util.Calculus;
 import ballantines.avionics.blackbox.util.Log;
 import de.mbuse.pipes.Pipe;
 import de.mbuse.pipes.PipeUpdateListener;
+import java.util.Arrays;
 
 /**
  *
@@ -82,7 +83,11 @@ public class LandingRateService implements PipeUpdateListener{
     
     private double calculateLandingRate() {
         double[] rates = descentRateBuffer.getValues();
-        return Calculus.average(rates);
+        double avg = Calculus.average(rates);
+        if (L.isInfo()) {
+            L.info("Calculating Landing rate from: avg %s = %.3f", Arrays.toString(rates), avg);
+        }
+        return avg;
     }
     
     public static enum Status {
