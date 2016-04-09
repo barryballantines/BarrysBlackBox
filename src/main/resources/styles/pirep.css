@@ -12,6 +12,9 @@
     -fx-background-repeat: no-repeat;
     -fx-background-size: 32px;
 }
+.toolbar-button--download {
+    -fx-background-image: url('download.png');
+}
 .toolbar-button--upload {
     -fx-background-image: url('upload-to-cloud.png');
 }

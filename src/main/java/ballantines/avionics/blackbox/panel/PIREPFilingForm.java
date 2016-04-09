@@ -9,6 +9,7 @@ import ballantines.avionics.blackbox.log.FlightLogger;
 import ballantines.avionics.blackbox.log.LogEvent;
 import ballantines.avionics.blackbox.model.Command;
 import ballantines.avionics.blackbox.util.Log;
+import ballantines.avionics.kacars.KAcarsClient;
 import ballantines.avionics.kacars.model.Flight;
 import ballantines.avionics.kacars.model.PIREPRequest;
 import de.mbuse.pipes.Pipe;
@@ -119,6 +120,9 @@ public class PIREPFilingForm implements Initializable, PipeUpdateListener {
             else if (commandPipe.get() == Command.START_RECORDING) {
                 refreshPirepData();
             }
+            else if (commandPipe.get() == Command.DOWNLOAD_BID) {
+                downloadFlightBid();
+            }
         }
     }
     
@@ -132,6 +136,32 @@ public class PIREPFilingForm implements Initializable, PipeUpdateListener {
     @FXML
     void loadDataBtnPressed(ActionEvent event) {
         refreshPirepData();
+    }
+    
+    private void downloadFlightBid() {
+        KAcarsClient client = services.getKacarsClient();
+        if (client.isEnabled()) {
+            Action response = Dialogs.create()
+                .title("Downloading Flight Bid...")
+                .masthead("Downloading current flight bid")
+                .message("Downloading the current flight bid will override the current flight data. Are you sure?")
+                .actions(Dialog.ACTION_YES, Dialog.ACTION_NO)
+                .showConfirm();
+            if (response == Dialog.ACTION_YES) {
+                try {
+                    Flight f = client.getBid();
+                    services.flightBidPipe.set(f==null ? new Flight() : f);
+                    
+                } catch (Exception ex) {
+                    Dialogs.create()
+                        .title("Error downloading flight bid")
+                        .masthead("Flight bid download failed: " + ex.getMessage())
+                        .message("The kACARS client reports an error. \n"
+                        + "Please check your configuration and your Virtual Airlines account and try again.")
+                        .showException(ex);
+                }
+            }
+        }
     }
     
     private void refreshPirepData() {

@@ -106,7 +106,10 @@ public class Toolbar implements Initializable, PipeUpdateListener {
         services.fireCommand(Command.UPLOAD_PIREP);
     }
     
-    
+    @FXML
+    public void downloadBtnPressed() {
+        services.fireCommand(Command.DOWNLOAD_BID);
+    }
     
     public void setServices(Services services) {
         this.services = services;

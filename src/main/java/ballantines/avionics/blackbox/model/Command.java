@@ -13,6 +13,7 @@ public enum Command {
     
     START_RECORDING,
     FINISH_RECORDING,
-    UPLOAD_PIREP
+    UPLOAD_PIREP,
+    DOWNLOAD_BID,
     
 }
