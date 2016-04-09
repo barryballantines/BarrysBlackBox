@@ -260,6 +260,21 @@ public class PIREPFilingForm implements Initializable, PipeUpdateListener {
         }});
     }
     
+    @FXML
+    private void updateFlightData() {
+        Flight flight = flightPipe.get();
+        flight = (flight==null) ? new Flight() : (Flight) flight.clone();
+        
+        flight.flightNumber = flightNumberUI.getText().trim();
+        flight.aircraftReg = registrationUI.getText().trim();
+        flight.depICAO = depIcaoUI.getText().trim();
+        flight.arrICAO = arrIcaoUI.getText().trim();
+        flight.aircraftMaxPax = parseInt(paxUI, flight.aircraftMaxPax);
+        flight.aircraftCargo = parseInt(cargoUI, flight.aircraftCargo);
+        
+        services.flightBidPipe.set(flight);
+    }
+    
     private void setFlightTrackingResultData(final FlightTrackingResult result) {
         Platform.runLater(new Runnable() { public void run() {
             if (result==null) {
@@ -296,12 +311,16 @@ public class PIREPFilingForm implements Initializable, PipeUpdateListener {
     }
     
     private int parseInt(TextField field) {
+        return parseInt(field, 0);
+    }
+    
+    private int parseInt(TextField field, int defaultValue) {
         String value = field.getText();
         try {
             return Integer.parseInt(value);
         } catch (Exception ex) {
             L.debug("Failed to parse %s to integer: %s", value, ex);
-            return 0;
+            return defaultValue;
         }
     }
     

@@ -6,7 +6,6 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-
 <BorderPane prefHeight="613.0" prefWidth="528.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <center>
       <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefViewportHeight="572.0" prefViewportWidth="528.0" BorderPane.alignment="CENTER">
@@ -38,7 +37,7 @@
                         <AnchorPane>
                            <children>
                               <Label layoutY="5.0" prefHeight="19.0" prefWidth="103.0" text="Flight Number:" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="5.0" />
-                              <TextField fx:id="flightNumberUI" layoutX="100.0" layoutY="2.0" prefHeight="29.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <TextField fx:id="flightNumberUI" layoutX="100.0" layoutY="2.0" onAction="#updateFlightData" prefHeight="29.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                            </children>
                            <GridPane.margin>
                               <Insets bottom="6.0" right="6.0" />
@@ -46,7 +45,7 @@
                         </AnchorPane>
                         <AnchorPane GridPane.rowIndex="1">
                            <children>
-                              <TextField fx:id="registrationUI" layoutX="138.0" prefHeight="30.0" prefWidth="214.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <TextField fx:id="registrationUI" layoutX="138.0" onAction="#updateFlightData" prefHeight="30.0" prefWidth="214.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                               <Label layoutY="7.0" prefHeight="19.0" prefWidth="90.0" text="Registration:" AnchorPane.bottomAnchor="6.0" AnchorPane.topAnchor="5.0" />
                            </children>
                            <GridPane.margin>
@@ -59,7 +58,7 @@
                            </GridPane.margin>
                            <children>
                               <Label layoutX="9.0" layoutY="3.0" prefHeight="19.0" prefWidth="83.0" text="Departure:" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="5.0" />
-                              <TextField fx:id="depIcaoUI" layoutX="72.0" prefHeight="29.0" prefWidth="209.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <TextField fx:id="depIcaoUI" layoutX="72.0" onAction="#updateFlightData" prefHeight="29.0" prefWidth="209.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                            </children>
                         </AnchorPane>
                         <AnchorPane GridPane.columnIndex="1" GridPane.rowIndex="1">
@@ -68,7 +67,7 @@
                            </GridPane.margin>
                            <children>
                               <Label layoutY="7.0" prefHeight="19.0" prefWidth="72.0" text="Arrival:" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="5.0" />
-                              <TextField fx:id="arrIcaoUI" layoutX="75.0" prefHeight="29.0" prefWidth="207.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <TextField fx:id="arrIcaoUI" layoutX="75.0" onAction="#updateFlightData" prefHeight="29.0" prefWidth="207.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                            </children>
                         </AnchorPane>
                      </children>
@@ -90,7 +89,7 @@
                      <children>
                         <AnchorPane GridPane.rowIndex="1">
                            <children>
-                              <TextField fx:id="paxUI" layoutX="117.0" prefHeight="29.0" prefWidth="162.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <TextField fx:id="paxUI" layoutX="117.0" onAction="#updateFlightData" prefHeight="29.0" prefWidth="162.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                               <Label layoutY="7.0" prefHeight="19.0" prefWidth="80.0" text="PAX:" />
                            </children>
                            <GridPane.margin>
@@ -99,7 +98,7 @@
                         </AnchorPane>
                         <AnchorPane GridPane.rowIndex="2">
                            <children>
-                              <TextField fx:id="cargoUI" layoutX="117.0" prefHeight="29.0" prefWidth="162.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" GridPane.rowIndex="1" />
+                              <TextField fx:id="cargoUI" layoutX="117.0" onAction="#updateFlightData" prefHeight="29.0" prefWidth="162.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" GridPane.rowIndex="1" />
                               <Label layoutY="7.0" prefHeight="19.0" prefWidth="88.0" text="Cargo:" />
                            </children>
                            <GridPane.margin>

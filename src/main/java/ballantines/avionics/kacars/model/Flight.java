@@ -5,6 +5,8 @@
  */
 package ballantines.avionics.kacars.model;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Path;
 import org.simpleframework.xml.Root;
@@ -15,7 +17,7 @@ import org.simpleframework.xml.Root;
  * @author mbuse
  */
 @Root(name = "sitedata", strict=false)
-public class Flight {
+public class Flight implements Cloneable {
     @Element(required=true) @Path("info")
     public int flightStatus = -1;
     @Element(required=false) @Path("info")
@@ -80,6 +82,11 @@ public class Flight {
                 + "', 'flightType':'" + flightType + "'}'";
     }
     
-    
-    
+    public Flight clone() {
+        try {
+            return (Flight) super.clone();
+        } catch (CloneNotSupportedException ex) {
+            throw new RuntimeException("Flight should never throw this exception!");
+        }
+    }
 }
