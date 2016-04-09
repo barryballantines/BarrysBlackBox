@@ -9,6 +9,7 @@ import ballantines.avionics.blackbox.Services;
 import ballantines.avionics.blackbox.model.Command;
 import ballantines.avionics.blackbox.model.TrackingData;
 import ballantines.avionics.blackbox.util.Log;
+import ballantines.avionics.kacars.KAcarsConfig;
 import com.sun.javafx.stage.StageHelper;
 import de.mbuse.pipes.Pipe;
 import de.mbuse.pipes.PipeUpdateListener;
@@ -48,6 +49,7 @@ public class Toolbar implements Initializable, PipeUpdateListener {
         Pipes.connect(isConnectedPipe, services.udpServerRunningPipe);
         Pipes.connect(recordingControlPipe, services.isRecordingPipe);
         trackingDataPipe.connectTo(services.trackingDataPipe);
+        kacarsConfigPipe.connectTo(services.kacarsConfigPipe);
         updateButtonStates();
         
     }
@@ -55,7 +57,7 @@ public class Toolbar implements Initializable, PipeUpdateListener {
     @Override
     public void pipeUpdated(Pipe pipe) {
         L.pipeUpdated(pipe);
-        if (isConnectedPipe == pipe || trackingDataPipe == pipe) {
+        if (isConnectedPipe == pipe || trackingDataPipe == pipe || kacarsConfigPipe == pipe) {
             updateButtonStates();
         }
     }
@@ -82,6 +84,12 @@ public class Toolbar implements Initializable, PipeUpdateListener {
                 stopRecordingBtn.setDisable(true);
                 uploadPirepBtn.setDisable(true);
             }
+            KAcarsConfig kacarsConfig = kacarsConfigPipe.get();
+            if (kacarsConfig!=null) {
+                uploadPirepBtn.setDisable(!kacarsConfig.enabled);
+                downloadFlightBtn.setDisable(!kacarsConfig.enabled);
+            }
+            
         }});
     }
 
@@ -119,10 +127,12 @@ public class Toolbar implements Initializable, PipeUpdateListener {
     @FXML private Button startRecordingBtn;
     @FXML private Button stopRecordingBtn;
     @FXML private Button uploadPirepBtn;
+    @FXML private Button downloadFlightBtn;
     
     private Pipe<Boolean> isConnectedPipe = Pipe.newInstance("isConnected", this);
     private Pipe<Boolean> recordingControlPipe = Pipe.newInstance("recordingControl", this);
     private Pipe<TrackingData> trackingDataPipe = Pipe.newInstance("trackingData", this);
+    private Pipe<KAcarsConfig> kacarsConfigPipe = Pipe.newInstance("kacarsConfig", this);
     
     private Services services;
 }
