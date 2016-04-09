@@ -106,10 +106,6 @@
                            </GridPane.margin>
                         </AnchorPane>
                         <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="3">
-                           <children>
-                              <TextField fx:id="fuelUsedUI" layoutX="123.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                              <Label layoutY="5.0" prefHeight="19.0" prefWidth="95.0" text="Fuel Used (lbs):" />
-                           </children>
                            <GridPane.margin>
                               <Insets right="6.0" />
                            </GridPane.margin>
@@ -134,6 +130,12 @@
                            <children>
                               <TextField fx:id="landingUI" layoutX="123.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                               <Label layoutY="5.0" prefHeight="19.0" prefWidth="93.0" text="Landing Rate:" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="5.0" />
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                           <children>
+                              <TextField fx:id="fuelUsedUI" layoutX="100.0" layoutY="1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <Label layoutY="2.0" prefHeight="19.0" prefWidth="95.0" text="Fuel Used (lbs):" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="5.0" />
                            </children>
                         </AnchorPane>
                      </children>
