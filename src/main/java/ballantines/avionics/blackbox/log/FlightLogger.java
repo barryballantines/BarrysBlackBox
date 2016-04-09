@@ -56,7 +56,9 @@ public class FlightLogger implements PipeUpdateListener {
        this.services = services;
        this.liveUpdate = new LiveUpdate(services);
        this.isRecordingPipe.connectTo(services.isRecordingPipe);
+       
        this.dataPipe.connectTo(services.flightDataPipe); 
+       this.flightBidPipe.connectTo(services.flightBidPipe);
        
        services.flightPhasePipe.connectTo(phasePipe);
        services.flightBidPipe.connectTo(flightBidPipe);
@@ -113,22 +115,27 @@ public class FlightLogger implements PipeUpdateListener {
     protected void beforeStartRecording() {
         KAcarsClient client = services.getKacarsClient();
         postEvent(Type.FIRST_MESSAGE, "Starting flight recording.");
-        if (client.isEnabled()) {
-            try {
-                Flight f = client.getBid();
-                if (f!=null) {
-                    flightBidPipe.set(f);
-                    postEvent("This is flight %s from %s to %s.", f.flightNumber, f.depICAO, f.arrICAO);
-                    postEvent("Block time %s", (f.depTime != null) ? f.depTime : "N/A");
-                    postEvent("Assigned aircraft model: %s", f.aircraftFullName);
-                    postEvent("Assigned aircraft registration: %s", f.aircraftReg);
-                    if (f.route != null) {
-                        postEvent("Assigned route: %s", f.route);
-                    }
-                }
-            } catch (Exception ex) {
-                System.err.println("Cannot get flight information:" + ex);
+        try {
+            Flight f = flightBidPipe.get();
+            if (f==null && client.isEnabled()) {
+                f = client.getBid();
+                flightBidPipe.set(f);
             }
+            if (f==null) {
+                postEvent("Free flight started.");
+                postEvent("No information about flight and aircraft available.");
+            }
+            else {
+                postEvent("This is flight %s from %s to %s.", f.flightNumber, f.depICAO, f.arrICAO);
+                postEvent("Block time %s", (f.depTime != null) ? f.depTime : "N/A");
+                postEvent("Assigned aircraft model: %s", f.aircraftFullName);
+                postEvent("Assigned aircraft registration: %s", f.aircraftReg);
+                if (f.route != null) {
+                    postEvent("Assigned route: %s", f.route);
+                }
+            }
+        } catch (Exception ex) {
+            System.err.println("Cannot get flight information:" + ex);
         }
         
         FlightDataRetrieval service = services.getFlightDataRetrieval();
