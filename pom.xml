@@ -4,7 +4,7 @@
 
     <groupId>ballantines.avionics</groupId>
     <artifactId>blackbox</artifactId>
-    <version>1.3-SNAPSHOT</version>
+    <version>1.3</version>
     <packaging>jar</packaging>
 
     <name>BarrysBlackBox</name>
@@ -23,7 +23,7 @@
       <connection>scm:git:file://${project.basedir}</connection>
       <developerConnection>scm:git:file://${project.basedir}</developerConnection>
       <url>scm:git:file://${project.basedir}</url>
-      <tag>HEAD</tag>
+      <tag>blackbox-1.3</tag>
     </scm>
 	
 	<distributionManagement>
