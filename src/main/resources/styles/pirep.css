@@ -14,9 +14,11 @@
 }
 .toolbar-button--download {
     -fx-background-image: url('download.png');
+    /* -fx-background-image: url('download-from-cloud.png'); */
 }
 .toolbar-button--upload {
-    -fx-background-image: url('upload-to-cloud.png');
+    -fx-background-image: url('upload.png');
+    /* -fx-background-image: url('upload-to-cloud.png'); */
 }
 .toolbar-button--start {
     -fx-background-image: url('aircraft-take-off.png');
@@ -25,7 +27,7 @@
     -fx-background-image: url('aircraft-landing.png');
 }
 .toolbar-button--connected {
-    -fx-background-image: url('no-signal.png');
+    -fx-background-image: url('no-signal-2.png');
 }
 .toolbar-button--connected:selected {
     -fx-background-image: url('signal.png');

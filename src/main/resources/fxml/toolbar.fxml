@@ -5,7 +5,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
 
-<ToolBar prefHeight="48.0" prefWidth="272.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<ToolBar xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
   <items>
       <ToggleButton fx:id="connectBtn" mnemonicParsing="false" onAction="#connectBtnPressed" prefHeight="36.0" prefWidth="36.0">
          <styleClass>
@@ -15,6 +15,14 @@
          <tooltip><Tooltip text="(Dis)connect" /></tooltip>
       </ToggleButton>
       <Separator prefWidth="8.0" />
+      <Button fx:id="downloadFlightBtn" mnemonicParsing="false" onAction="#downloadBtnPressed" prefHeight="36.0" prefWidth="36.0">
+          <styleClass>
+              <String fx:value="toolbar-button" />
+              <String fx:value="toolbar-button--download" />
+          </styleClass>
+          <tooltip><Tooltip text="Download flight bid" /></tooltip>
+      </Button>
+      <Separator layoutX="50.0" layoutY="10.0" prefWidth="8.0" />
     <Button fx:id="startRecordingBtn" disable="true" mnemonicParsing="false" onAction="#startRecordingBtnPressed" prefHeight="36.0" prefWidth="36.0">
          <styleClass>
             <String fx:value="toolbar-button" />
@@ -30,13 +38,6 @@
          <tooltip><Tooltip text="Stop recording" /></tooltip>
       </Button>
       <Separator prefWidth="8.0" />
-      <Button fx:id="downloadFlightBtn" mnemonicParsing="false" onAction="#downloadBtnPressed" prefHeight="36.0" prefWidth="36.0">
-          <styleClass>
-              <String fx:value="toolbar-button" />
-              <String fx:value="toolbar-button--download" />
-          </styleClass>
-          <tooltip><Tooltip text="Download flight bid" /></tooltip>
-      </Button>
       <Button fx:id="uploadPirepBtn" disable="true" mnemonicParsing="false" onAction="#uploadPirepBtnPressed" prefHeight="36.0" prefWidth="36.0">
          <styleClass>
             <String fx:value="toolbar-button" />
