@@ -34,14 +34,14 @@ public class MainApp extends Application {
         
         TabPane tabs = new TabPane();
         
-        Tab pirep = createTab(PIREPForm.create(services), "Overview");
-        Tab route = createTab(RoutePanel.create(services), "Route");
-        Tab pirepFiling = createTab(PIREPFilingForm.create(services), "PIREP");
+        Tab overview = createTab(PIREPForm.create(services), "Overview");
+        Tab pirepForm = createTab(PIREPFilingForm.create(services), "PIREP");
+        Tab progress = createTab(RoutePanel.create(services), "Progress");
         Tab position = createTab(PositionPanel.create(services), "Position");
         Tab metar = createTab(MetarPanel.create(services), "METAR");
         Tab config = createTab(ConfigurationForm.create(services), "Configuration");
         Tab about = createTab(AboutPanel.create(), "About");
-        tabs.getTabs().addAll(pirep, route, pirepFiling, position, metar, config, about);
+        tabs.getTabs().addAll(/* overview, */ pirepForm, progress, position, metar, config, about);
         
         root.setTop(Toolbar.create(services));
         root.setCenter(tabs);
