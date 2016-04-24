@@ -66,21 +66,25 @@ Test your ACARS connection with the test button.
 
 ### The Toolbar
 
-The toolbar of Barry's BlackBox consist of 4 buttons and offers the most important functions for tracking your flight. The four buttons are, from left to right: "(Dis)Connect", "Start", "Stop" and "Upload PIREP"
+The toolbar of Barry's BlackBox consist of 4 buttons and offers the most important functions for tracking your flight. The four buttons are, from left to right: "(Dis)Connect", "Download Bid", "Start", "Stop" and "Upload PIREP"
 
-**(Dis)Connect**
+![Connected to FlightGear][signal-png] **(Dis)Connect**
 
 This button connects or disconnects Barry's BlackBox with FlightGear. If the button shows a "broadcast" symbol, then you are connected; if the symbol is striked-through, then you are disconnected. Of course Barry's BlackBox will only record your flight while it is connected to FlightGear. When started, Barry's BlackBox will be disconnected, so this button is the first to click.
 
-**Start**
+![Download Bid][download-png] **Download Bid**
+
+If you are flying for a Virtual Airline you can download the current Flight Bid from your VA website into Barry's BlackBox. 
+
+![Start your Flight][aircraft-take-off-png] **Start**
 
 This button starts the flight recording. You should press this button when you are at the gate, ready for departure. When pressing the button, Barry's BlackBox tries to download the current flight bid from your Virtual Airlines website. You will find this data on the PIREP tab.
 
-**Stop**
+![Finish your Flight][aircraft-landing-png] **Finish**
 
 This button finishes the recording of your flight. You should press it after landing, when you are at the gate and ready for disembarging. Barry's BlackBox will finish the flight log and will calculate the flight time, fuel consumption and landing rate. The data is shown on the PIREP tab.
 
-**Upload PIREP**
+![Upload PIREP][upload-png] **Upload PIREP**
 
 This button uploads the recorded PIREP data (from the PIREP tab) to your Virtual Airlines Website. 
 
@@ -114,3 +118,9 @@ PAX or some comments. Finally press the "Upload PIREP" button. It will take a fe
 (hopefully) report a successful PIREP submission (Or an error, some Virtual Airlines servers might not respond in time,
 so that Barry's BlackBox will receive a Timeout, which is shown as an error. If this is the case, please check the 
 VA webpage to check, if the PIREP has been submitted.)
+
+[signal-png]: /images/signal.png "Connect to FlightGear"
+[download-png]: /images/download.png "Download Bid"
+[aircraft-take-off-png]: /images/aircraft-take-off.png "Start your Flight"
+[aircraft-landing-png]: /images/aircraft-landing.png "Finish your Flight"
+[upload-png]: /images/upload.png "Upload your PIREP"
