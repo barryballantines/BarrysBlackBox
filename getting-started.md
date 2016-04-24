@@ -119,8 +119,8 @@ PAX or some comments. Finally press the "Upload PIREP" button. It will take a fe
 so that Barry's BlackBox will receive a Timeout, which is shown as an error. If this is the case, please check the 
 VA webpage to check, if the PIREP has been submitted.)
 
-[signal-png]: /images/signal.png "Connect to FlightGear"
-[download-png]: /images/download.png "Download Bid"
-[aircraft-take-off-png]: /images/aircraft-take-off.png "Start your Flight"
-[aircraft-landing-png]: /images/aircraft-landing.png "Finish your Flight"
-[upload-png]: /images/upload.png "Upload your PIREP"
+[signal-png]: ./images/signal.png "Connect to FlightGear"
+[download-png]: ./images/download.png "Download Bid"
+[aircraft-take-off-png]: ./images/aircraft-take-off.png "Start your Flight"
+[aircraft-landing-png]: ./images/aircraft-landing.png "Finish your Flight"
+[upload-png]: ./images/upload.png "Upload your PIREP"
