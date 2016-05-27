@@ -2,6 +2,7 @@ package ballantines.avionics.blackbox.service;
 
 import ballantines.avionics.blackbox.log.LogEvent;
 import ballantines.avionics.blackbox.model.TrackingData;
+import ballantines.avionics.blackbox.udp.FlightData;
 import ballantines.avionics.flightgear.connect.ServerConfig;
 import ballantines.avionics.kacars.KAcarsConfig;
 import java.util.List;
@@ -20,6 +21,8 @@ public interface PersistenceService {
 
     TrackingData readTrackingData();
 
+    FlightData readLatestFlightData();
+
     void writeEventLog(List<LogEvent> events);
 
     void writeKACARSConfig(KAcarsConfig config);
@@ -27,5 +30,7 @@ public interface PersistenceService {
     void writeServerConfig(ServerConfig serverConfig);
 
     void writeTrackingData(TrackingData data);
+
+    void writeLatestFlightData(FlightData data);
     
 }

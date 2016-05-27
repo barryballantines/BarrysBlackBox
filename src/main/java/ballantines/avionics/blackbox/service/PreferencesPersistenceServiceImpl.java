@@ -3,6 +3,8 @@ package ballantines.avionics.blackbox.service;
 import ballantines.avionics.blackbox.Services;
 import ballantines.avionics.blackbox.log.LogEvent;
 import ballantines.avionics.blackbox.model.TrackingData;
+import ballantines.avionics.blackbox.panel.PositionPanel;
+import ballantines.avionics.blackbox.udp.FlightData;
 import ballantines.avionics.blackbox.util.Log;
 import ballantines.avionics.flightgear.connect.ServerConfig;
 import ballantines.avionics.kacars.KAcarsConfig;
@@ -10,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
+import org.json.JSONObject;
 
 /**
  *
@@ -20,6 +23,30 @@ public class PreferencesPersistenceServiceImpl implements PersistenceService {
     private static Log L = Log.forClass(PreferencesPersistenceServiceImpl.class);
     
     private Preferences prefs = Preferences.userNodeForPackage(Services.class);
+    
+    
+    @Override
+    public void writeLatestFlightData(FlightData data) {
+        try {
+            Preferences prefs = Preferences.userNodeForPackage(PositionPanel.class);
+            prefs.put("lastKnownFlightData", data.toString());
+            prefs.flush();
+        }
+        catch(BackingStoreException ex) {
+            L.error(ex, "Failed to store lastKnownFlightData to preferences: %s", data);
+        }
+    }
+    
+    @Override
+    public FlightData readLatestFlightData() {
+        Preferences prefs = Preferences.userNodeForPackage(PositionPanel.class);
+        String json = prefs.get("lastKnownFlightData", null);
+        if (json==null) {
+            return null;
+        }
+        FlightData data = new FlightData(new JSONObject(json));
+        return data;
+    }
     
     @Override
     public TrackingData readTrackingData() {

@@ -64,7 +64,7 @@ public class PositionPanel implements Initializable, PipeUpdateListener<FlightDa
     public void initialize(URL url, ResourceBundle rb) {
         flightDataPipe.connectTo(services.flightDataPipe);
         try {
-            FlightData data = restoreLastFlightDataFromPreferences();
+            FlightData data = services.getPersistenceService().readLatestFlightData();
             showLastFlightData(data);
         } catch (Exception ex) {
             showLastFlightData(null);
@@ -76,10 +76,10 @@ public class PositionPanel implements Initializable, PipeUpdateListener<FlightDa
         L.pipeUpdated(pipe);
         FlightData data = pipe.get();
         if (data==null) {
-            data = restoreLastFlightDataFromPreferences();
+            data = services.getPersistenceService().readLatestFlightData();
         }
         else {
-            storeLastFlightDataToPreferences(data);
+            services.getPersistenceService().writeLatestFlightData(data);
         }
         
         showLastFlightData(data);
@@ -122,27 +122,6 @@ public class PositionPanel implements Initializable, PipeUpdateListener<FlightDa
                 lastAltitudeUI.setText("N/A");
             }
         }});
-    }
-    
-    private void storeLastFlightDataToPreferences(FlightData data) {
-        try {
-            Preferences prefs = Preferences.userNodeForPackage(PositionPanel.class);
-            prefs.put("lastKnownFlightData", data.toString());
-            prefs.flush();
-        }
-        catch(BackingStoreException ex) {
-            L.error(ex, "Failed to store lastKnownFlightData to preferences: %s", data);
-        }
-    }
-    
-    private FlightData restoreLastFlightDataFromPreferences() {
-        Preferences prefs = Preferences.userNodeForPackage(PositionPanel.class);
-        String json = prefs.get("lastKnownFlightData", null);
-        if (json==null) {
-            return null;
-        }
-        FlightData data = new FlightData(new JSONObject(json));
-        return data;
     }
     
     @FXML
@@ -207,7 +186,7 @@ public class PositionPanel implements Initializable, PipeUpdateListener<FlightDa
     
     @FXML
     public void handleRecoverLastPositionBtnPressed() {
-        FlightData data = restoreLastFlightDataFromPreferences();
+        FlightData data = services.getPersistenceService().readLatestFlightData();
         if (data != null) {
             Map<String, Object> properties = new HashMap<>();
             
