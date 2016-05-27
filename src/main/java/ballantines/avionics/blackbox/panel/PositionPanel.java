@@ -6,6 +6,7 @@
 package ballantines.avionics.blackbox.panel;
 
 import ballantines.avionics.blackbox.Services;
+import ballantines.avionics.blackbox.model.Position;
 import ballantines.avionics.flightgear.connect.PropertyService;
 import ballantines.avionics.blackbox.udp.FlightData;
 import ballantines.avionics.blackbox.util.Log;
@@ -91,15 +92,15 @@ public class PositionPanel implements Initializable, PipeUpdateListener<FlightDa
         final String airport = data.getClosestAirport();
 
         if(airport != null && !airport.equals(airportLbl.getText())) {
-            final Location l = readLocationFromPreferences(airport);
+            final Position pos = services.getPersistenceService().readKnownParkingPosition(airport);
 
             Platform.runLater(new Runnable() { @Override public void run() {
-
+                boolean hasPosition = Double.isFinite(pos.lat) && Double.isFinite(pos.lon);
                 airportLbl.setText(airport);
-                positionLbl.setText((l!=null) 
-                        ? l.lat + " " + l.lon 
+                positionLbl.setText(hasPosition 
+                        ? pos.lat + " " + pos.lon 
                         : "N/A");
-                relocateBtn.setDisable(l==null);
+                relocateBtn.setDisable(!hasPosition);
             }});
         }
 
@@ -128,6 +129,7 @@ public class PositionPanel implements Initializable, PipeUpdateListener<FlightDa
     public void handleStorePositionBtnPressed() {
         PropertyService propertyService = services.getPropertyService();
         String airport = propertyService.readProperty("/sim/airport/closest-airport-id");
+        Position pos = new Position();
         
         Map<String, Object> position = propertyService.readProperties(
                 "/position/latitude-deg", 
@@ -136,51 +138,42 @@ public class PositionPanel implements Initializable, PipeUpdateListener<FlightDa
                 "/position/longitude-string",
                 "/position/altitude-ft");
         
-        double hdg = propertyService.readProperty("/orientation/heading-deg");
+        pos.hdg = propertyService.readProperty("/orientation/heading-deg");     
+        pos.lon = (double) position.get("/position/longitude-deg");
+        pos.lat = (double) position.get("/position/latitude-deg");
+        pos.alt = (double) position.get("/position/altitude-ft");
         
+        services.getPersistenceService().writeKnownParkingPosition(airport, pos);
+    
         airportLbl.setText(airport);
         positionLbl.setText(position.get("/position/latitude-string") + " "
                 + position.get("/position/longitude-string"));
-        
-        try {
-            Preferences prefs = Preferences.userRoot();
-            
-            double lon = (double) position.get("/position/longitude-deg");
-            double lat = (double) position.get("/position/latitude-deg");
-            double alt = (double) position.get("/position/altitude-ft");
-            
-            String root = "de.mbuse.flightgear.pireprecorder.parking." + airport;
-            prefs.put(root + ".longitude", "" + lon);
-            prefs.put(root + ".latitude", "" + lat);
-            prefs.put(root + ".heading", "" + hdg);
-            prefs.put(root + ".altitude", "" + alt);
-            prefs.flush();
-        } catch (BackingStoreException ex) {}
-        
     }
     
     @FXML
     public void handleRelocatePositionBtnPressed() {
-        String lon = null;
-        String lat = null;
-        String hdg = null;
-        String alt = null;
         
         PropertyService propertyService = services.getPropertyService();
         
         String airport = propertyService.readProperty("/sim/airport/closest-airport-id");
         
-        Location l = readLocationFromPreferences(airport);
+        Position pos = services.getPersistenceService().readKnownParkingPosition(airport);
         
-        if (l!=null) {
+        if (pos!=null) {
             Map<String, Object> properties = new HashMap<>();
             
-            properties.put("/position/latitude-deg", Double.parseDouble(l.lat));
-            properties.put("/position/longitude-deg", Double.parseDouble(l.lon));
-            properties.put("/position/altitude-ft", Double.parseDouble(l.alt));
-            properties.put("/orientation/heading-deg", Double.parseDouble(l.hdg));
+            setOptionalDoubleValues(properties, "/position/latitude-deg", pos.lat);
+            setOptionalDoubleValues(properties, "/position/longitude-deg", pos.lon);
+            setOptionalDoubleValues(properties, "/position/altitude-ft", pos.alt);
+            setOptionalDoubleValues(properties, "/orientation/heading-deg", pos.hdg);
             
             propertyService.writeProperties(properties);
+        }
+    }
+    
+    private void setOptionalDoubleValues(Map<String, Object> map, String key, Double value) {
+        if (Double.isFinite(value)) {
+            map.put(key, value);
         }
     }
     
@@ -200,31 +193,9 @@ public class PositionPanel implements Initializable, PipeUpdateListener<FlightDa
             propertyService.writeProperties(properties);
         }
     }
-    
-    private Location readLocationFromPreferences(String airport) {
-        Location l = new Location();
-        Preferences prefs = Preferences.userRoot();
-        String root = "de.mbuse.flightgear.pireprecorder.parking." + airport;
-
-        l.lon = prefs.get(root + ".longitude", null);
-        l.lat = prefs.get(root + ".latitude", null);
-        l.hdg = prefs.get(root + ".heading", null);
-        l.alt = prefs.get(root + ".altitude", null);
-        
-        return (l.lon!=null && l.lat!=null && l.hdg!=null && l.alt!=null)
-                ? l : null;
-    }
 
     public void setServices(Services services) {
         this.services = services;
-    }
-    
-    
-    private static class Location {
-        String lon = null;
-        String lat = null;
-        String hdg = null;
-        String alt = null;
     }
     
 }

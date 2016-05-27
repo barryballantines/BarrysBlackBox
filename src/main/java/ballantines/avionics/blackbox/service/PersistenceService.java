@@ -1,6 +1,7 @@
 package ballantines.avionics.blackbox.service;
 
 import ballantines.avionics.blackbox.log.LogEvent;
+import ballantines.avionics.blackbox.model.Position;
 import ballantines.avionics.blackbox.model.TrackingData;
 import ballantines.avionics.blackbox.udp.FlightData;
 import ballantines.avionics.flightgear.connect.ServerConfig;
@@ -22,6 +23,8 @@ public interface PersistenceService {
     TrackingData readTrackingData();
 
     FlightData readLatestFlightData();
+    
+    Position readKnownParkingPosition(String airport);
 
     void writeEventLog(List<LogEvent> events);
 
@@ -32,5 +35,8 @@ public interface PersistenceService {
     void writeTrackingData(TrackingData data);
 
     void writeLatestFlightData(FlightData data);
+    
+    void writeKnownParkingPosition(String airport, Position position);
+    
     
 }

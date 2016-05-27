@@ -2,6 +2,7 @@ package ballantines.avionics.blackbox.service;
 
 import ballantines.avionics.blackbox.Services;
 import ballantines.avionics.blackbox.log.LogEvent;
+import ballantines.avionics.blackbox.model.Position;
 import ballantines.avionics.blackbox.model.TrackingData;
 import ballantines.avionics.blackbox.panel.PositionPanel;
 import ballantines.avionics.blackbox.udp.FlightData;
@@ -24,6 +25,32 @@ public class PreferencesPersistenceServiceImpl implements PersistenceService {
     
     private Preferences prefs = Preferences.userNodeForPackage(Services.class);
     
+    
+    public void writeKnownParkingPosition(String airport, Position position) {
+        try {
+            Preferences prefs = Preferences.userRoot();
+            
+            String root = "de.mbuse.flightgear.pireprecorder.parking." + airport;
+            prefs.put(root + ".longitude", "" + position.lon);
+            prefs.put(root + ".latitude", "" + position.lat);
+            prefs.put(root + ".heading", "" + position.hdg);
+            prefs.put(root + ".altitude", "" + position.alt);
+            prefs.flush();
+        } catch (BackingStoreException ex) {}
+    }
+    
+    public Position readKnownParkingPosition(String airport) {
+        Preferences prefs = Preferences.userRoot();
+        String root = "de.mbuse.flightgear.pireprecorder.parking." + airport;
+        Position pos = new Position();
+        
+        pos.lon = prefs.getDouble(root + ".longitude", Double.NaN);
+        pos.lat = prefs.getDouble(root + ".latitude", Double.NaN);
+        pos.hdg = prefs.getDouble(root + ".heading", Double.NaN);
+        pos.alt = prefs.getDouble(root + ".altitude", Double.NaN);
+        
+        return pos;
+    }
     
     @Override
     public void writeLatestFlightData(FlightData data) {
