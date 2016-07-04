@@ -6,8 +6,10 @@
 package ballantines.avionics.blackbox;
 
 import ballantines.avionics.blackbox.log.LogEvent;
+import ballantines.avionics.blackbox.model.Position;
 import ballantines.avionics.blackbox.model.TrackingData;
 import ballantines.avionics.blackbox.service.PersistenceService;
+import ballantines.avionics.blackbox.udp.FlightData;
 import ballantines.avionics.flightgear.connect.ServerConfig;
 import ballantines.avionics.kacars.KAcarsConfig;
 import java.util.ArrayList;
@@ -74,6 +76,26 @@ public class TestServices extends Services {
         @Override
         public List<LogEvent> readEventLog() {
             return new ArrayList<>();
+        }
+
+        @Override
+        public FlightData readLatestFlightData() {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public Position readKnownParkingPosition(String airport) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void writeLatestFlightData(FlightData data) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void writeKnownParkingPosition(String airport, Position position) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
         
         
