@@ -12,6 +12,7 @@ import ballantines.avionics.blackbox.util.Log;
 import ballantines.avionics.kacars.KAcarsClient;
 import ballantines.avionics.kacars.model.Flight;
 import ballantines.avionics.kacars.model.PIREPRequest;
+import ballantines.javafx.FxDialogs;
 import de.mbuse.pipes.Pipe;
 import de.mbuse.pipes.PipeUpdateListener;
 import de.mbuse.pipes.Pipes;
@@ -34,9 +35,6 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.util.Callback;
-import org.controlsfx.control.action.Action;
-import org.controlsfx.dialog.Dialog;
-import org.controlsfx.dialog.Dialogs;
 
 /**
  *
@@ -141,19 +139,19 @@ public class PIREPFilingForm implements Initializable, PipeUpdateListener {
     private void downloadFlightBid() {
         KAcarsClient client = services.getKacarsClient();
         if (client.isEnabled()) {
-            Action response = Dialogs.create()
+            String response = FxDialogs.create()
                 .title("Downloading Flight Bid...")
                 .masthead("Downloading current flight bid")
                 .message("Downloading the current flight bid will override the current flight data. Are you sure?")
-                .actions(Dialog.ACTION_YES, Dialog.ACTION_NO)
+                .actions(FxDialogs.YES, FxDialogs.NO)
                 .showConfirm();
-            if (response == Dialog.ACTION_YES) {
+            if (response == FxDialogs.YES) {
                 try {
                     Flight f = client.getBid();
                     services.flightBidPipe.set(f==null ? new Flight() : f);
                     
                 } catch (Exception ex) {
-                    Dialogs.create()
+                    FxDialogs.create()
                         .title("Error downloading flight bid")
                         .masthead("Flight bid download failed: " + ex.getMessage())
                         .message("The kACARS client reports an error. \n"
@@ -187,13 +185,13 @@ public class PIREPFilingForm implements Initializable, PipeUpdateListener {
     }
     
     private void filePirep() {
-        Action response = Dialogs.create()
+        String response = FxDialogs.create()
                 .title("Upload PIREP...")
                 .masthead("Upload PIREP")
                 .message("Are you sure you want to upload your PIREP now?")
-                .actions(Dialog.ACTION_YES, Dialog.ACTION_NO)
+                .actions(FxDialogs.YES, FxDialogs.NO)
                 .showConfirm();
-        if (response == Dialog.ACTION_YES) {
+        if (response == FxDialogs.YES) {
             PIREPRequest request = new PIREPRequest();
             request.flightNumber = flightNumberUI.getText();
             request.registration = registrationUI.getText();
@@ -220,14 +218,14 @@ public class PIREPFilingForm implements Initializable, PipeUpdateListener {
                 boolean success = services.getKacarsClient().filePIREP(request);
                 if (success) {
                     setMessage(Color.GREEN, "PIREP was filed successfully.");
-                    Dialogs.create()
+                    FxDialogs.create()
                             .title("PIREP uploaded")
                             .masthead("PIREP Uploaded")
                             .message("Your PIREP has been filed sucessfully.")
                             .showInformation();
                 } else {
                     setMessage(Color.RED, "Filing PIREP failed.");
-                    Dialogs.create()
+                    FxDialogs.create()
                             .title("PIREP failed")
                             .masthead("PIREP failed")
                             .message("Your PIREP was rejected by the virtual airline.")
@@ -236,7 +234,7 @@ public class PIREPFilingForm implements Initializable, PipeUpdateListener {
             } catch (Exception ex) {
                 L.error(ex, "Error while filing PIREP report: %s", ex.getMessage());
                 setMessage(Color.RED, "Error: " + ex.getMessage());
-                Dialogs.create()
+                FxDialogs.create()
                         .title("Error uploading PIREP")
                         .masthead("PIREP upload failed:" + ex.getMessage())
                         .message("The PIREP client reports an error. \n"

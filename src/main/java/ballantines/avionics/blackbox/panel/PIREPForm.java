@@ -9,6 +9,7 @@ import ballantines.avionics.blackbox.model.Command;
 import ballantines.avionics.blackbox.model.FlightTrackingResult;
 import ballantines.avionics.blackbox.model.TrackingData;
 import ballantines.avionics.blackbox.util.Log;
+import ballantines.javafx.FxDialogs;
 import de.mbuse.pipes.Pipe;
 import de.mbuse.pipes.PipeUpdateListener;
 import de.mbuse.pipes.Pipes;
@@ -31,9 +32,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import org.controlsfx.control.action.Action;
-import org.controlsfx.dialog.Dialog;
-import org.controlsfx.dialog.Dialogs;
 
 public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
     
@@ -140,13 +138,13 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
     }
     
     private void startup() {
-        Action response = Dialogs.create()
+        String response = FxDialogs.create()
                 .title("Start recording...")
                 .masthead("Start recording")
                 .message("Starting recording will delete all previous PIREP performance data. Are you sure?")
-                .actions(Dialog.ACTION_YES, Dialog.ACTION_NO)
+                .actions(FxDialogs.YES, FxDialogs.NO)
                 .showConfirm();
-        if (response == Dialog.ACTION_YES) {
+        if (response == FxDialogs.YES) {
             L.info("Recording started...");
 
             FlightDataRetrieval retrieval = services.getFlightDataRetrieval();
@@ -187,13 +185,13 @@ public class PIREPForm implements Initializable, PipeUpdateListener<Object> {
     }
     
     private void shutdown() {
-        Action response = Dialogs.create()
+        String response = FxDialogs.create()
                 .title("Finish recording...")
                 .masthead("Finish recording")
                 .message("Are you sure you want to finish recording?")
-                .actions(Dialog.ACTION_YES, Dialog.ACTION_NO)
+                .actions(FxDialogs.YES, FxDialogs.NO)
                 .showConfirm();
-        if (response == Dialog.ACTION_YES) {
+        if (response == FxDialogs.YES) {
             L.info("Shutdown ...");
             // == DISCONNECT SERVICES ===
 
