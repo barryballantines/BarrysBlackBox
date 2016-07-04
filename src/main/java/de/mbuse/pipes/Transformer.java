@@ -10,14 +10,14 @@ package de.mbuse.pipes;
  * 
  * Example:
  * {pre}
- * Transformer<Double, Double> maxTransform = new Transformer() {
+ * Transformer&lt;Double, Double&gt; maxTransform = new Transformer() {
  *   Double transform(Double currentTargetValue, Double newSourceValue) {
  *      return Math.max(currentTargetValue, newSourceValue);
  *   }
  * };
  * 
- * Pipe<Double> targetPipe = Pipe.newInstance("target", 0.0);
- * Pipe<Double> sourcePipe = Pipe.newInstance("source", 0.0);
+ * Pipe&lt;Double&gt; targetPipe = Pipe.newInstance("target", 0.0);
+ * Pipe&lt;Double&gt; sourcePipe = Pipe.newInstance("source", 0.0);
  * 
  * targetPipe.connectTo(sourcePipe, maxTransform);
  * 
@@ -32,15 +32,15 @@ package de.mbuse.pipes;
  * Transformers can also be used to connect pipes of different types:
  * 
  * {pre}
- * Transformer<Long, Date> milliSecondsTransformer = new Transformer<>() {
+ * Transformer&lt;Long, Date&gt; milliSecondsTransformer = new Transformer&lt;&gt;() {
  *   Long transform(Long currentTargetValue, Date newSourceValue) {
  *      return newSourceValue.getTime();
  *   }
  * };
  * 
  * 
- * Pipe<Long> targetPipe = Pipe.newInstance("target", 0.0);
- * Pipe<Date> sourcePipe = Pipe.newInstance("source", new Date());
+ * Pipe&lt;Long&gt; targetPipe = Pipe.newInstance("target", 0.0);
+ * Pipe&lt;Date&gt; sourcePipe = Pipe.newInstance("source", new Date());
  * 
  * targetPipe.connectTo(sourcePipe, milliSecondsTransformer);
  * 
@@ -54,8 +54,6 @@ package de.mbuse.pipes;
  */
 public interface Transformer<T,S> {
     
-    /**
-     * 
-     */
+    
     T transform(T currentTargetValue, S newSourceValue);
 }

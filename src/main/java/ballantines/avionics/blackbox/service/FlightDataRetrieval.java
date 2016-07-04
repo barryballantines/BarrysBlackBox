@@ -16,16 +16,16 @@ import java.util.Calendar;
  */
 public interface FlightDataRetrieval {
     
-    /** ICAO airport code **/
+    /** @return ICAO airport code **/
     String getAirport();
     
-    /** fuel in lb **/
+    /** @return fuel in lb **/
     long getFuel();
    
-    /** ground speed in kt **/
+    /** @return ground speed in kt **/
     double getGroundspeed();
     
-    /** time, represented in UTC **/
+    /** @return time, represented in UTC **/
     Calendar getTime();
     
     RouteInformation getRouteInformation();

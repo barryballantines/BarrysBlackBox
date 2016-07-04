@@ -38,12 +38,13 @@ public interface PropertyService {
     /**
      * Reads the given properties from Flightgear and returns them as a map.
      * @param properties    A sequence of property names.
-     * @return 
+     * @return  a map filled with properties
      */
     Map<String, Object> readProperties(String... properties);
     
     /** Reads a single property from Flightgear
      * 
+     * @param <T>           T (because DocLint sucks!)
      * @param property      The name of the property
      * @return the value
      */
