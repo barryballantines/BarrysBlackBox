@@ -54,6 +54,7 @@ public class PositionPanel implements Initializable, PipeUpdateListener<FlightDa
     @FXML private Button storePositionBtn;
     @FXML private Label airportLbl;
     @FXML private Label positionLbl;
+    @FXML private Label headingLbl;
     
     @FXML private TextField lastPositionUI;
     @FXML private TextField lastHeadingUI;
@@ -96,9 +97,13 @@ public class PositionPanel implements Initializable, PipeUpdateListener<FlightDa
 
             Platform.runLater(new Runnable() { @Override public void run() {
                 boolean hasPosition = Double.isFinite(pos.lat) && Double.isFinite(pos.lon);
+                
                 airportLbl.setText(airport);
                 positionLbl.setText(hasPosition 
                         ? pos.lat + " " + pos.lon 
+                        : "N/A");
+                headingLbl.setText(Double.isFinite(pos.hdg)
+                        ? String.format("%03.0f", pos.hdg)
                         : "N/A");
                 relocateBtn.setDisable(!hasPosition);
             }});
