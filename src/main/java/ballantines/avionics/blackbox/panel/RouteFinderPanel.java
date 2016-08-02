@@ -2,10 +2,14 @@ package ballantines.avionics.blackbox.panel;
 
 import ballantines.avionics.blackbox.Services;
 import ballantines.avionics.blackbox.util.Log;
+import ballantines.avionics.kacars.model.Flight;
 import de.mbuse.pipes.Pipe;
 import de.mbuse.pipes.PipeUpdateListener;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -15,6 +19,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.web.WebView;
 import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.html.HTMLInputElement;
 
 
 public class RouteFinderPanel implements PipeUpdateListener, Initializable {
@@ -25,6 +31,9 @@ public class RouteFinderPanel implements PipeUpdateListener, Initializable {
     @FXML private WebView browser;
     
     private Services services;
+    private Pipe<Flight> flightBidPipe = Pipe.newInstance("routeFinderPanel.flightBid", this);
+    
+    private Map<String, HTMLInputElement> inputFields = Collections.emptyMap();
 
     public static Parent create(Services services) throws IOException {
         RouteFinderPanel controller = new RouteFinderPanel();
@@ -36,7 +45,7 @@ public class RouteFinderPanel implements PipeUpdateListener, Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        
+        flightBidPipe.connectTo(services.flightBidPipe);
         reloadBrowser();
         
         /** 
@@ -44,16 +53,18 @@ public class RouteFinderPanel implements PipeUpdateListener, Initializable {
         browser.getEngine().documentProperty().addListener(new ChangeListener<Document>() {
             @Override
             public void changed(ObservableValue<? extends Document> observable, Document oldDocument, Document newDocument) {
-                /*
+                
+                HashMap<String, HTMLInputElement> newInputFields = new HashMap<>();
                 if (newDocument!=null) {
-                    NodeList heads = newDocument.getElementsByTagName("head");
-                    if (heads.getLength()>0) {
-                        Element head = (Element) heads.item(0);
-                        Element html = (Element) head.getParentNode();
-                        html.removeChild(head);
+                    NodeList inputs = newDocument.getElementsByTagName("input");
+                    for (int i=0; i<inputs.getLength(); i++) {
+                        HTMLInputElement  input = (HTMLInputElement) inputs.item(i);
+                        newInputFields.put(input.getName(), input);
                     }
+                    
+                    inputFields = newInputFields;
                 }
-                        */
+                fillFormFields();
             }
         });
     }
@@ -63,7 +74,22 @@ public class RouteFinderPanel implements PipeUpdateListener, Initializable {
     @Override
     public void pipeUpdated(Pipe pipe) {
         L.pipeUpdated(pipe);
+        if (flightBidPipe == pipe) {
+            fillFormFields();
+        }
+    }
     
+    private void fillFormFields() {
+        Flight flight = flightBidPipe.get();
+        if (flight==null) return;
+        HTMLInputElement from = inputFields.get("id1");
+        HTMLInputElement to = inputFields.get("id2");
+        if (from != null) {
+            from.setValue(flight.depICAO);
+        }
+        if (to != null) {
+            to.setValue(flight.arrICAO);
+        }
     }
     
     private void reloadBrowser() {
