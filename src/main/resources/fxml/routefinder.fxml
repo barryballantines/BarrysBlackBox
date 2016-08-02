@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.web.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+
+<BorderPane prefHeight="353.0" prefWidth="407.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <center>
+      <WebView fx:id="browser" prefHeight="301.0" prefWidth="600.0" BorderPane.alignment="CENTER" />
+   </center>
+</BorderPane>
