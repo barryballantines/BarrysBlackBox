@@ -17,6 +17,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.control.Button;
 import javafx.scene.web.WebView;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -29,9 +30,12 @@ public class RouteFinderPanel implements PipeUpdateListener, Initializable {
     private static final String ROUTE_FINDER_URL = "http://rfinder.asalink.net/free/";
     
     @FXML private WebView browser;
+    @FXML private Button  resetBtn;
+    @FXML private Button  downloadBtn;
     
     private Services services;
     private Pipe<Flight> flightBidPipe = Pipe.newInstance("routeFinderPanel.flightBid", this);
+    private Pipe<String> detailedRouteInfoPipe = Pipe.newInstance("routeFinderPanel.detailedRouteInfo", this);
     
     private Map<String, HTMLInputElement> inputFields = Collections.emptyMap();
 
@@ -63,8 +67,18 @@ public class RouteFinderPanel implements PipeUpdateListener, Initializable {
                     }
                     
                     inputFields = newInputFields;
+                    
+                    NodeList pres = newDocument.getElementsByTagName("pre");
+                    if (pres.getLength()>0) {
+                        String route = pres.item(0).getTextContent();
+                        detailedRouteInfoPipe.set(route);
+                    }
+                    else {
+                        detailedRouteInfoPipe.set(null);
+                    }
                 }
                 fillFormFields();
+                
             }
         });
     }
@@ -76,6 +90,14 @@ public class RouteFinderPanel implements PipeUpdateListener, Initializable {
         L.pipeUpdated(pipe);
         if (flightBidPipe == pipe) {
             fillFormFields();
+        }
+        else if (detailedRouteInfoPipe == pipe) {
+            if (detailedRouteInfoPipe.get()==null) {
+                downloadBtn.setDisable(true);
+            }
+            else {
+                downloadBtn.setDisable(false);
+            }
         }
     }
     

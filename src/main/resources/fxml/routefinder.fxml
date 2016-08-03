@@ -6,9 +6,16 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-
 <BorderPane prefHeight="353.0" prefWidth="407.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <center>
       <WebView fx:id="browser" prefHeight="301.0" prefWidth="600.0" BorderPane.alignment="CENTER" />
    </center>
+   <top>
+      <AnchorPane BorderPane.alignment="CENTER">
+         <children>
+            <Button fx:id="resetBtn" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" text="Reset" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="12.0" />
+            <Button fx:id="downloadBtn" disable="true" layoutX="70.0" layoutY="12.0" mnemonicParsing="false" text="Download Route" AnchorPane.bottomAnchor="12.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="12.0" />
+         </children>
+      </AnchorPane>
+   </top>
 </BorderPane>
