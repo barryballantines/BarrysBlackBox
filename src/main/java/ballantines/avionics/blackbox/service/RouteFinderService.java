@@ -3,6 +3,7 @@ package ballantines.avionics.blackbox.service;
 import ballantines.avionics.blackbox.model.Waypoint;
 import ballantines.avionics.blackbox.util.Calculus;
 import ballantines.avionics.blackbox.util.Log;
+import ballantines.avionics.flightgear.connect.PropertyService;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -26,6 +27,12 @@ public class RouteFinderService {
     
     private static final Log L = Log.forClass(RouteFinderService.class);
     private static final String ROUTE_FINDER_URL = "http://rfinder.asalink.net/free/";
+    
+    private PropertyService propertyService;
+
+    public void setPropertyService(PropertyService propertyService) {
+        this.propertyService = propertyService;
+    }
     
     /**
      * The URL for the free Route Finder service, provided by asalink.net
@@ -148,6 +155,40 @@ public class RouteFinderService {
         } finally {
             w.close();
         }
+    }
+    
+    /**
+     * Sends the given route to FlightGear
+     * 
+     * The route is stored in a temporary file which will be deleted automatically
+     * when the JVM shuts down.
+     * 
+     * This file location is sent to FG using the property service.
+     * 
+     * @param route a list of waypoints
+     * @throws IOException  in case that something went wrong.
+     */
+    public void sendRouteToFlightGear(List<Waypoint> route) throws IOException {
+        File tmpFile = File.createTempFile("currentRoute", "xml");
+        saveRouteToFile(route, tmpFile);
+        sendRouteFileToFlightGear(tmpFile);
+        tmpFile.deleteOnExit();
+    }
+    
+    /**
+     * Sends the given route xml file to FlightGear
+     * 
+     * This method uses the FlightGear property service. The file location must
+     * be reachable from flight gear.
+     * 
+     * @param routeFile the file
+     */
+    public void sendRouteFileToFlightGear(File routeFile) {
+        if (propertyService==null) {
+            throw new IllegalStateException("PropertyService not set!");
+        }
+        propertyService.writeProperty("/autopilot/route-manager/file-path", routeFile.getAbsolutePath());
+        propertyService.writeProperty("/autopilot/route-manager/input", "@LOAD");
     }
     
     /**

@@ -33,6 +33,7 @@ public class RouteFinderPanel implements PipeUpdateListener, Initializable {
     @FXML private WebView browser;
     @FXML private Button  resetBtn;
     @FXML private Button  downloadBtn;
+    @FXML private Button  sendToFGBtn;
     
     private Services services;
     private RouteFinderService routeFinderService = new RouteFinderService();
@@ -55,6 +56,7 @@ public class RouteFinderPanel implements PipeUpdateListener, Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        routeFinderService.setPropertyService(services.getPropertyService());
         flightBidPipe.connectTo(services.flightBidPipe);
         reloadBrowser();
         
@@ -87,9 +89,11 @@ public class RouteFinderPanel implements PipeUpdateListener, Initializable {
         else if (detailedRouteInfoPipe == pipe) {
             if (detailedRouteInfoPipe.get()==null) {
                 downloadBtn.setDisable(true);
+                sendToFGBtn.setDisable(true);
             }
             else {
                 downloadBtn.setDisable(false);
+                sendToFGBtn.setDisable(false);
             }
         } 
     }
@@ -104,6 +108,24 @@ public class RouteFinderPanel implements PipeUpdateListener, Initializable {
         List<Waypoint> route = detailedRouteInfoPipe.get();
         if (route!=null && route.size()>2) {
             storeRouteXML(route);
+        }
+    }
+    
+    @FXML
+    public void handleSendToFGAction(ActionEvent event) {
+        try {
+            List<Waypoint> route = detailedRouteInfoPipe.get();
+            routeFinderService.sendRouteToFlightGear(route);
+            FxDialogs.showInformation("Send Route to FG", 
+                    "The Route was successfully sent to FlightGear.", 
+                    "Check the FG Route Manager to select runways and activate your route.");
+        } catch (Exception ex) {
+            L.error(ex, "Failed to send Route to FlightGear");
+            FxDialogs.create()
+                    .title("Error sending route to FlightGear")
+                    .masthead("Failed to send route to FlightGear.")
+                    .message("The following error occured: '" + ex.getMessage() + "'.")
+                    .showException(ex);
         }
     }
     
