@@ -6,6 +6,7 @@ import ballantines.avionics.blackbox.model.TrackingData;
 import ballantines.avionics.blackbox.udp.FlightData;
 import ballantines.avionics.flightgear.connect.ServerConfig;
 import ballantines.avionics.kacars.KAcarsConfig;
+import java.io.File;
 import java.util.List;
 
 /**
@@ -25,6 +26,8 @@ public interface PersistenceService {
     FlightData readLatestFlightData();
     
     Position readKnownParkingPosition(String airport);
+    
+    File readRoutesDirectory();
 
     void writeEventLog(List<LogEvent> events);
 
@@ -38,5 +41,6 @@ public interface PersistenceService {
     
     void writeKnownParkingPosition(String airport, Position position);
     
+    void writeRoutesDirectory(File directory);
     
 }

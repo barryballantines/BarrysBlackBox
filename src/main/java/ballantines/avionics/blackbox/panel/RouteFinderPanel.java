@@ -111,10 +111,15 @@ public class RouteFinderPanel implements PipeUpdateListener, Initializable {
         Waypoint departure = route.get(0);
         Waypoint destination = route.get(route.size()-1);
         String fileName = departure.ident + "-" + destination.ident + ".xml";
+        File directory = getRouteStorageDirectory();
         
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save Route");
         fileChooser.setInitialFileName(fileName);
+        if (directory!=null) {
+            fileChooser.setInitialDirectory(directory);
+        }
+        
         File file = fileChooser.showSaveDialog(null);
         if (file!=null) {
             try {
@@ -124,6 +129,7 @@ public class RouteFinderPanel implements PipeUpdateListener, Initializable {
                         "Route file saved successfully", 
                         "The route is saved to \n" + file.getAbsolutePath() + "\n" 
                         + "You can use this file with the FlightGear Route Manager.");
+                storeRouteStorageDirectory(file.getParentFile());
             } catch (IOException ex) {
                 FxDialogs.create()
                     .title("Error saving route to file")
@@ -132,6 +138,27 @@ public class RouteFinderPanel implements PipeUpdateListener, Initializable {
                         + file.getAbsolutePath() + "\n")
                     .showException(ex);
             }
+        }
+    }
+    
+    private File getRouteStorageDirectory() {
+        File dir = services.getPersistenceService().readRoutesDirectory();
+        if (dir==null) {
+            String userHomePath = System.getProperty("user.home");
+            if (userHomePath!=null) {
+                dir = new File(userHomePath);
+            }
+        }
+        return dir;
+    }
+    
+    private void storeRouteStorageDirectory(File dir) {
+        if (dir==null) {
+            return;
+        }
+        File oldDir = services.getPersistenceService().readRoutesDirectory();
+        if (!dir.equals(oldDir)) {
+           services.getPersistenceService().writeRoutesDirectory(dir);
         }
     }
     

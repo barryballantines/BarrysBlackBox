@@ -12,6 +12,7 @@ import ballantines.avionics.blackbox.service.PersistenceService;
 import ballantines.avionics.blackbox.udp.FlightData;
 import ballantines.avionics.flightgear.connect.ServerConfig;
 import ballantines.avionics.kacars.KAcarsConfig;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,6 +96,16 @@ public class TestServices extends Services {
 
         @Override
         public void writeKnownParkingPosition(String airport, Position position) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public File readRoutesDirectory() {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void writeRoutesDirectory(File directory) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
         

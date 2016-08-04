@@ -5,10 +5,12 @@ import ballantines.avionics.blackbox.log.LogEvent;
 import ballantines.avionics.blackbox.model.Position;
 import ballantines.avionics.blackbox.model.TrackingData;
 import ballantines.avionics.blackbox.panel.PositionPanel;
+import ballantines.avionics.blackbox.panel.RouteFinderPanel;
 import ballantines.avionics.blackbox.udp.FlightData;
 import ballantines.avionics.blackbox.util.Log;
 import ballantines.avionics.flightgear.connect.ServerConfig;
 import ballantines.avionics.kacars.KAcarsConfig;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.BackingStoreException;
@@ -201,6 +203,25 @@ public class PreferencesPersistenceServiceImpl implements PersistenceService {
         }
         catch (BackingStoreException ex) {
             L.error(ex, "[PERSISTENCE] Failed to write Event log to User Preferences");
+        }
+    }
+
+    @Override
+    public File readRoutesDirectory() {
+        Preferences prefs = Preferences.userNodeForPackage(RouteFinderPanel.class);
+        String path = prefs.get("routeFinder.storage.directory", null);
+        return (path==null) ? null : new File(path);
+    }
+
+    @Override
+    public void writeRoutesDirectory(File directory) {
+        try {
+            Preferences prefs = Preferences.userNodeForPackage(RouteFinderPanel.class);
+            prefs.put("routeFinder.storage.directory", directory.getAbsolutePath());
+            prefs.flush();
+        }
+        catch(BackingStoreException ex) {
+            L.error(ex, "[PERSISTENCE] Failed to store routes directory in preferences.");
         }
     }
 }
