@@ -1,31 +1,19 @@
 package ballantines.avionics.blackbox.panel;
 
 import ballantines.avionics.blackbox.Services;
-import ballantines.avionics.blackbox.util.Calculus;
 import ballantines.avionics.blackbox.util.Log;
 import ballantines.avionics.kacars.model.Flight;
 import ballantines.avionics.blackbox.model.Waypoint;
+import ballantines.avionics.blackbox.service.RouteFinderService;
+import ballantines.avionics.blackbox.service.RouteFinderService.RouteFinderForm;
+import ballantines.javafx.FxDialogs;
 import de.mbuse.pipes.Pipe;
 import de.mbuse.pipes.PipeUpdateListener;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.StringReader;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -37,24 +25,21 @@ import javafx.scene.control.Button;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.html.HTMLInputElement;
-
 
 public class RouteFinderPanel implements PipeUpdateListener, Initializable {
 
     private static Log L = Log.forClass(RouteFinderPanel.class);
-    private static final String ROUTE_FINDER_URL = "http://rfinder.asalink.net/free/";
     
     @FXML private WebView browser;
     @FXML private Button  resetBtn;
     @FXML private Button  downloadBtn;
     
     private Services services;
-    private Pipe<Flight> flightBidPipe = Pipe.newInstance("routeFinderPanel.flightBid", this);
-    private Pipe<String> detailedRouteInfoPipe = Pipe.newInstance("routeFinderPanel.detailedRouteInfo", this);
+    private RouteFinderService routeFinderService = new RouteFinderService();
     
-    private Map<String, HTMLInputElement> inputFields = Collections.emptyMap();
+    private Pipe<Flight> flightBidPipe = Pipe.newInstance("routeFinderPanel.flightBid", this);
+    private Pipe<RouteFinderForm> routeFinderFormPipe = Pipe.newInstance("routeFinderPanel.routeFinderForm", this);
+    private Pipe<List<Waypoint>> detailedRouteInfoPipe = Pipe.newInstance("routeFinderPanel.detailedRouteInfo", this);
 
     public static Parent create(Services services) throws IOException {
         RouteFinderPanel controller = new RouteFinderPanel();
@@ -62,6 +47,10 @@ public class RouteFinderPanel implements PipeUpdateListener, Initializable {
         FXMLLoader loader = new FXMLLoader(PIREPForm.class.getResource("/fxml/routefinder.fxml"));
         loader.setController(controller);
         return (Parent) loader.load();
+    }
+
+    public void setServices(Services services) {
+        this.services = services;
     }
 
     @Override
@@ -74,28 +63,12 @@ public class RouteFinderPanel implements PipeUpdateListener, Initializable {
         browser.getEngine().documentProperty().addListener(new ChangeListener<Document>() {
             @Override
             public void changed(ObservableValue<? extends Document> observable, Document oldDocument, Document newDocument) {
-                
-                HashMap<String, HTMLInputElement> newInputFields = new HashMap<>();
                 if (newDocument!=null) {
-                    NodeList inputs = newDocument.getElementsByTagName("input");
-                    for (int i=0; i<inputs.getLength(); i++) {
-                        HTMLInputElement  input = (HTMLInputElement) inputs.item(i);
-                        newInputFields.put(input.getName(), input);
-                    }
-                    
-                    inputFields = newInputFields;
-                    
-                    NodeList pres = newDocument.getElementsByTagName("pre");
-                    if (pres.getLength()>0) {
-                        String route = pres.item(0).getTextContent();
-                        detailedRouteInfoPipe.set(route);
-                    }
-                    else {
-                        detailedRouteInfoPipe.set(null);
-                    }
+                    RouteFinderForm form = routeFinderService.extractRouteFinderForm(newDocument);
+                    List<Waypoint> routeInfo = routeFinderService.extractDetailedRouteInformation(newDocument);
+                    routeFinderFormPipe.set(form);
+                    detailedRouteInfoPipe.set(routeInfo);
                 }
-                fillFormFields();
-                
             }
         });
     }
@@ -108,6 +81,9 @@ public class RouteFinderPanel implements PipeUpdateListener, Initializable {
         if (flightBidPipe == pipe) {
             fillFormFields();
         }
+        else if (routeFinderFormPipe == pipe) {
+            fillFormFields();
+        }
         else if (detailedRouteInfoPipe == pipe) {
             if (detailedRouteInfoPipe.get()==null) {
                 downloadBtn.setDisable(true);
@@ -115,7 +91,7 @@ public class RouteFinderPanel implements PipeUpdateListener, Initializable {
             else {
                 downloadBtn.setDisable(false);
             }
-        }
+        } 
     }
     
     @FXML
@@ -125,111 +101,55 @@ public class RouteFinderPanel implements PipeUpdateListener, Initializable {
     
     @FXML 
     public void handleDownloadAction(ActionEvent event) {
-        List<Waypoint> route = extractWaypoints();
+        List<Waypoint> route = detailedRouteInfoPipe.get();
         if (route!=null && route.size()>2) {
             storeRouteXML(route);
         }
     }
     
-    private List<Waypoint> extractWaypoints() {
-        try {
-            BufferedReader reader = new BufferedReader(new StringReader(detailedRouteInfoPipe.get()));
-            List<Waypoint> route = new ArrayList<>();
-
-            String line = reader.readLine();
-            int identStart  = line.indexOf("ID");
-            int identStop   = line.indexOf("FREQ");
-            int coordsStart = line.indexOf("Coords");
-            int coordsStop  = line.indexOf("Name/Remarks");
-            line = reader.readLine();
-            while (line!=null) {
-                String coords = line.substring(coordsStart, coordsStop).trim();
-                String[] latlon = coords.split(" ");
-                
-                Waypoint wp = new Waypoint();
-                wp.ident = line.substring(identStart,identStop).trim();
-                wp.lat = Calculus.parseDegreeToDecimal(latlon[0].trim());
-                wp.lon = Calculus.parseDegreeToDecimal(latlon[1].trim());
-                route.add(wp);
-                
-                line = reader.readLine();
-            }
-            
-            return route;
-            
-        } catch (IOException ex) {
-            L.error(ex, "Failed to extract route.");
-        }
-        return null;
-    }
-    
     private void storeRouteXML(List<Waypoint> route) {
-        Waypoint departure = route.remove(0);
-        Waypoint destination = route.remove(route.size()-1);
+        Waypoint departure = route.get(0);
+        Waypoint destination = route.get(route.size()-1);
         String fileName = departure.ident + "-" + destination.ident + ".xml";
         
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save Route");
         fileChooser.setInitialFileName(fileName);
         File file = fileChooser.showSaveDialog(null);
-        try {
-            file.createNewFile();
-            PrintWriter w = new PrintWriter(file);
-            
-            w.println("<?xml version=\"1.0\"?>");
-            w.println("<PropertyList>");            
-            w.println("  <version type=\"int\">2</version>");           
-            w.println("  <departure>");           
-            w.println("    <airport type=\"string\">"+departure.ident+"</airport>");           
-            w.println("  </departure>");           
-            w.println("  <destination>");       
-            w.println("    <airport type=\"string\">"+destination.ident+"</airport>");       
-            w.println("  </destination>");
-            w.println("  <route>");
-            
-            for (int i=0; i<route.size(); i++) {
-                Waypoint wp = route.get(i);
-                String n = (i==0) ? "" : " n=\""+i+"\"";
-                String lon = String.format(Locale.US, "%.6f", wp.lon);
-                String lat = String.format(Locale.US, "%.6f", wp.lat);
-                w.println("    <wp"+n+">");
-                w.println("      <type type=\"string\">basic</type>");
-                w.println("      <ident type=\"string\">"+wp.ident+"</ident>");
-                w.println("      <lon type=\"double\">"+lon+"</lon>");
-                w.println("      <lat type=\"double\">"+lat+"</lat>");
-                w.println("   </wp>");
+        if (file!=null) {
+            try {
+                routeFinderService.saveRouteToFile(route, file);
+                L.info("Route saved to %s", file.getAbsolutePath());
+                FxDialogs.showInformation("Route saved.", 
+                        "Route file saved successfully", 
+                        "The route is saved to \n" + file.getAbsolutePath() + "\n" 
+                        + "You can use this file with the FlightGear Route Manager.");
+            } catch (IOException ex) {
+                FxDialogs.create()
+                    .title("Error saving route to file")
+                    .masthead("Failed to save '" + file.getName() + "': " + ex.getMessage())
+                    .message("Barry's BlackBox failed to save the current route information to the following file: \n"
+                        + file.getAbsolutePath() + "\n")
+                    .showException(ex);
             }
-            w.println("  </route>");
-            w.println("</PropertyList>");
-            w.flush();
-            w.close();
-            
-        } catch (IOException ex) {
-            L.error(ex, "Failed to store route xml.");
         }
     }
     
     private void fillFormFields() {
-        Flight flight = flightBidPipe.get();
-        if (flight==null) return;
-        HTMLInputElement from = inputFields.get("id1");
-        HTMLInputElement to = inputFields.get("id2");
-        if (from != null) {
-            from.setValue(flight.depICAO);
+        RouteFinderForm form = routeFinderFormPipe.get();
+        if (form==null) {
+            return;
         }
-        if (to != null) {
-            to.setValue(flight.arrICAO);
+        
+        Flight flight = flightBidPipe.get();
+        if (flight!=null) {
+            form.setDeparture(flight.depICAO);
+            form.setDestination(flight.arrICAO);
         }
     }
     
     private void reloadBrowser() {
-        browser.getEngine().load(ROUTE_FINDER_URL);
-    }
-
-    public void setServices(Services services) {
-        this.services = services;
+        browser.getEngine().load(routeFinderService.getRouteFinderURL());
     }
     
-    
-
 }
