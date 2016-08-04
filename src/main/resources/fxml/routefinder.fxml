@@ -13,8 +13,8 @@
    <top>
       <AnchorPane BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="resetBtn" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" text="Reset" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="12.0" />
-            <Button fx:id="downloadBtn" disable="true" layoutX="70.0" layoutY="12.0" mnemonicParsing="false" text="Download Route" AnchorPane.bottomAnchor="12.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="12.0" />
+            <Button fx:id="resetBtn" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleResetAction" text="Reset" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="12.0" />
+            <Button fx:id="downloadBtn" disable="true" layoutX="70.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleDownloadAction" text="Download Route" AnchorPane.bottomAnchor="12.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="12.0" />
          </children>
       </AnchorPane>
    </top>
