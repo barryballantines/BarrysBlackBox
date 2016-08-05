@@ -263,14 +263,18 @@ public class PIREPFilingForm implements Initializable, PipeUpdateListener {
         Flight flight = flightPipe.get();
         flight = (flight==null) ? new Flight() : (Flight) flight.clone();
         
-        flight.flightNumber = flightNumberUI.getText().trim();
-        flight.aircraftReg = registrationUI.getText().trim();
-        flight.depICAO = depIcaoUI.getText().trim();
-        flight.arrICAO = arrIcaoUI.getText().trim();
+        flight.flightNumber = trim(flightNumberUI.getText());
+        flight.aircraftReg = trim(registrationUI.getText());
+        flight.depICAO = trim(depIcaoUI.getText());
+        flight.arrICAO = trim(arrIcaoUI.getText());
         flight.aircraftMaxPax = parseInt(paxUI, flight.aircraftMaxPax);
         flight.aircraftCargo = parseInt(cargoUI, flight.aircraftCargo);
         
         services.flightBidPipe.set(flight);
+    }
+    
+    private String trim(String text) {
+        return (text==null) ? null : text.trim();
     }
     
     private void setFlightTrackingResultData(final FlightTrackingResult result) {
