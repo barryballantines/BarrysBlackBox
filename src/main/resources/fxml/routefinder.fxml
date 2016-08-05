@@ -8,7 +8,13 @@
 
 <BorderPane prefHeight="353.0" prefWidth="407.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <center>
-      <WebView fx:id="browser" prefHeight="301.0" prefWidth="600.0" BorderPane.alignment="CENTER" />
+      <StackPane fx:id="browserStackPane">
+         <children>
+            <WebView fx:id="browser" prefHeight="301.0" prefWidth="600.0" BorderPane.alignment="CENTER" />
+            <Pane fx:id="greyoutPane" opacity="0.5" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: lightgrey;" visible="false" />
+            <ProgressIndicator fx:id="progressIndicator" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" visible="false" />
+         </children>
+      </StackPane>
    </center>
    <top>
       <AnchorPane BorderPane.alignment="CENTER">

@@ -17,12 +17,17 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Worker;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.ProgressIndicator;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import org.w3c.dom.Document;
@@ -36,6 +41,9 @@ public class RouteFinderPanel implements PipeUpdateListener, Initializable {
     @FXML private Button  resetBtn;
     @FXML private Button  downloadBtn;
     @FXML private Button  sendToFGBtn;
+    @FXML private StackPane browserStackPane;
+    @FXML private Pane greyoutPane;
+    @FXML private ProgressIndicator progressIndicator;
     
     private Services services;
     private RouteFinderService routeFinderService = new RouteFinderService();
@@ -102,6 +110,22 @@ public class RouteFinderPanel implements PipeUpdateListener, Initializable {
                 }
             }
         });
+        
+        browser.getEngine().getLoadWorker().stateProperty().addListener(new ChangeListener<Worker.State>() {
+
+            @Override
+            public void changed(ObservableValue<? extends Worker.State> observable, Worker.State oldState, Worker.State newState) {
+                if (newState == Worker.State.RUNNING) {
+                   greyoutPane.setVisible(true);
+                   progressIndicator.setVisible(true);
+                }
+                else {
+                   greyoutPane.setVisible(false);
+                   progressIndicator.setVisible(false);
+                }
+            }
+        });
+        
     }
     
     @Override
