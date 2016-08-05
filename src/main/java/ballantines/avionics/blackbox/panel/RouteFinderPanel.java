@@ -32,6 +32,7 @@ public class RouteFinderPanel implements PipeUpdateListener, Initializable {
     private static Log L = Log.forClass(RouteFinderPanel.class);
     
     @FXML private WebView browser;
+    @FXML private Button  getRouteBtn;
     @FXML private Button  resetBtn;
     @FXML private Button  downloadBtn;
     @FXML private Button  sendToFGBtn;
@@ -62,7 +63,7 @@ public class RouteFinderPanel implements PipeUpdateListener, Initializable {
         flightBidPipe.connectTo(services.flightBidPipe);
         reloadBrowser();
         
-        /** ^
+        /** 
          **/
         browser.getEngine().documentProperty().addListener(new ChangeListener<Document>() {
             @Override
@@ -107,13 +108,15 @@ public class RouteFinderPanel implements PipeUpdateListener, Initializable {
     public void pipeUpdated(Pipe pipe) {
         L.pipeUpdated(pipe);
         if (flightBidPipe == pipe) {
-            setFormData(flightBidPipe.get());
+            Flight bid = flightBidPipe.get();
+            setFormData(bid);
         }
         else if (formDataPipe == pipe) {
             fillFormFields(formDataPipe.get());
         }
         else if (routeFinderFormPipe == pipe) {
             fillFormFields(formDataPipe.get());
+            getRouteBtn.setDisable(routeFinderFormPipe.get()==null);
         }
         else if (detailedRouteInfoPipe == pipe) {
             if (detailedRouteInfoPipe.get()==null) {
@@ -128,7 +131,17 @@ public class RouteFinderPanel implements PipeUpdateListener, Initializable {
     }
     
     @FXML
+    public void handleGetRouteAction(ActionEvent event) {
+        RouteFinderForm form = routeFinderFormPipe.get();
+        if (form!=null) {
+            form.submit();
+        }
+    }
+    
+    @FXML 
     public void handleResetAction(ActionEvent event) {
+        Flight bid = flightBidPipe.get();
+        setFormData(bid);
         reloadBrowser();
     }
     
