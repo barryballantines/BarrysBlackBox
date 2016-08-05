@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -39,6 +40,7 @@ public class RouteFinderPanel implements PipeUpdateListener, Initializable {
     private RouteFinderService routeFinderService = new RouteFinderService();
     
     private Pipe<Flight> flightBidPipe = Pipe.newInstance("routeFinderPanel.flightBid", this);
+    private Pipe<String[]> formDataPipe = Pipe.newInstance("routeFinderPanel.formData", new String[]{"",""}, this);
     private Pipe<RouteFinderForm> routeFinderFormPipe = Pipe.newInstance("routeFinderPanel.routeFinderForm", this);
     private Pipe<List<Waypoint>> detailedRouteInfoPipe = Pipe.newInstance("routeFinderPanel.detailedRouteInfo", this);
 
@@ -60,31 +62,58 @@ public class RouteFinderPanel implements PipeUpdateListener, Initializable {
         flightBidPipe.connectTo(services.flightBidPipe);
         reloadBrowser();
         
-        /** 
+        /** ^
          **/
         browser.getEngine().documentProperty().addListener(new ChangeListener<Document>() {
             @Override
             public void changed(ObservableValue<? extends Document> observable, Document oldDocument, Document newDocument) {
                 if (newDocument!=null) {
+                    browser.setDisable(false);
                     RouteFinderForm form = routeFinderService.extractRouteFinderForm(newDocument);
                     List<Waypoint> routeInfo = routeFinderService.extractDetailedRouteInformation(newDocument);
+                    if (form!=null) {
+                        // We are showing the form page
+                        L.debug("RouteFinderPanel showing form: %s", form);
+                    }
+                    else if (routeInfo!=null) {
+                        L.debug("RouteFinderPanel showing result: route of %d waypoints: %s", routeInfo.size(), routeInfo);
+                    }
+                    else {
+                        // We are showing the stale page ("Do many requests at once...")
+                        L.debug("RouteFinderPanel showing stale page...");
+                        
+                    }
                     routeFinderFormPipe.set(form);
                     detailedRouteInfoPipe.set(routeInfo);
+                }
+                else {
+                    // loading next page...
+                    browser.setDisable(true);
+                    RouteFinderForm form = routeFinderFormPipe.get();
+                    if (form!=null) {
+                        // Submitting form request...
+                        L.debug("Submitting %s", form);
+                        formDataPipe.set(new String[] {
+                            Objects.toString(form.getDeparture(), ""),
+                            Objects.toString(form.getDestination(), "")
+                        });
+                    }
                 }
             }
         });
     }
     
-    
-    
     @Override
     public void pipeUpdated(Pipe pipe) {
         L.pipeUpdated(pipe);
         if (flightBidPipe == pipe) {
-            fillFormFields();
+            setFormData(flightBidPipe.get());
+        }
+        else if (formDataPipe == pipe) {
+            fillFormFields(formDataPipe.get());
         }
         else if (routeFinderFormPipe == pipe) {
-            fillFormFields();
+            fillFormFields(formDataPipe.get());
         }
         else if (detailedRouteInfoPipe == pipe) {
             if (detailedRouteInfoPipe.get()==null) {
@@ -184,16 +213,28 @@ public class RouteFinderPanel implements PipeUpdateListener, Initializable {
         }
     }
     
-    private void fillFormFields() {
+    private void setFormData(Flight bid) {
+        if (bid == null) {
+            // do not change anything!
+        }
+        else {
+            String departure = bid.depICAO;
+            String destination = bid.arrICAO;
+            formDataPipe.set(new String[] {
+                Objects.toString(departure, ""),
+                Objects.toString(destination, "")
+            });
+        }
+    }
+    
+    private void fillFormFields(String[] formData) {
         RouteFinderForm form = routeFinderFormPipe.get();
         if (form==null) {
             return;
         }
-        
-        Flight flight = flightBidPipe.get();
-        if (flight!=null) {
-            form.setDeparture(flight.depICAO);
-            form.setDestination(flight.arrICAO);
+        if (formData!=null && formData.length==2) {
+            form.setDeparture(formData[0]);
+            form.setDestination(formData[1]);
         }
     }
     

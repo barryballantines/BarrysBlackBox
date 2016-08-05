@@ -303,8 +303,23 @@ public class RouteFinderService {
             destinationInput.setValue(icao);
         }
         
+        public String getDeparture() {
+            return departureInput.getValue();
+        }
+        
+        public String getDestination() {
+            return destinationInput.getValue();
+        }
+        
         public void submit() {
             form.submit();
         }
+
+        @Override
+        public String toString() {
+            return String.format("RouteFinderForm[departure=%s, destination=%s]", getDeparture(), getDestination());
+        }
+        
+        
     }
 }
