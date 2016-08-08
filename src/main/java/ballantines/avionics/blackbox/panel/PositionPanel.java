@@ -15,6 +15,7 @@ import de.mbuse.pipes.PipeUpdateListener;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.prefs.BackingStoreException;
@@ -100,7 +101,7 @@ public class PositionPanel implements Initializable, PipeUpdateListener<FlightDa
                 
                 airportLbl.setText(airport);
                 positionLbl.setText(hasPosition 
-                        ? pos.lat + " " + pos.lon 
+                        ? String.format(Locale.US, "Lon: %.8f  Lat: %.8f", pos.lon, pos.lat) 
                         : "N/A");
                 headingLbl.setText(Double.isFinite(pos.hdg)
                         ? String.format("%03.0f", pos.hdg)
@@ -114,8 +115,9 @@ public class PositionPanel implements Initializable, PipeUpdateListener<FlightDa
     private void showLastFlightData(final FlightData data) {
         Platform.runLater(new Runnable() { public void run() {
             if (data!=null) {
-                lastPositionUI.setText(String.format("Lat: %.8f  Lon: %.8f", 
-                        data.getLatitude(), data.getLongitude()));
+                lastPositionUI.setText(
+                        String.format(Locale.US, "Lon: %.8f  Lat: %.8f", 
+                            data.getLongitude(),data.getLatitude()));
                 lastHeadingUI.setText(String.format("%03.0f", data.getHeading()));
                 lastSpeedUI.setText(String.format("%3.0f", data.getGroundSpeed()));
                 lastFuelUI.setText(String.format("%.0f", data.getFuel()));
@@ -151,8 +153,10 @@ public class PositionPanel implements Initializable, PipeUpdateListener<FlightDa
         services.getPersistenceService().writeKnownParkingPosition(airport, pos);
     
         airportLbl.setText(airport);
-        positionLbl.setText(position.get("/position/latitude-string") + " "
-                + position.get("/position/longitude-string"));
+        positionLbl.setText(String.format(Locale.US, "Lon: %.8f  Lat: %.8f", pos.lon, pos.lat));
+        headingLbl.setText(Double.isFinite(pos.hdg)
+                        ? String.format("%03.0f", pos.hdg)
+                        : "N/A");
     }
     
     @FXML
