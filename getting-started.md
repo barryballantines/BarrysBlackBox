@@ -13,7 +13,7 @@ This is what you need to run Barry's BlackBox:
 
 - Java 8 (1.8.0_60 or later)
 - FlightGear
-- the ***blackbox-1.4.jar*** file.
+- the ***blackbox-1.5.jar*** file.
 - the protocol ***blackbox.xml***
 
 Check [Releases](https://github.com/barryballantines/BarrysBlackBox/releases) for latest versions.
