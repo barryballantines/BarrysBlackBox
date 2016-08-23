@@ -36,6 +36,7 @@ public class MetarPanel implements PipeUpdateListener, Initializable {
     @FXML private Button departureBtn;
 
     private final Pipe<String> icaoPipe = Pipe.newInstance("metarPanel.icao", this);
+    private final Pipe<String> metarPipe = Pipe.newInstance("metarPanel.metar", this);
     
     private Services services;
 
@@ -67,11 +68,41 @@ public class MetarPanel implements PipeUpdateListener, Initializable {
                         html.removeChild(head);
                     }
                 }
+                
+                String metar = extractMetarFromDocument(newDocument);
+                metarPipe.set(metar);
             }
         });
     }
     
-    
+    private String extractMetarFromDocument(Document document) {
+        if (document == null) {
+            return null;
+        }
+        else {
+            NodeList tables = document.getElementsByTagName("table");
+            
+            if (tables.getLength()==0) {
+                return null;
+            }
+            
+            Element metarTable = (Element) tables.item(0);
+            NodeList rows = metarTable.getElementsByTagName("tr");
+            
+            for (int i=0; i< rows.getLength(); i++) {
+                Element row = (Element) rows.item(i);
+                NodeList cells = row.getElementsByTagName("td");
+                if (cells.getLength()==2) {
+                    String label = cells.item(0).getTextContent().trim();
+                    if ("Text:".equals(label)) {
+                        String metar = cells.item(1).getTextContent();
+                        return metar;
+                    }
+                }
+            }
+        }
+        return null;
+    }
     
     @Override
     public void pipeUpdated(Pipe pipe) {
