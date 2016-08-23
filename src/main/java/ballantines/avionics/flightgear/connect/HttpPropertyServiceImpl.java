@@ -6,7 +6,9 @@
 
 package ballantines.avionics.flightgear.connect;
 
+import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
+import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -76,18 +78,22 @@ public class HttpPropertyServiceImpl implements PropertyService {
     // === HELPER METHODS ===
     
     protected void submitParams(String path, Map<String, Object> params) {
-        StringBuilder url = new StringBuilder();
-        url.append(getWriteUrl());
-        url.append(path);
-        url.append("?");
-        for (String key : params.keySet()) {
-            url.append(key);
-            url.append("=");
-            url.append(params.get(key));
-            url.append("&");
+        try {
+            StringBuilder url = new StringBuilder();
+            url.append(getWriteUrl());
+            url.append(path);
+            url.append("?");
+            for (String key : params.keySet()) {
+                url.append(key);
+                url.append("=");
+                url.append(URLEncoder.encode( params.get(key).toString() , "UTF-8"));
+                url.append("&");
+            }
+            url.append("submit=set");
+            submitUrl(url.toString());
+        } catch (UnsupportedEncodingException ex) {
+            throw new RuntimeException("Failed to Submit Params.", ex);
         }
-        url.append("submit=set");
-        submitUrl(url.toString());
     }
     
     protected void submitUrl(String url) {
