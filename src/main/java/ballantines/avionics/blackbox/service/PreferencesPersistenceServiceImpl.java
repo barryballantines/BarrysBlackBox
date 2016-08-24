@@ -4,6 +4,7 @@ import ballantines.avionics.blackbox.Services;
 import ballantines.avionics.blackbox.log.LogEvent;
 import ballantines.avionics.blackbox.model.Position;
 import ballantines.avionics.blackbox.model.TrackingData;
+import ballantines.avionics.blackbox.panel.ConfigurationForm;
 import ballantines.avionics.blackbox.panel.PositionPanel;
 import ballantines.avionics.blackbox.panel.RouteFinderPanel;
 import ballantines.avionics.blackbox.udp.FlightData;
@@ -230,6 +231,25 @@ public class PreferencesPersistenceServiceImpl implements PersistenceService {
         }
     }
     
+    @Override
+    public File readPreferencesBackupDirectory() {
+        Preferences prefs = Preferences.userNodeForPackage(ConfigurationForm.class);
+        String path = prefs.get("configuration.backup.directory", null);
+        return (path==null) ? null : new File(path);
+    }
+
+    @Override
+    public void writePreferencesBackupDirectory(File directory) {
+        try {
+            Preferences prefs = Preferences.userNodeForPackage(ConfigurationForm.class);
+            prefs.put("configuration.backup.directory", directory.getAbsolutePath());
+            prefs.flush();
+        }
+        catch(BackingStoreException ex) {
+            L.error(ex, "[PERSISTENCE] Failed to store routes directory in preferences.");
+        }
+    }
+    
     public JSONArray exportPreferences() {
         JSONArray array = new JSONArray();
         array.put(exportNodeByPrefix(null, "de.mbuse.flightgear.pireprecorder.parking."));
@@ -238,6 +258,7 @@ public class PreferencesPersistenceServiceImpl implements PersistenceService {
         array.put(exportNodeByPrefix(KAcarsConfig.class, "config"));
         array.put(exportNodeByPrefix(ServerConfig.class, "flightgear.httpd."));
         array.put(exportNode(RouteFinderPanel.class, "routeFinder.storage.directory"));
+        array.put(exportNode(ConfigurationForm.class, "configuration.backup.directory"));
         return array;
     }
     
@@ -254,6 +275,7 @@ public class PreferencesPersistenceServiceImpl implements PersistenceService {
         deletePreferencesByPrefix(KAcarsConfig.class, "config");
         deletePreferencesByPrefix(ServerConfig.class, "flightgear.httpd.");
         deletePreferencesByPrefix(RouteFinderPanel.class, "routeFinder.storage.directory");
+        deletePreferencesByPrefix(ConfigurationForm.class, "configuration.backup.directory");
     }
     
     private JSONObject exportNode(Class cls, String... properties) {

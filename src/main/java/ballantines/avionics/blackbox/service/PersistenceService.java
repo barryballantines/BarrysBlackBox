@@ -44,6 +44,10 @@ public interface PersistenceService {
     
     void writeRoutesDirectory(File directory);
     
+    File readPreferencesBackupDirectory();
+    
+    void writePreferencesBackupDirectory(File directory);
+    
     JSONArray exportPreferences();
     
     void importPreferences(JSONArray backup);
