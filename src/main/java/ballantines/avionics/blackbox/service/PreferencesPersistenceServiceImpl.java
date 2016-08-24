@@ -12,9 +12,14 @@ import ballantines.avionics.flightgear.connect.ServerConfig;
 import ballantines.avionics.kacars.KAcarsConfig;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -222,6 +227,134 @@ public class PreferencesPersistenceServiceImpl implements PersistenceService {
         }
         catch(BackingStoreException ex) {
             L.error(ex, "[PERSISTENCE] Failed to store routes directory in preferences.");
+        }
+    }
+    
+    public JSONArray exportPreferences() {
+        JSONArray array = new JSONArray();
+        array.put(exportNodeByPrefix(null, "de.mbuse.flightgear.pireprecorder.parking."));
+        array.put(exportNode(PositionPanel.class, "lastKnownFlightData"));
+        array.put(exportNode(Services.class, "trackingData", "eventLog"));
+        array.put(exportNodeByPrefix(KAcarsConfig.class, "config"));
+        array.put(exportNodeByPrefix(ServerConfig.class, "flightgear.httpd."));
+        array.put(exportNode(RouteFinderPanel.class, "routeFinder.storage.directory"));
+        return array;
+    }
+    
+    public void importPreferences(JSONArray backup) {
+        for (int i=0; i<backup.length(); i++) {
+            importNode(backup.getJSONObject(i));
+        }
+    }
+    
+    public void deletePreferences() {
+        deletePreferencesByPrefix(null, "de.mbuse.flightgear.pireprecorder.parking.");
+        deletePreferences(PositionPanel.class, "lastKnownFlightData");
+        deletePreferences(Services.class, "trackingData", "eventLog");
+        deletePreferencesByPrefix(KAcarsConfig.class, "config");
+        deletePreferencesByPrefix(ServerConfig.class, "flightgear.httpd.");
+        deletePreferencesByPrefix(RouteFinderPanel.class, "routeFinder.storage.directory");
+    }
+    
+    private JSONObject exportNode(Class cls, String... properties) {
+        Preferences prefs = (cls==null) ? Preferences.userRoot() : Preferences.userNodeForPackage(cls);
+        
+        JSONObject node = new JSONObject();
+        JSONObject props = new JSONObject();
+        
+        node.put("class", (cls==null) ? "USERROOT" : cls.getName());
+        for (String p : properties) {
+            String value = prefs.get(p, null);
+            if (value!=null) {
+                props.put(p, value);
+            }
+        }
+        
+        node.put("properties", props);
+        
+        return node;
+    }
+    
+    private void deletePreferences(Class cls, String... keys) {
+        Preferences prefs = (cls==null) 
+                ? Preferences.userRoot()
+                : Preferences.userNodeForPackage(cls);
+        try {
+            for(String key : keys) {
+                prefs.remove(key);
+            }
+        } catch (Exception ex) {
+            L.error(ex, "Failed to delete Node for %s", cls.getName());
+        }
+    }
+    
+    private void deletePreferencesByPrefix(Class cls, String prefix) {
+        Preferences prefs = (cls==null) 
+                ? Preferences.userRoot()
+                : Preferences.userNodeForPackage(cls);
+        try {
+            String[] keys = prefs.keys();
+            for(String key : keys) {
+                if (key.startsWith(prefix)) {
+                    prefs.remove(key);
+                }
+            }
+        } catch (Exception ex) {
+            L.error(ex, "Failed to delete Node for %s", cls.getName());
+        }
+    }
+    
+    private void deleteNode(Class cls) {
+        Preferences prefs = Preferences.userNodeForPackage(cls);
+        try {
+            prefs.removeNode();
+        } catch (BackingStoreException ex) {
+            L.error(ex, "Failed to delete Node for %s", cls.getName());
+        }
+    }
+    
+    private JSONObject exportNodeByPrefix(Class cls, String prefix) {
+        Preferences prefs = (cls==null) ? Preferences.userRoot() : Preferences.userNodeForPackage(cls);
+        
+        JSONObject node = new JSONObject();
+        JSONObject props = new JSONObject();
+        
+        node.put("class", (cls==null) ? "USERROOT" : cls.getName());
+        try {
+            String[] keys = prefs.keys();
+            Arrays.sort(keys);
+            for(String p : keys) {
+                if (p.startsWith(prefix)) {
+                    String value = prefs.get(p, null);
+                    if (value!=null) {
+                        props.put(p, value);
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            L.error(ex, "Failed to import node %s", node);
+        }
+        
+        node.put("properties", props);
+        
+        return node;
+    }
+    
+    private void importNode(JSONObject node) {
+        String cls = node.getString("class");
+        JSONObject props = node.getJSONObject("properties");
+        try {
+            Preferences prefs = ("USERROOT".equals(cls)) 
+                ? Preferences.userRoot()
+                : Preferences.userNodeForPackage(Class.forName(cls));
+            
+            for (String key : (Set<String>) props.keySet()) {
+                prefs.put(key, props.getString(key));
+            }
+            prefs.flush();
+            
+        } catch (Exception ex) {
+            L.error(ex, "Failed to import node %s", node);
         }
     }
 }

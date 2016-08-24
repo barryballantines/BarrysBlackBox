@@ -15,6 +15,7 @@ import ballantines.avionics.kacars.KAcarsConfig;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import org.json.JSONArray;
 
 /**
  *
@@ -108,7 +109,20 @@ public class TestServices extends Services {
         public void writeRoutesDirectory(File directory) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
-        
-        
+
+        @Override
+        public JSONArray exportPreferences() {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void importPreferences(JSONArray backup) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void deletePreferences() {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
     }
 }

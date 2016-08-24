@@ -8,6 +8,7 @@ import ballantines.avionics.flightgear.connect.ServerConfig;
 import ballantines.avionics.kacars.KAcarsConfig;
 import java.io.File;
 import java.util.List;
+import org.json.JSONArray;
 
 /**
  *
@@ -42,5 +43,11 @@ public interface PersistenceService {
     void writeKnownParkingPosition(String airport, Position position);
     
     void writeRoutesDirectory(File directory);
+    
+    JSONArray exportPreferences();
+    
+    void importPreferences(JSONArray backup);
+    
+    void deletePreferences();
     
 }
