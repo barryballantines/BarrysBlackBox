@@ -8,7 +8,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="411.0" prefWidth="422.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="482.0" prefWidth="422.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Label layoutX="14.0" layoutY="14.0" text="Flightgear HTTPD" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0">
          <font>
@@ -52,5 +52,13 @@
             <Font name="System Bold" size="13.0" />
          </font>
       </Label>
+      <Label layoutX="11.0" layoutY="390.0" prefHeight="19.0" prefWidth="366.0" text="Preferences" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="390.0">
+         <font>
+            <Font name="System Bold" size="13.0" />
+         </font>
+      </Label>
+      <Button fx:id="importPreferencesBtn" layoutX="254.0" layoutY="409.0" mnemonicParsing="false" onAction="#handleImportPreferencesAction" prefHeight="29.0" prefWidth="70.0" text="Import" AnchorPane.rightAnchor="175.0" AnchorPane.topAnchor="409.0" />
+      <Button fx:id="exportPreferencesBtn" layoutX="254.0" layoutY="409.0" mnemonicParsing="false" onAction="#handleExportPreferencesAction" prefHeight="29.0" prefWidth="70.0" text="Export" AnchorPane.rightAnchor="98.0" AnchorPane.topAnchor="409.0" />
+      <Button fx:id="deletePreferencesBtn" layoutX="355.0" layoutY="409.0" mnemonicParsing="false" onAction="#handleDeletePreferencesAction" prefHeight="29.0" prefWidth="70.0" text="Clear All" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="409.0" />
    </children>
 </AnchorPane>

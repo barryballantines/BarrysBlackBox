@@ -12,11 +12,18 @@ import ballantines.avionics.blackbox.util.Log;
 import ballantines.avionics.flightgear.connect.ServerConfig;
 import ballantines.avionics.kacars.KAcarsClient;
 import ballantines.avionics.kacars.KAcarsConfig;
+import ballantines.javafx.FxDialogs;
 import de.mbuse.pipes.Pipe;
 import de.mbuse.pipes.PipeUpdateListener;
 import de.mbuse.pipes.Pipes;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.Calendar;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -29,6 +36,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
+import org.json.JSONArray;
 
 /**
  *
@@ -218,6 +227,107 @@ public class ConfigurationForm implements Initializable, PipeUpdateListener {
             L.error(ex, "Error while testing KACARS connection");
             ex.printStackTrace();
         }
+    }
+    
+    @FXML
+    void handleDeletePreferencesAction(ActionEvent event) {
+        String option = FxDialogs.showConfirm("Delete Preferences", 
+                "You are going to delete all preferences.", 
+                "Are you sure to delete all preferences right now or do you want to backup them first?", 
+                    "Delete Now",
+                    "Backup & Delete",
+                    "Cancel");
+        if ("Delete Now".equals(option)) {
+            services.getPersistenceService().deletePreferences();
+        }
+        else if ("Backup & Delete".equals(option)) {
+            if (exportPreferences()) {
+                services.getPersistenceService().deletePreferences();
+                FxDialogs.showInformation("Preferences deleted", 
+                        "The preferences have been exported and deleted successfully.",
+                        "Have a nice flight...");
+            }
+        }
+    }
+    
+    @FXML
+    void handleImportPreferencesAction(ActionEvent event) {
+        File backupDirectory = services.getPersistenceService().readPreferencesBackupDirectory();
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Import Preferences");
+        chooser.setInitialFileName("blackbox-config.json");
+        if (backupDirectory!=null) {
+            chooser.setInitialDirectory(backupDirectory);
+        }
+        
+        File backupFile = chooser.showOpenDialog(null);
+        
+        if (backupFile!=null) {
+            try {
+                BufferedReader in = new BufferedReader(new FileReader(backupFile));
+                StringBuilder builder = new StringBuilder();
+                
+                while (true) {
+                    String line = in.readLine();
+                    if (line==null) {
+                        break;
+                    }
+                    builder.append(line + "\n");
+                }
+                
+                services.getPersistenceService().importPreferences(new JSONArray(builder.toString()));
+                
+                FxDialogs.showInformation("Preferences imported", 
+                        "The preferences have been imported successfully.",
+                        "You should restart Barry's Blackbox now!");
+            } catch (Exception ex) {
+                L.error(ex, "Failed to import preferences.");
+                FxDialogs.showException("Failed to import preferences", 
+                        "Failed to import preferences from " + backupFile.getAbsolutePath() + ".",
+                        ex.toString(), 
+                        ex);
+            }
+        }
+    }
+
+    @FXML
+    void handleExportPreferencesAction(ActionEvent event) {
+        if (exportPreferences()) {
+            FxDialogs.showInformation("Preferences exported", 
+                        "The preferences have been exported successfully.",
+                        "Have a nice flight...");
+        }
+    }
+
+    protected boolean exportPreferences() {
+        File backupDirectory = services.getPersistenceService().readPreferencesBackupDirectory();
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Export Preferences");
+        chooser.setInitialFileName("blackbox-config.json");
+        if (backupDirectory!=null) {
+            chooser.setInitialDirectory(backupDirectory);
+        }
+        
+        File backupFile = chooser.showSaveDialog(null);
+        
+        if (backupFile!=null) {
+            try {
+                JSONArray backup = services.getPersistenceService().exportPreferences();
+                backupFile.createNewFile();
+                FileWriter writer = new FileWriter(backupFile);
+                backup.write(writer);
+                writer.close();
+                services.getPersistenceService().writePreferencesBackupDirectory(backupFile.getParentFile());
+                return true;
+            } catch (Exception ex) {
+                L.error(ex, "Failed to export preferences.");
+                FxDialogs.showException("Failed to export preferences", 
+                        "Failed to export preferences to " + backupFile.getAbsolutePath() + ".",
+                        ex.toString(), 
+                        ex);
+            }
+        }
+        return false;
     }
     
     public void setServices(Services services) {

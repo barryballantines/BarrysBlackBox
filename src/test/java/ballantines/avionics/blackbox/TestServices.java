@@ -124,5 +124,16 @@ public class TestServices extends Services {
         public void deletePreferences() {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
+
+        @Override
+        public File readPreferencesBackupDirectory() {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void writePreferencesBackupDirectory(File directory) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+        
     }
 }
