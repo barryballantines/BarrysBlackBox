@@ -48,20 +48,30 @@ public class Services implements PipeUpdateListener {
         ServerConfig serverConfig = getPersistenceService().readServerConfig();
         propertyService = new HttpPropertyServiceImpl(serverConfig); 
         flightDataRetrieval = new FGFlightDataRetrievalImpl(propertyService);
-        serverConfigPipe.set(serverConfig);
+        
         // KACARS
         KAcarsConfig kacarsConfig = getPersistenceService().readKACARSConfig();
         kacarsClient = new KAcarsClient(kacarsConfig);
-        kacarsConfigPipe.set(kacarsConfig);
-        // UDP SERVER
-        udpServerPortPipe.set(5555);
-        udpServerRunningPipe.set(false);
-        // TrackingData
-        TrackingData data = getPersistenceService().readTrackingData();
-        trackingDataPipe.set(data);
+        
         // TIMER
         timer = new Timer("Barry's BlackBox Timer");
         
+        reset();
+    }
+    
+    public void reset() {
+        ServerConfig serverConfig = getPersistenceService().readServerConfig();
+        KAcarsConfig kacarsConfig = getPersistenceService().readKACARSConfig();
+        TrackingData data = getPersistenceService().readTrackingData();
+        
+        serverConfigPipe.set(serverConfig);
+        
+        kacarsConfigPipe.set(kacarsConfig);
+        
+        udpServerPortPipe.set(5555);
+        udpServerRunningPipe.set(false);
+        
+        trackingDataPipe.set(data);
     }
     
     public void shutdown() {

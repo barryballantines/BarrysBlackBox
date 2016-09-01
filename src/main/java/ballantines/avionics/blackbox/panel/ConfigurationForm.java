@@ -276,10 +276,10 @@ public class ConfigurationForm implements Initializable, PipeUpdateListener {
                 }
                 
                 services.getPersistenceService().importPreferences(new JSONArray(builder.toString()));
-                
+                services.reset();
                 FxDialogs.showInformation("Preferences imported", 
                         "The preferences have been imported successfully.",
-                        "You should restart Barry's Blackbox now!");
+                        "Have a nice flight...");
             } catch (Exception ex) {
                 L.error(ex, "Failed to import preferences.");
                 FxDialogs.showException("Failed to import preferences", 
