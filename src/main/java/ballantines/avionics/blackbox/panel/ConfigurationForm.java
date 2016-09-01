@@ -315,7 +315,7 @@ public class ConfigurationForm implements Initializable, PipeUpdateListener {
                 JSONArray backup = services.getPersistenceService().exportPreferences();
                 backupFile.createNewFile();
                 FileWriter writer = new FileWriter(backupFile);
-                backup.write(writer);
+                writer.write(backup.toString(2));
                 writer.close();
                 services.getPersistenceService().writePreferencesBackupDirectory(backupFile.getParentFile());
                 return true;
