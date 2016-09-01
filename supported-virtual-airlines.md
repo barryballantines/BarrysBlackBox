@@ -12,6 +12,7 @@ Here is a list of VA's which have been checked so far:
 
 | Virtual Airline           | kACARS URL                                                  | 
 | ------------------------- | ----------------------------------------------------------- |
+| [Atlas Virtual Airlines](http://www.atlasvirtualairlines.com)| http://www.atlasvirtualairlines.com/action.php/kacars_free |
 | [European Virtual Airlines](http://european.virtualairlines.eu) | http://european.virtualairlines.eu/action.php/kacars_free   |
 | [Historic Airline Group](http://www.historicairlinegroup.com) | http://www.historicairlinegroup.com/action.php/kacars_free  |
 | [Worldwide Virtual](http://www.worldwidevirtual.net) | http://www.worldwidevirtual.net/action.php/kacars_free |
