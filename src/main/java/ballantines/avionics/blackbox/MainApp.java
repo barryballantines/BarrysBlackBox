@@ -7,6 +7,7 @@ import ballantines.avionics.blackbox.panel.RoutePanel;
 import ballantines.avionics.blackbox.panel.PositionPanel;
 import ballantines.avionics.blackbox.panel.ConfigurationForm;
 import ballantines.avionics.blackbox.panel.MetarPanel;
+import ballantines.avionics.blackbox.panel.RadioPanel;
 import ballantines.avionics.blackbox.panel.RouteFinderPanel;
 import ballantines.avionics.blackbox.panel.Toolbar;
 import ballantines.avionics.blackbox.udp.UDPServer;
@@ -40,10 +41,11 @@ public class MainApp extends Application {
         Tab progress = createTab(RoutePanel.create(services), "Progress");
         Tab routefinder = createTab(RouteFinderPanel.create(services), "Route");
         Tab metar = createTab(MetarPanel.create(services), "METAR");
+        Tab radios = createTab(RadioPanel.create(services), "Radios");
         Tab position = createTab(PositionPanel.create(services), "Position");
         Tab config = createTab(ConfigurationForm.create(services), "Configuration");
         Tab about = createTab(AboutPanel.create(), "About");
-        tabs.getTabs().addAll(pirepForm, progress, routefinder, metar, position, config, about);
+        tabs.getTabs().addAll(pirepForm, progress, routefinder, metar, radios, position, config, about);
         
         root.setTop(Toolbar.create(services));
         root.setCenter(tabs);
