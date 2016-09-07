@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane fx:id="mainPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <center>
+      <ListView fx:id="radioPresetList" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+   </center>
+   <top>
+      <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <items>
+            <Label text="Add New Station:" />
+          <Button fx:id="addVORBtn" mnemonicParsing="false" onAction="#handleAddVORAction" text="VOR" />
+            <Button fx:id="addADFBtn" mnemonicParsing="false" onAction="#handleAddADFAction" text="ADF" />
+            <Button fx:id="addCOMMBtn" mnemonicParsing="false" onAction="#handleAddCOMMAction" text="COMM" />
+        </items>
+      </ToolBar>
+   </top>
+</BorderPane>
