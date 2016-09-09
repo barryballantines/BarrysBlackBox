@@ -6,7 +6,9 @@ import de.mbuse.pipes.Pipe;
 import de.mbuse.pipes.PipeUpdateListener;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
@@ -16,11 +18,17 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.image.Image;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
 
 /**
@@ -100,7 +108,80 @@ public class RadioPanel implements Initializable, PipeUpdateListener {
     // ===
     
     public class RadioPresetCell extends ListCell<RadioPreset> {
+        
+        private static final String DND_PREFIX = "radiopreset:";
+        
+        public RadioPresetCell() {
+            super();
+            
+            setOnDragDetected(event -> {
+                RadioPreset item = getItem();
+                if (item == null) {
+                    return;
+                }
+                
+                ClipboardContent content = new ClipboardContent();
+                int index = getIndex();
+                content.putString(DND_PREFIX + index);
+                
+                Dragboard db = startDragAndDrop(TransferMode.MOVE);
+                db.setContent(content);
+        
+                Image snapshot = getGraphic().snapshot(new SnapshotParameters(), null);
+                db.setDragView(snapshot);
+                
+                event.consume();
+            });
+            
+            setOnDragOver(event -> {
+                if (event.getGestureSource()!=this && event.getDragboard().hasString()) {
+                    event.acceptTransferModes(TransferMode.MOVE);
+                }
+                event.consume();
+            });
+            
+            setOnDragEntered(event -> {
+                if (event.getGestureSource()!=this && event.getDragboard().hasString()) {
+                    setOpacity(0.3);
+                }
+            });
+            
+            setOnDragExited(event -> {
+                if (event.getGestureSource()!=this && event.getDragboard().hasString()) {
+                    setOpacity(1.0);
+                }
+            });
+            
+            setOnDragDropped(event -> { 
+                Dragboard db = event.getDragboard();
+                boolean success = false;
+                
+                if (db.hasString() && db.getString().startsWith(DND_PREFIX)) {
+                    int currentIndex = getIndex();
+                    int draggedIndex = Integer.parseInt(db.getString().substring(DND_PREFIX.length()));
+                    
+                    List<RadioPreset> presets = radioPresetList.getItems();
+                    int presetsLength = presets.size();
+                    
+                    RadioPreset tmp = presets.remove(draggedIndex);
+                    if (currentIndex >= presetsLength) {
+                        presets.add(tmp);
+                    }
+                    else {
+                        presets.add(currentIndex, tmp);
+                    }
+                    success = true;
+                }
+                
+                event.setDropCompleted(success);
+                event.consume();
+            });
+            
+            setOnDragDone(DragEvent::consume);
+        }
 
+        
+        
         @Override
         protected void updateItem(RadioPreset item, boolean empty) {
             super.updateItem(item, empty);
