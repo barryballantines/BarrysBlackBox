@@ -93,7 +93,7 @@ public class RadioPanel implements Initializable, PipeUpdateListener {
     
     @FXML
     public void handleAddVORAction(ActionEvent event) {
-        radioPresetList.getItems().add(new VORPreset("VOR #" + (radioPresetList.getItems().size()+1)));
+        radioPresetList.getItems().add(new VORPreset("NAV #" + (radioPresetList.getItems().size()+1)));
     }
     
     @FXML
