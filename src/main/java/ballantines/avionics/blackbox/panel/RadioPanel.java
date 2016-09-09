@@ -2,6 +2,7 @@ package ballantines.avionics.blackbox.panel;
 
 import ballantines.avionics.blackbox.Services;
 import ballantines.avionics.blackbox.util.Log;
+import com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type;
 import de.mbuse.pipes.Pipe;
 import de.mbuse.pipes.PipeUpdateListener;
 import java.io.IOException;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -91,17 +93,17 @@ public class RadioPanel implements Initializable, PipeUpdateListener {
     
     @FXML
     public void handleAddVORAction(ActionEvent event) {
-        radioPresetList.getItems().add(new VORPreset("New VOR"));
+        radioPresetList.getItems().add(new VORPreset("VOR #" + (radioPresetList.getItems().size()+1)));
     }
     
     @FXML
     public void handleAddADFAction(ActionEvent event) {
-        radioPresetList.getItems().add(new ADFPreset("New ADF"));
+        radioPresetList.getItems().add(new ADFPreset("ADF #" + (radioPresetList.getItems().size()+1)));
     }
     
     @FXML
     public void handleAddCOMMAction(ActionEvent event) {
-        radioPresetList.getItems().add(new COMMPreset("New COMM"));
+        radioPresetList.getItems().add(new COMMPreset("COMM #" + (radioPresetList.getItems().size()+1)));
     }
     
     
@@ -253,6 +255,31 @@ public class RadioPanel implements Initializable, PipeUpdateListener {
             station1Btn.setToggleGroup(toggleGroup1);
             station2Btn.setToggleGroup(toggleGroup2);
             
+            station1Btn.setSelected(radioPresetPipe1.get()==this);
+            station2Btn.setSelected(radioPresetPipe2.get()==this);
+            
+            nameTF.textProperty().addListener((observable, oldValue, newValue) -> { 
+                stationName = newValue;
+            });
+            
+            frequencyTF.textProperty().addListener((obs, oldValue, newValue) -> {
+                frequency = newValue;
+                validateFrequency();
+            });
+            validateFrequency();
+        }
+        
+        protected void validateFrequency() {
+            if (isFrequencyValid()) {
+                frequencyTF.getStyleClass().remove("input-field--invalid");
+            }
+            else {
+                frequencyTF.getStyleClass().add("input-field--invalid");
+            }
+        }
+        
+        protected boolean isFrequencyValid() {
+            return frequency!=null && frequency.matches("\\d+(\\.\\d+)?");
         }
         
         @FXML void handleValueChanged() {
@@ -288,12 +315,14 @@ public class RadioPanel implements Initializable, PipeUpdateListener {
         }
         
         private void writeFrequencyProperty(String prop) {
-            try {
-                double freq = Double.parseDouble(frequency);
-                services.getPropertyService().writeProperty(prop, freq);
-            }
-            catch (NumberFormatException nfe) {
-                
+            if (isFrequencyValid()) {
+                try {
+                    double freq = Double.parseDouble(frequency);
+                    services.getPropertyService().writeProperty(prop, freq);
+                }
+                catch (NumberFormatException nfe) {
+
+                }
             }
         }
     }
@@ -319,6 +348,25 @@ public class RadioPanel implements Initializable, PipeUpdateListener {
         public void initialize(URL location, ResourceBundle resources) {
             super.initialize(location, resources);
             courseTF.setText(course);
+            
+            courseTF.textProperty().addListener((obs, oldValue, newValue) -> {
+                course = newValue;
+                validateCourse();
+            });
+            validateCourse();
+        }
+        
+        protected void validateCourse() {
+            if (isCourseValid()) {
+                courseTF.getStyleClass().remove("input-field--invalid");
+            }
+            else {
+                courseTF.getStyleClass().add("input-field--invalid");
+            }
+        }
+        
+        protected boolean isCourseValid() {
+            return course!=null && course.matches("\\d\\d?\\d?");
         }
         
         @Override @FXML
@@ -351,12 +399,18 @@ public class RadioPanel implements Initializable, PipeUpdateListener {
         
         private void writeFrequencyAndCourse(String freqProp, String crsProp) {
             try {
-                double freq = Double.parseDouble(frequency);
-                double  crs = Double.parseDouble(course);
                 Map<String, Object> p = new HashMap<>();
-                p.put(freqProp, freq);
-                p.put(crsProp, crs);
-                services.getPropertyService().writeProperties(p);
+                if (isFrequencyValid()) {
+                    double freq = Double.parseDouble(frequency);
+                    p.put(freqProp, freq);
+                }
+                if (isCourseValid()) {
+                    double  crs = Double.parseDouble(course);
+                    p.put(crsProp, crs);
+                }
+                if (!p.isEmpty()) {
+                    services.getPropertyService().writeProperties(p);
+                }
             } catch (NumberFormatException nfe) {}
         }
         

@@ -9,9 +9,9 @@
 
 <AnchorPane prefHeight="45.0" prefWidth="407.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <TextField fx:id="nameTF" layoutX="11.0" layoutY="10.0" onKeyTyped="#handleValueChanged" prefHeight="25.0" prefWidth="67.0" promptText="Station ID" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="11.0" AnchorPane.topAnchor="10.0" />
+      <TextField fx:id="nameTF" layoutX="11.0" layoutY="10.0" prefHeight="25.0" prefWidth="67.0" promptText="Station ID" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="11.0" AnchorPane.topAnchor="10.0" />
       <Label layoutX="85.0" layoutY="14.0" prefHeight="17.0" prefWidth="38.0" text="Frq:" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="85.0" AnchorPane.topAnchor="14.0" />
-      <TextField fx:id="frequencyTF" layoutX="109.0" layoutY="10.0" onKeyTyped="#handleValueChanged" prefHeight="25.0" prefWidth="53.0" promptText="---.--" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="109.0" AnchorPane.topAnchor="10.0" />
+      <TextField fx:id="frequencyTF" layoutX="109.0" layoutY="10.0" prefHeight="25.0" prefWidth="53.0" promptText="___.___" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="109.0" AnchorPane.topAnchor="10.0" />
       <ToggleButton fx:id="station1Btn" layoutX="234.0" layoutY="10.0" mnemonicParsing="false" onAction="#handleStation1Action" prefWidth="45.0" text="COM1" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="72.0" AnchorPane.topAnchor="10.0">
          <toggleGroup>
             <ToggleGroup fx:id="adf1group" />
