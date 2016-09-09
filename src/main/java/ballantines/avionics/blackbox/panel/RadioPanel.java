@@ -1,6 +1,9 @@
 package ballantines.avionics.blackbox.panel;
 
 import ballantines.avionics.blackbox.Services;
+import ballantines.avionics.blackbox.util.Log;
+import de.mbuse.pipes.Pipe;
+import de.mbuse.pipes.PipeUpdateListener;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
@@ -13,7 +16,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
@@ -25,7 +27,8 @@ import javafx.scene.layout.BorderPane;
  *
  * @author mbuse
  */
-public class RadioPanel implements Initializable {
+public class RadioPanel implements Initializable, PipeUpdateListener {
+    private static final Log L = Log.forClass(RadioPanel.class);
     
     final ToggleGroup VOR1_BUTTON_GROUP = new ToggleGroup();
     final ToggleGroup VOR2_BUTTON_GROUP = new ToggleGroup();
@@ -37,10 +40,14 @@ public class RadioPanel implements Initializable {
     private Services services;
     
     @FXML private ListView<RadioPreset> radioPresetList;
-    @FXML private Button addVORBtn;
-    @FXML private Button addADFBtn;
-    @FXML private Button addCOMMBtn;
     @FXML private BorderPane mainPane;
+    
+    private Pipe<RadioPreset> selectedVOR1PresetPipe = Pipe.newInstance("radioPanel.selectedVOR1Preset", this);
+    private Pipe<RadioPreset> selectedVOR2PresetPipe = Pipe.newInstance("radioPanel.selectedVOR2Preset", this);
+    private Pipe<RadioPreset> selectedADF1PresetPipe = Pipe.newInstance("radioPanel.selectedADF1Preset", this);
+    private Pipe<RadioPreset> selectedADF2PresetPipe = Pipe.newInstance("radioPanel.selectedADF2Preset", this);
+    private Pipe<RadioPreset> selectedCOMM1PresetPipe = Pipe.newInstance("radioPanel.selectedCOMM1Preset", this);
+    private Pipe<RadioPreset> selectedCOMM2PresetPipe = Pipe.newInstance("radioPanel.selectedCOMM2Preset", this);
     
     public static Parent create(Services services) throws IOException {
         RadioPanel controller = new RadioPanel();
@@ -65,6 +72,14 @@ public class RadioPanel implements Initializable {
            
         });
     }
+
+    @Override
+    public void pipeUpdated(Pipe pipe) {
+        L.pipeUpdated(pipe);
+        // TODO...
+    }
+    
+    
     
     @FXML
     public void handleAddVORAction(ActionEvent event) {
@@ -113,6 +128,9 @@ public class RadioPanel implements Initializable {
         private ToggleGroup toggleGroup1;
         private ToggleGroup toggleGroup2;
         
+        protected Pipe<RadioPreset> radioPresetPipe1;
+        protected Pipe<RadioPreset> radioPresetPipe2;
+        
         @FXML protected TextField frequencyTF;
         @FXML protected TextField nameTF; 
         @FXML protected ToggleButton station1Btn;
@@ -123,13 +141,17 @@ public class RadioPanel implements Initializable {
                            String property1, 
                            String property2,
                            ToggleGroup toggleGroup1,
-                           ToggleGroup toggleGroup2) {
+                           ToggleGroup toggleGroup2,
+                           Pipe<RadioPreset> pipe1,
+                           Pipe<RadioPreset> pipe2) {
             this.fxmlUrl = fxmlUrl;
             this.stationName = name;
             this.frequencyProperty1 = property1;
             this.frequencyProperty2 = property2;
             this.toggleGroup1 = toggleGroup1;
             this.toggleGroup2 = toggleGroup2;
+            this.radioPresetPipe1 = pipe1;
+            this.radioPresetPipe2 = pipe2;
         }
         
         public Node createNode() {
@@ -164,12 +186,24 @@ public class RadioPanel implements Initializable {
         
         @FXML
         public void handleStation1Action(ActionEvent event) {
-            writeFrequencyProperty(frequencyProperty1);
+            if (station1Btn.isSelected()) {
+                radioPresetPipe1.set(this);
+                writeFrequencyProperty(frequencyProperty1);
+            } 
+            else {
+                radioPresetPipe1.set(null);
+            }
         }
         
         @FXML 
         public void handleStation2Action(ActionEvent event) {
-            writeFrequencyProperty(frequencyProperty2);
+            if (station2Btn.isSelected()) {
+                radioPresetPipe2.set(this);
+                writeFrequencyProperty(frequencyProperty2);
+            }
+            else {
+                radioPresetPipe2.set(null);
+            }
         }
         
         private void writeFrequencyProperty(String prop) {
@@ -196,7 +230,9 @@ public class RadioPanel implements Initializable {
                   "/instrumentation/nav/frequencies/selected-mhz", 
                   "/instrumentation/nav[1]/frequencies/selected-mhz",
                   VOR1_BUTTON_GROUP,
-                  VOR2_BUTTON_GROUP);
+                  VOR2_BUTTON_GROUP,
+                  selectedVOR1PresetPipe,
+                  selectedVOR2PresetPipe);
         }
         @Override
         public void initialize(URL location, ResourceBundle resources) {
@@ -212,12 +248,24 @@ public class RadioPanel implements Initializable {
         
         @FXML @Override
         public void handleStation1Action(ActionEvent event) {
-            writeFrequencyAndCourse(frequencyProperty1, courseProperty1);
+            if (station1Btn.isSelected()) {
+                radioPresetPipe1.set(this);
+                writeFrequencyAndCourse(frequencyProperty1, courseProperty1);
+            }
+            else {
+                radioPresetPipe1.set(null);
+            }
         }
         
         @FXML @Override
         public void handleStation2Action(ActionEvent event) {
-            writeFrequencyAndCourse(frequencyProperty2, courseProperty2);
+            if (station2Btn.isSelected()) {
+                radioPresetPipe2.set(this);
+                writeFrequencyAndCourse(frequencyProperty2, courseProperty2);
+            }
+            else {
+                radioPresetPipe2.set(null);
+            }
         }
         
         private void writeFrequencyAndCourse(String freqProp, String crsProp) {
@@ -240,7 +288,9 @@ public class RadioPanel implements Initializable {
                   "/instrumentation/comm/frequencies/selected-mhz", 
                   "/instrumentation/comm[1]/frequencies/selected-mhz",
                   COMM1_BUTTON_GROUP,
-                  COMM2_BUTTON_GROUP);
+                  COMM2_BUTTON_GROUP,
+                  selectedCOMM1PresetPipe,
+                  selectedCOMM2PresetPipe);
         }
     }
     
@@ -251,7 +301,9 @@ public class RadioPanel implements Initializable {
                   "/instrumentation/adf/frequencies/selected-khz", 
                   "/instrumentation/adf[1]/frequencies/selected-khz",
                   ADF1_BUTTON_GROUP,
-                  ADF2_BUTTON_GROUP);
+                  ADF2_BUTTON_GROUP,
+                  selectedADF1PresetPipe,
+                  selectedADF2PresetPipe);
         }
     }
 }

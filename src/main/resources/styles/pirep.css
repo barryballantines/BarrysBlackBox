@@ -32,3 +32,6 @@
 .toolbar-button--connected:selected {
     -fx-background-image: url('signal.png');
 }
+.input-field--invalid {
+    -fx-border-color: red;
+}
