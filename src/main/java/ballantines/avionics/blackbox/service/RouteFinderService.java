@@ -253,18 +253,38 @@ public class RouteFinderService {
 
             String line = reader.readLine();
             int identStart  = line.indexOf("ID");
-            int identStop   = line.indexOf("FREQ");
+            int freqStart   = line.indexOf("FREQ");
+            int trkStart    = line.indexOf("TRK");
+            int distStart   = line.indexOf("DIST");
             int coordsStart = line.indexOf("Coords");
             int coordsStop  = line.indexOf("Name/Remarks");
             line = reader.readLine();
             while (line!=null) {
+                // FREQ
+                String freqString = line.substring(freqStart, trkStart).trim();
+                double freq = (freqString.isEmpty()) ? Double.NaN : Double.parseDouble(freqString);
+                
+                // TRK
+                String trkString = line.substring(trkStart, distStart).trim();
+                int trk = Integer.parseInt(trkString);
+                
+                // DIST
+                String distString = line.substring(distStart, coordsStart).trim();
+                int dist = Integer.parseInt(distString);
+                
+                // Coords
                 String coords = line.substring(coordsStart, coordsStop).trim();
                 String[] latlon = coords.split(" ");
                 
                 Waypoint wp = new Waypoint();
-                wp.ident = line.substring(identStart,identStop).trim();
+                wp.ident = line.substring(identStart,freqStart).trim();
+                wp.freq = freq;
+                wp.track = trk;
+                wp.dist = dist;
                 wp.lat = Calculus.parseDegreeToDecimal(latlon[0].trim());
                 wp.lon = Calculus.parseDegreeToDecimal(latlon[1].trim());
+                
+                
                 route.add(wp);
                 
                 line = reader.readLine();

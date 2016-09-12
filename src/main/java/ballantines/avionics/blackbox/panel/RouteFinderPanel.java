@@ -69,6 +69,8 @@ public class RouteFinderPanel implements PipeUpdateListener, Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         routeFinderService.setPropertyService(services.getPropertyService());
         flightBidPipe.connectTo(services.flightBidPipe);
+        services.detailedRouteInfoPipe.connectTo(detailedRouteInfoPipe);
+        
         reloadBrowser();
         
         /** 

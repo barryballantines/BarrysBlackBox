@@ -1,6 +1,7 @@
 package ballantines.avionics.blackbox.panel;
 
 import ballantines.avionics.blackbox.Services;
+import ballantines.avionics.blackbox.model.Waypoint;
 import ballantines.avionics.blackbox.util.Log;
 import de.mbuse.pipes.Pipe;
 import de.mbuse.pipes.PipeUpdateListener;
@@ -8,6 +9,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
@@ -55,6 +57,7 @@ public class RadioPanel implements Initializable, PipeUpdateListener {
     private Pipe<RadioPreset> selectedADF2PresetPipe = Pipe.newInstance("radioPanel.selectedADF2Preset", this);
     private Pipe<RadioPreset> selectedCOMM1PresetPipe = Pipe.newInstance("radioPanel.selectedCOMM1Preset", this);
     private Pipe<RadioPreset> selectedCOMM2PresetPipe = Pipe.newInstance("radioPanel.selectedCOMM2Preset", this);
+    private Pipe<List<Waypoint>> detailedRouteInfoPipe = Pipe.newInstance("radioPanel.detailedRouteInfoPipe", this);
     
     public static Parent create(Services services) throws IOException {
         RadioPanel controller = new RadioPanel();
@@ -78,12 +81,18 @@ public class RadioPanel implements Initializable, PipeUpdateListener {
             });
            
         });
+        
+        detailedRouteInfoPipe.connectTo(services.detailedRouteInfoPipe);
     }
 
     @Override
     public void pipeUpdated(Pipe pipe) {
         L.pipeUpdated(pipe);
         // TODO...
+        
+        if (detailedRouteInfoPipe == pipe) {
+            addRadioPanelsForDetailedRouteInfo(detailedRouteInfoPipe.get());
+        }
     }
     
     
@@ -101,6 +110,37 @@ public class RadioPanel implements Initializable, PipeUpdateListener {
     @FXML
     public void handleAddCOMMAction(ActionEvent event) {
         radioPresetList.getItems().add(new COMMPreset("COMM #" + (radioPresetList.getItems().size()+1)));
+    }
+    
+    private void addRadioPanelsForDetailedRouteInfo(List<Waypoint> detailedRouteInfo) {
+        if (detailedRouteInfo==null) {
+            return;
+        }
+        for (Waypoint wp : detailedRouteInfo) {
+            addRadioPanelForWaypoint(wp);
+        }
+    }
+    
+    private void addRadioPanelForWaypoint(Waypoint wp) {
+        if (wp.isRadioFix()) {
+            RadioPreset radio = null;
+            if (wp.isVOR()) {
+                // VOR
+                radio = new VORPreset(wp);
+            }
+            else if (wp.isNDB()) {
+                // NDB
+                radio = new ADFPreset(wp);
+            }
+            else {
+                // Unknown...
+                return;
+            }
+            
+            if (wp!=null) {
+                radioPresetList.getItems().add(radio);
+            }
+        }
     }
     
     
@@ -341,6 +381,13 @@ public class RadioPanel implements Initializable, PipeUpdateListener {
                   selectedVOR1PresetPipe,
                   selectedVOR2PresetPipe);
         }
+        
+        public VORPreset(Waypoint wp) {
+            this(wp.ident);
+            frequency = String.format(Locale.US, "%3.2f", wp.freq);
+            course = String.format(Locale.US, "%03d", wp.track);
+        }
+        
         @Override
         public void initialize(URL location, ResourceBundle resources) {
             super.initialize(location, resources);
@@ -437,5 +484,10 @@ public class RadioPanel implements Initializable, PipeUpdateListener {
                   selectedADF1PresetPipe,
                   selectedADF2PresetPipe);
         }
+        
+         public ADFPreset(Waypoint wp) {
+            this(wp.ident);
+            frequency = String.format("%3.2d", wp.freq);
+         }
     }
 }

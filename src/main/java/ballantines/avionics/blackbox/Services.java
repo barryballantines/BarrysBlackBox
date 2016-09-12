@@ -11,6 +11,7 @@ import ballantines.avionics.blackbox.service.FGFlightDataRetrievalImpl;
 import ballantines.avionics.blackbox.service.FlightDataRetrieval;
 import ballantines.avionics.blackbox.model.FlightTrackingResult;
 import ballantines.avionics.blackbox.model.TrackingData;
+import ballantines.avionics.blackbox.model.Waypoint;
 import ballantines.avionics.blackbox.service.PersistenceService;
 import ballantines.avionics.blackbox.service.PreferencesPersistenceServiceImpl;
 import ballantines.avionics.flightgear.connect.HttpPropertyServiceImpl;
@@ -23,6 +24,7 @@ import ballantines.avionics.kacars.KAcarsClient;
 import ballantines.avionics.kacars.model.Flight;
 import de.mbuse.pipes.Pipe;
 import de.mbuse.pipes.PipeUpdateListener;
+import java.util.List;
 import java.util.Timer;
 
 /**
@@ -149,6 +151,7 @@ public class Services implements PipeUpdateListener {
     public final Pipe<TrackingData> trackingDataPipe = Pipe.newInstance("Services.trackingData", this);
     public final Pipe<Flight> flightBidPipe = Pipe.newInstance("Services.flightBidPipe", this);
     public final Pipe<FlightPhase> flightPhasePipe = Pipe.newInstance("Services.phase", this);
+    public final Pipe<List<Waypoint>> detailedRouteInfoPipe = Pipe.newInstance("Services.detailedRouteInfo", this);
     
     
 }
