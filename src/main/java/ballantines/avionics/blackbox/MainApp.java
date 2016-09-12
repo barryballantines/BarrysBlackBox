@@ -45,7 +45,7 @@ public class MainApp extends Application {
         Tab position = createTab(PositionPanel.create(services), "Position");
         Tab config = createTab(ConfigurationForm.create(services), "Configuration");
         Tab about = createTab(AboutPanel.create(), "About");
-        tabs.getTabs().addAll(pirepForm, progress, routefinder, metar, radios, position, config, about);
+        tabs.getTabs().addAll(pirepForm, progress, routefinder, radios, metar, position, config, about);
         
         root.setTop(Toolbar.create(services));
         root.setCenter(tabs);

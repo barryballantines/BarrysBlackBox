@@ -2,18 +2,15 @@ package ballantines.avionics.blackbox.panel;
 
 import ballantines.avionics.blackbox.Services;
 import ballantines.avionics.blackbox.util.Log;
-import com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type;
 import de.mbuse.pipes.Pipe;
 import de.mbuse.pipes.PipeUpdateListener;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
