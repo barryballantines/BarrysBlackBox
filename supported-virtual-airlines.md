@@ -7,7 +7,7 @@ layout: default
 
 ## List of Supported Virtual Airlines
 
-*** Barry's BlackBox should work with every Virtual Airlines Website which is powered by phpVMS. ***
+> ***Barry's BlackBox works with every Virtual Airlines Website which is powered by phpVMS.***
 
 
 Please check the table of Verified Virtual Airlines for your favorite airline. 
