@@ -216,7 +216,12 @@ public class PreferencesPersistenceServiceImpl implements PersistenceService {
     public File readRoutesDirectory() {
         Preferences prefs = Preferences.userNodeForPackage(RouteFinderPanel.class);
         String path = prefs.get("routeFinder.storage.directory", null);
-        return (path==null) ? null : new File(path);
+        File dir = (path==null) ? null : new File(path);
+        if (dir!=null && !dir.exists()) {
+            L.warn("[PERSISTENCE] Stored routes directory does not exist. Will be ignored: %s", path);
+            return null;
+        }
+        return dir;
     }
 
     @Override
@@ -235,7 +240,12 @@ public class PreferencesPersistenceServiceImpl implements PersistenceService {
     public File readPreferencesBackupDirectory() {
         Preferences prefs = Preferences.userNodeForPackage(ConfigurationForm.class);
         String path = prefs.get("configuration.backup.directory", null);
-        return (path==null) ? null : new File(path);
+        File dir = (path==null) ? null : new File(path);
+        if (dir!=null && !dir.exists()) {
+            L.warn("[PERSISTENCE] Stored preferences backup directory does not exist. Will be ignored: %s", path);
+            return null;
+        }
+        return dir;
     }
 
     @Override
