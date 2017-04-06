@@ -16,37 +16,37 @@
          </font>
       </Label>
       <Label layoutX="15.0" layoutY="46.0" text="Host" AnchorPane.leftAnchor="14.0" />
-      <Label layoutX="15.0" layoutY="77.0" text="Port" AnchorPane.leftAnchor="14.0" />
-      <TextField fx:id="fgHostnameTxt" layoutX="54.0" layoutY="42.0" onAction="#flightgearConnectionChanged" prefHeight="29.0" prefWidth="230.0" promptText="localhost" text="localhost" AnchorPane.leftAnchor="60.0" AnchorPane.rightAnchor="77.0" AnchorPane.topAnchor="42.0" />
-      <TextField fx:id="fgPortTxt" layoutX="55.0" layoutY="73.0" onAction="#flightgearConnectionChanged" prefHeight="29.0" prefWidth="51.0" promptText="5500" text="5500" AnchorPane.leftAnchor="60.0" AnchorPane.topAnchor="73.0" />
+      <Label layoutX="15.0" layoutY="77.0" text="Port" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="84.0" />
+      <TextField fx:id="fgHostnameTxt" layoutX="54.0" layoutY="42.0" onAction="#flightgearConnectionChanged" prefHeight="29.0" prefWidth="230.0" promptText="localhost" text="localhost" AnchorPane.leftAnchor="66.0" AnchorPane.rightAnchor="77.0" AnchorPane.topAnchor="42.0" />
+      <TextField fx:id="fgPortTxt" layoutX="55.0" layoutY="73.0" onAction="#flightgearConnectionChanged" prefHeight="29.0" prefWidth="51.0" promptText="5500" text="5500" AnchorPane.leftAnchor="66.0" AnchorPane.topAnchor="78.0" />
       <Button layoutX="240.0" layoutY="42.0" mnemonicParsing="false" onAction="#testFlightgearConnection" prefHeight="29.0" prefWidth="51.0" text="Test" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="42.0" />
-      <Label fx:id="fgTestFeedbackLbl" layoutX="116.0" layoutY="77.0" prefHeight="19.0" prefWidth="236.0" text="Press button to test connection" AnchorPane.leftAnchor="116.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="77.0" />
+      <Label fx:id="fgTestFeedbackLbl" layoutX="116.0" layoutY="77.0" prefHeight="19.0" prefWidth="236.0" text="Press button to test connection" AnchorPane.leftAnchor="120.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="84.0" />
       <Label layoutX="14.0" layoutY="120.0" text="UDP Server" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="120.0">
          <font>
             <Font name="System Bold" size="13.0" />
          </font>
       </Label>
       <CheckBox fx:id="udpServerRunningCheck" layoutX="14.0" layoutY="146.0" mnemonicParsing="false" onAction="#udpRunningStateChanged" text="Server not running" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="146.0" />
-      <TextField fx:id="udpPortText" layoutX="303.0" layoutY="141.0" onAction="#udpServerPortChanged" prefHeight="29.0" prefWidth="49.0" promptText="5555" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="141.0" />
-      <Label layoutX="223.0" layoutY="146.0" prefHeight="19.0" prefWidth="73.0" text="Server Port:" AnchorPane.rightAnchor="71.0" AnchorPane.topAnchor="146.0" />
+      <TextField fx:id="udpPortText" layoutX="303.0" layoutY="141.0" onAction="#udpServerPortChanged" prefHeight="29.0" prefWidth="52.0" promptText="5555" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="141.0" />
+      <Label layoutX="223.0" layoutY="146.0" prefHeight="19.0" text="Server Port:" AnchorPane.rightAnchor="71.0" AnchorPane.topAnchor="146.0" />
       <Label layoutX="13.0" layoutY="189.0" text="kACARS" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="189.0">
          <font>
             <Font name="System Bold" size="13.0" />
          </font>
       </Label>
-      <Label layoutX="11.0" layoutY="218.0" text="URL" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="218.0" />
-      <TextField fx:id="kacarsUrlTxt" layoutX="52.0" layoutY="213.0" onAction="#kacarsConfigChanged" prefHeight="29.0" prefWidth="230.0" AnchorPane.leftAnchor="60.0" AnchorPane.rightAnchor="77.0" AnchorPane.topAnchor="213.0" />
+      <Label layoutX="11.0" layoutY="218.0" text="URL" AnchorPane.leftAnchor="14.0" />
+      <TextField fx:id="kacarsUrlTxt" layoutX="52.0" layoutY="213.0" onAction="#kacarsConfigChanged" prefHeight="29.0" prefWidth="230.0" AnchorPane.leftAnchor="66.0" AnchorPane.rightAnchor="77.0" AnchorPane.topAnchor="213.0" />
       <CheckBox fx:id="kacarsEnabledCheck" layoutX="194.0" layoutY="282.0" mnemonicParsing="false" onAction="#kacarsConfigChanged" prefHeight="19.0" prefWidth="198.0" text="Not enabled" AnchorPane.leftAnchor="194.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="282.0" />
-      <Label layoutX="16.0" layoutY="249.0" text="Pilot ID" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="250.0" />
-      <TextField fx:id="kacarsPilotIDTxt" layoutX="63.0" layoutY="247.0" onAction="#kacarsConfigChanged" prefHeight="29.0" prefWidth="119.0" AnchorPane.leftAnchor="60.0" AnchorPane.topAnchor="245.0" />
-      <Label layoutX="15.0" layoutY="282.0" text="Psw" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="282.0" />
-      <PasswordField fx:id="kacarsPasswordTxt" layoutX="60.0" layoutY="275.0" onAction="#kacarsConfigChanged" prefHeight="29.0" prefWidth="119.0" AnchorPane.leftAnchor="60.0" AnchorPane.topAnchor="277.0" />
+      <Label layoutX="16.0" layoutY="249.0" text="Pilot ID" AnchorPane.leftAnchor="14.0" />
+      <TextField fx:id="kacarsPilotIDTxt" layoutX="63.0" layoutY="247.0" onAction="#kacarsConfigChanged" prefHeight="29.0" prefWidth="119.0" AnchorPane.leftAnchor="66.0" AnchorPane.topAnchor="245.0" />
+      <Label layoutX="15.0" layoutY="282.0" text="Psw" AnchorPane.leftAnchor="14.0" />
+      <PasswordField fx:id="kacarsPasswordTxt" layoutX="60.0" layoutY="275.0" onAction="#kacarsConfigChanged" prefHeight="29.0" prefWidth="119.0" AnchorPane.leftAnchor="66.0" AnchorPane.topAnchor="277.0" />
       <Button fx:id="kacarsTestBtn" layoutX="302.0" layoutY="213.0" mnemonicParsing="false" onAction="#testKacarsConnection" prefHeight="29.0" prefWidth="51.0" text="Test" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="213.0" />
       <Label fx:id="kacarsMessageLbl" layoutX="194.0" layoutY="250.0" prefHeight="19.0" prefWidth="159.0" text="Press button to test connection" AnchorPane.leftAnchor="194.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="250.0" />
       <CheckBox fx:id="kacarsLUEnabledCheck" layoutX="194.0" layoutY="351.0" mnemonicParsing="false" onAction="#kacarsConfigChanged" prefHeight="19.0" prefWidth="198.0" text="LiveUpdate not enabled" AnchorPane.leftAnchor="194.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="351.0" />
       <Label layoutX="12.0" layoutY="351.0" prefHeight="19.0" prefWidth="51.0" text="Interval" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="351.0" />
-      <TextField fx:id="kacarsLUIntervalText" layoutX="60.0" layoutY="346.0" onAction="#kacarsConfigChanged" prefHeight="29.0" prefWidth="57.0" AnchorPane.leftAnchor="60.0" AnchorPane.topAnchor="346.0" />
-      <Label layoutX="123.0" layoutY="351.0" prefHeight="19.0" prefWidth="24.0" text="sec" AnchorPane.leftAnchor="123.0" AnchorPane.topAnchor="351.0" />
+      <TextField fx:id="kacarsLUIntervalText" layoutX="60.0" layoutY="346.0" onAction="#kacarsConfigChanged" prefHeight="29.0" prefWidth="57.0" AnchorPane.leftAnchor="66.0" AnchorPane.topAnchor="346.0" />
+      <Label layoutX="123.0" layoutY="351.0" prefHeight="19.0" prefWidth="24.0" text="sec" AnchorPane.leftAnchor="130.0" AnchorPane.topAnchor="351.0" />
       <Label layoutX="13.0" layoutY="321.0" prefHeight="19.0" prefWidth="366.0" text="kACARS Live Update" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="321.0">
          <font>
             <Font name="System Bold" size="13.0" />
@@ -59,6 +59,6 @@
       </Label>
       <Button fx:id="importPreferencesBtn" layoutX="254.0" layoutY="409.0" mnemonicParsing="false" onAction="#handleImportPreferencesAction" prefHeight="29.0" prefWidth="70.0" text="Import" AnchorPane.rightAnchor="175.0" AnchorPane.topAnchor="409.0" />
       <Button fx:id="exportPreferencesBtn" layoutX="254.0" layoutY="409.0" mnemonicParsing="false" onAction="#handleExportPreferencesAction" prefHeight="29.0" prefWidth="70.0" text="Export" AnchorPane.rightAnchor="98.0" AnchorPane.topAnchor="409.0" />
-      <Button fx:id="deletePreferencesBtn" layoutX="355.0" layoutY="409.0" mnemonicParsing="false" onAction="#handleDeletePreferencesAction" prefHeight="29.0" prefWidth="70.0" text="Clear All" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="409.0" />
+      <Button fx:id="deletePreferencesBtn" layoutX="355.0" layoutY="409.0" mnemonicParsing="false" onAction="#handleDeletePreferencesAction" prefHeight="29.0" text="Clear All" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="409.0" />
    </children>
 </AnchorPane>
