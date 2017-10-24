@@ -29,6 +29,9 @@ public class KAcarsConfig {
         this.pilotID = config.pilotID;
         this.password = config.password;
         this.enabled = config.enabled;
+        this.liveUpdateEnabled = config.liveUpdateEnabled;
+        this.liveUpdateIntervalMS = config.liveUpdateIntervalMS;
+        this.timeout = config.timeout;
     }
     
     @Override

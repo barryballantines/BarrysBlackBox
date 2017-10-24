@@ -14,8 +14,12 @@ import ballantines.avionics.kacars.model.LoginStatus;
 import ballantines.avionics.kacars.model.PIREPRequest;
 import ballantines.avionics.kacars.model.PIREPStatus;
 import java.io.StringWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.javalite.http.Http;
 import org.javalite.http.Post;
 import org.simpleframework.xml.Serializer;
@@ -37,11 +41,11 @@ public class KAcarsClient {
     }
     public KAcarsClient(KAcarsConfig config) {
         this();
-        this.config = config;
+        setConfig(config);
     }
 
     public void setConfig(KAcarsConfig config) {
-        this.config = config;
+        this.config = processConfig(config);
     }
     
     public boolean isEnabled() {
@@ -95,6 +99,23 @@ public class KAcarsClient {
         sendBody(body);
     }
     
+    protected KAcarsConfig processConfig(KAcarsConfig config) {
+      KAcarsConfig internal = new KAcarsConfig(config);
+      try {
+        URL url = new URL(config.url);
+        String path = url.getPath();
+        if (path.length()==0) {
+          internal.url += "/action.php/kacars_free";
+        }
+        else if (path.length()==1) {
+          internal.url += "action.php/kacars_free";
+        }
+      } catch (MalformedURLException ex) {
+        L.error(ex, "Invalid kACARS-URL: %s", config.url);
+      }
+      return internal;
+    }
+    
     protected String toXML(Object request) throws Exception{
         StringWriter stringWriter = new StringWriter();
         serializer.write(request, stringWriter);
@@ -124,6 +145,7 @@ public class KAcarsClient {
 
     protected String sendBody(String requestBody) {
         if (isEnabled()) {
+            L.info("Sending kACARS request to %s", config.url);
             L.info("Sending Request: %s", requestBody);
             Post response = Http.post(config.url, requestBody.getBytes(), config.timeout, config.timeout);
             String responseBody = response.text();
