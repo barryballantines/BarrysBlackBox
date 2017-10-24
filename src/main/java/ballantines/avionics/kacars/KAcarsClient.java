@@ -101,8 +101,11 @@ public class KAcarsClient {
     
     protected KAcarsConfig processConfig(KAcarsConfig config) {
       KAcarsConfig internal = new KAcarsConfig(config);
+      if (!internal.url.startsWith("http://") && !internal.url.startsWith("https://")) {
+        internal.url = "http://" +internal.url;
+      }
       try {
-        URL url = new URL(config.url);
+        URL url = new URL(internal.url);
         String path = url.getPath();
         if (path.length()==0) {
           internal.url += "/action.php/kacars_free";
@@ -145,16 +148,16 @@ public class KAcarsClient {
 
     protected String sendBody(String requestBody) {
         if (isEnabled()) {
-            L.info("Sending kACARS request to %s", config.url);
-            L.info("Sending Request: %s", requestBody);
+            L.debug("Sending kACARS request to %s", config.url);
+            L.debug("Sending Request: %s", requestBody);
             Post response = Http.post(config.url, requestBody.getBytes(), config.timeout, config.timeout);
             String responseBody = response.text();
-            L.info("Receiving Response: %s", responseBody);
+            L.debug("Receiving Response: %s", responseBody);
             return responseBody;
         }
         else {
             L.info("KAcarsClient is not enabled.");
-            L.info("Would send: %s ", requestBody);
+            L.debug("Would send: %s ", requestBody);
             throw new IllegalStateException("KAcarsClient is not enabled!");
         }
     }
