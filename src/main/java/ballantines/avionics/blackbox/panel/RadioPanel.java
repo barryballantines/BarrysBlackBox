@@ -487,7 +487,7 @@ public class RadioPanel implements Initializable, PipeUpdateListener {
         
          public ADFPreset(Waypoint wp) {
             this(wp.ident);
-            frequency = String.format("%3.2d", wp.freq);
+            frequency = String.format(Locale.US, "%3.2f", wp.freq);
          }
     }
 }
