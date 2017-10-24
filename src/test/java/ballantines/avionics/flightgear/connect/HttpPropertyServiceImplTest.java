@@ -6,7 +6,6 @@
 
 package ballantines.avionics.flightgear.connect;
 
-import ballantines.avionics.flightgear.connect.HttpPropertyServiceImpl;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -50,7 +49,7 @@ public class HttpPropertyServiceImplTest {
     /**
      * Test of readProperties method, of class HttpPropertyServiceImpl.
      */
-    @org.junit.Test
+    @Test
     public void testFindRootAndDepth() {
         System.out.println("testFindRootAndDepth");
         Set<String> props = new HashSet<String>();
@@ -66,7 +65,7 @@ public class HttpPropertyServiceImplTest {
         
     }
     
-    @org.junit.Test
+    @Test
     public void testReadProperties_Map() {
         Map<String, Object> p = new HashMap<>();
         
@@ -85,7 +84,7 @@ public class HttpPropertyServiceImplTest {
         assertPropertyValues(p, "/consumables/fuel/tank[2]/empty", false);
     }
     
-    @org.junit.Test
+    @Test
     public void testWriteProperties_Map() {
         Map<String, Object> p = new HashMap<>();
         
