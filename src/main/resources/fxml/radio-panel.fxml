@@ -14,7 +14,7 @@
             <Label text="Add New Station:" />
           <Button fx:id="addVORBtn" mnemonicParsing="false" onAction="#handleAddVORAction" text="NAV" />
             <Button fx:id="addADFBtn" mnemonicParsing="false" onAction="#handleAddADFAction" text="ADF" />
-            <Button fx:id="addCOMMBtn" mnemonicParsing="false" onAction="#handleAddCOMMAction" text="COMM" />
+            <Button fx:id="addCOMMBtn" mnemonicParsing="false" onAction="#handleAddCOMMAction" text="COM" />
         </items>
       </ToolBar>
    </top>

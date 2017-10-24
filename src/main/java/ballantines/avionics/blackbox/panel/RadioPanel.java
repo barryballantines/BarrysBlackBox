@@ -109,7 +109,7 @@ public class RadioPanel implements Initializable, PipeUpdateListener {
     
     @FXML
     public void handleAddCOMMAction(ActionEvent event) {
-        radioPresetList.getItems().add(new COMMPreset("COMM #" + (radioPresetList.getItems().size()+1)));
+        radioPresetList.getItems().add(new COMMPreset("COM #" + (radioPresetList.getItems().size()+1)));
     }
     
     private void addRadioPanelsForDetailedRouteInfo(List<Waypoint> detailedRouteInfo) {
