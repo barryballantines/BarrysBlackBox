@@ -101,7 +101,7 @@ public class KAcarsClient {
     
     protected KAcarsConfig processConfig(KAcarsConfig config) {
       KAcarsConfig internal = new KAcarsConfig(config);
-      if (!internal.url.startsWith("http://") && !internal.url.startsWith("https://")) {
+      if (internal.url!=null && !internal.url.startsWith("http://") && !internal.url.startsWith("https://")) {
         internal.url = "http://" +internal.url;
       }
       try {
