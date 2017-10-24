@@ -1,3 +1,12 @@
+.root {
+  -fx-font-family: "Arial sans-serif";
+  -fx-font-size: 12px;
+}
+
+.text-field {
+  -fx-font-size: 12px;
+}
+
 .button {
     /*-fx-font-weight: bold;*/
 }
@@ -39,4 +48,5 @@
 .button--oval {
     -fx-background-radius: 15px;
     -fx-border-radius: 15px;
+    -fx-font-size: 12px;
 }

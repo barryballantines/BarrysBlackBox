@@ -12,12 +12,12 @@
       <TextField fx:id="frequencyTF" layoutX="109.0" layoutY="10.0" prefHeight="25.0" prefWidth="53.0" promptText="___.__" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="109.0" AnchorPane.topAnchor="10.0" />
       <Label layoutX="171.0" layoutY="14.0" text="Crs:" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="171.0" AnchorPane.topAnchor="14.0" />
       <TextField fx:id="courseTF" layoutX="195.0" layoutY="10.0" prefHeight="25.0" prefWidth="38.0" promptText="___" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="195.0" AnchorPane.topAnchor="10.0" />
-      <ToggleButton fx:id="station1Btn" layoutX="234.0" layoutY="10.0" mnemonicParsing="false" onAction="#handleStation1Action" styleClass="button--oval" text="NAV1" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="72.0" AnchorPane.topAnchor="10.0">
+      <ToggleButton fx:id="station1Btn" layoutX="234.0" layoutY="10.0" mnemonicParsing="false" onAction="#handleStation1Action" prefWidth="52.0" styleClass="button--oval" text="NAV1" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="72.0" AnchorPane.topAnchor="10.0">
          <toggleGroup>
             <ToggleGroup fx:id="vor1group" />
          </toggleGroup>
       </ToggleButton>
-      <ToggleButton fx:id="station2Btn" layoutX="291.0" layoutY="10.0" mnemonicParsing="false" onAction="#handleStation2Action" styleClass="button--oval" text="NAV2" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="10.0">
+      <ToggleButton fx:id="station2Btn" layoutX="291.0" layoutY="10.0" mnemonicParsing="false" onAction="#handleStation2Action" prefWidth="52.0" styleClass="button--oval" text="NAV2" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="10.0">
          <toggleGroup>
             <ToggleGroup fx:id="vor2group" />
          </toggleGroup>
