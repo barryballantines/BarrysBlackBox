@@ -175,7 +175,7 @@
                   <Insets left="12.0" />
                </StackPane.margin>
             </Label>
-            <Button fx:id="loadDataBtnUI" layoutX="358.0" layoutY="6.0" mnemonicParsing="false" onAction="#loadDataBtnPressed" text="Load Data" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="93.0" AnchorPane.topAnchor="6.0" />
+            <Button fx:id="loadDataBtnUI" layoutX="358.0" layoutY="6.0" mnemonicParsing="false" onAction="#loadDataBtnPressed" text="Load Data" AnchorPane.bottomAnchor="6.0" AnchorPane.rightAnchor="104.0" AnchorPane.topAnchor="5.0" />
           <Button fx:id="filePirepBtnUI" mnemonicParsing="false" onAction="#filePirepBtnPressed" text="File PIREP" AnchorPane.bottomAnchor="6.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="5.0" />
          </children>
          <padding>

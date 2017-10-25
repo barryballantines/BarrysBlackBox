@@ -1,10 +1,11 @@
 .root {
   -fx-font-family: "Arial sans-serif";
-  -fx-font-size: 12px;
+  -fx-font-size: 14px;
 }
 
 .text-field {
-  -fx-font-size: 12px;
+  -fx-font-size: 14px;
+  -fx-padding: 4px;
 }
 
 .button {
