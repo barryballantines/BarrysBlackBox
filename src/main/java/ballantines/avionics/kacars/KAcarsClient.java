@@ -13,13 +13,9 @@ import ballantines.avionics.kacars.model.LiveUpdateData;
 import ballantines.avionics.kacars.model.LoginStatus;
 import ballantines.avionics.kacars.model.PIREPRequest;
 import ballantines.avionics.kacars.model.PIREPStatus;
+import java.io.IOException;
 import java.io.StringWriter;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.javalite.http.Http;
 import org.javalite.http.Post;
 import org.simpleframework.xml.Serializer;
@@ -45,7 +41,7 @@ public class KAcarsClient {
     }
 
     public void setConfig(KAcarsConfig config) {
-        this.config = processConfig(config);
+        this.config = config;
     }
     
     public boolean isEnabled() {
@@ -99,26 +95,6 @@ public class KAcarsClient {
         sendBody(body);
     }
     
-    protected KAcarsConfig processConfig(KAcarsConfig config) {
-      KAcarsConfig internal = new KAcarsConfig(config);
-      if (internal.url!=null && !internal.url.startsWith("http://") && !internal.url.startsWith("https://")) {
-        internal.url = "http://" +internal.url;
-      }
-      try {
-        URL url = new URL(internal.url);
-        String path = url.getPath();
-        if (path.length()==0) {
-          internal.url += "/action.php/kacars_free";
-        }
-        else if (path.length()==1) {
-          internal.url += "action.php/kacars_free";
-        }
-      } catch (MalformedURLException ex) {
-        L.error(ex, "Invalid kACARS-URL: %s", config.url);
-      }
-      return internal;
-    }
-    
     protected String toXML(Object request) throws Exception{
         StringWriter stringWriter = new StringWriter();
         serializer.write(request, stringWriter);
@@ -141,16 +117,17 @@ public class KAcarsClient {
         }
     }
 
-    protected String send(String template, Object... args) {
+    protected String send(String template, Object... args) throws IOException{
         String requestBody = String.format(template, args);
         return sendBody(requestBody);
     }
 
-    protected String sendBody(String requestBody) {
+    protected String sendBody(String requestBody) throws IOException {
         if (isEnabled()) {
-            L.debug("Sending kACARS request to %s", config.url);
+            String url = config.getKAcarsURL().toString();
+            L.debug("Sending kACARS request to %s", url);
             L.debug("Sending Request: %s", requestBody);
-            Post response = Http.post(config.url, requestBody.getBytes(), config.timeout, config.timeout);
+            Post response = Http.post(url, requestBody.getBytes(), config.timeout, config.timeout);
             String responseBody = response.text();
             L.debug("Receiving Response: %s", responseBody);
             return responseBody;

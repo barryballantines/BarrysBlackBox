@@ -5,6 +5,8 @@
  */
 package ballantines.avionics.kacars;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Objects;
 
 /**
@@ -32,6 +34,41 @@ public class KAcarsConfig {
         this.liveUpdateEnabled = config.liveUpdateEnabled;
         this.liveUpdateIntervalMS = config.liveUpdateIntervalMS;
         this.timeout = config.timeout;
+    }
+    
+    public URL getKAcarsURL() throws MalformedURLException {
+        String kacarsUrlAsString = null;
+        if (this.url != null && !this.url.startsWith("http://") && !this.url.startsWith("https://")) {
+            kacarsUrlAsString = "http://" + this.url;
+        }
+        else {
+            kacarsUrlAsString = this.url;
+        }
+        URL kacarsUrl = new URL(kacarsUrlAsString);
+        String path = kacarsUrl.getPath();
+        if (path.length() == 0) {
+            kacarsUrlAsString += "/action.php/kacars_free";
+        } 
+        else if (path.length() == 1) {
+            kacarsUrlAsString += "action.php/kacars_free";
+        } 
+        else {
+            return kacarsUrl;
+        }
+        return new URL(kacarsUrlAsString);
+    }
+    
+    public URL getVAHomeUrl() throws MalformedURLException {
+        URL u = getKAcarsURL();
+        String path = u.getPath();
+        if ("/action.php/kacars_free".equals(path)) {
+            path = "";
+        }
+        else {
+            int i = path.indexOf("/action.php/kacars_free");
+            path = (i>=0) ? path.substring(0,i)+"/" : "";
+        }
+        return new URL(u.getProtocol(), u.getHost(),u.getPort(), path);
     }
     
     @Override

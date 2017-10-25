@@ -67,16 +67,12 @@ public class AboutPanel implements Initializable {
     void vaHomeButtonPressed(ActionEvent event) {
         KAcarsConfig config = Services.get().kacarsConfigPipe.get();
         if (config!=null) {
-            String urlString = config.url;
-            if (urlString != null && urlString.length() > 0) {
-                try {
-                    URL url = new URL(urlString);
-                    String vaHomeUrl = url.getProtocol() + "://" + url.getHost();
-                    getWebEngine().load(vaHomeUrl);
-                }
-                catch (MalformedURLException ex) {
-                    // sorry...
-                }
+            try {
+                String vaHomeUrl = config.getVAHomeUrl().toString();
+                getWebEngine().load(vaHomeUrl);
+            }
+            catch (MalformedURLException ex) {
+                // sorry...
             }
         }
     }
