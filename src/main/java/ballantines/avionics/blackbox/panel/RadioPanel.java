@@ -303,6 +303,16 @@ public class RadioPanel implements Initializable, PipeUpdateListener {
                 frequency = newValue;
                 validateFrequency();
             });
+            
+            frequencyTF.focusedProperty().addListener((obs, oldValue, newValue) -> {
+                if (newValue==false) {
+                    if (isFrequencyValid()) {
+                        frequency = String.format(Locale.US, "%3.2f", Double.parseDouble(frequency));
+                        frequencyTF.setText(frequency);
+                    }
+                }
+            });
+            
             validateFrequency();
         }
         
@@ -397,16 +407,26 @@ public class RadioPanel implements Initializable, PipeUpdateListener {
                 course = newValue;
                 validateCourse();
             });
+            courseTF.focusedProperty().addListener((obs, oldValue, newValue) -> {
+                if (newValue==false) {
+                    if (isCourseValid()) {
+                        course = String.format(Locale.US, "%03d", Integer.parseInt(course));
+                        courseTF.setText(course);
+                    }
+                }
+            });
             validateCourse();
         }
         
-        protected void validateCourse() {
-            if (isCourseValid()) {
+        protected boolean validateCourse() {
+            boolean valid = isCourseValid();
+            if (valid) {
                 courseTF.getStyleClass().remove("input-field--invalid");
             }
             else {
                 courseTF.getStyleClass().add("input-field--invalid");
             }
+            return valid;
         }
         
         protected boolean isCourseValid() {
