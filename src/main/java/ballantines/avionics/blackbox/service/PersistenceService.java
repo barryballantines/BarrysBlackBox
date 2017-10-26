@@ -21,6 +21,8 @@ public interface PersistenceService {
     KAcarsConfig readKACARSConfig();
 
     ServerConfig readServerConfig();
+    
+    List<KAcarsConfig> readStoredKACARSConfigs();
 
     TrackingData readTrackingData();
 
@@ -33,6 +35,8 @@ public interface PersistenceService {
     void writeEventLog(List<LogEvent> events);
 
     void writeKACARSConfig(KAcarsConfig config);
+    
+    void writeStoredKACARSConfigs(List<KAcarsConfig> configs);
 
     void writeServerConfig(ServerConfig serverConfig);
 

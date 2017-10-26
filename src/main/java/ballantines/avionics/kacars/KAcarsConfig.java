@@ -7,7 +7,11 @@ package ballantines.avionics.kacars;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  *
@@ -129,6 +133,47 @@ public class KAcarsConfig {
     }
 
     
+    public static JSONObject asJSON(KAcarsConfig config) {
+        JSONObject json = new JSONObject();
+        json.put("url", config.url);
+        json.put("pilotId", config.pilotID);
+        json.put("password", config.password);
+        json.put("enabled", config.enabled);
+        json.put("liveUpdateEnabled", config.liveUpdateEnabled);
+        json.put("liveUpdateIntervalMS", config.liveUpdateIntervalMS);
+        json.put("timeout", config.timeout);
+        return json;
+    }
     
+    public static JSONArray asJSON(List<KAcarsConfig> configs) {
+        List<JSONObject> jsons = new ArrayList<>();
+        for (KAcarsConfig config : configs) {
+            JSONObject json = asJSON(config);
+            jsons.add(json);
+        }
+        return new JSONArray(jsons);
+    }
+    
+    public static KAcarsConfig fromJSON(JSONObject json) {
+        KAcarsConfig config = new KAcarsConfig();
+        config.url = json.getString("url");
+        config.pilotID = json.getString("pilotId");
+        config.password = json.getString("password");
+        config.enabled = json.getBoolean("enabled");
+        config.liveUpdateEnabled = json.getBoolean("liveUpdateEnabled");
+        config.liveUpdateIntervalMS = json.getInt("liveUpdateIntervalMS");
+        config.timeout = json.getInt("timeout");
+        return config;
+    }
+    
+    public static List<KAcarsConfig> fromJSON(JSONArray jsons) {
+        List<KAcarsConfig> configs = new ArrayList<>();
+        for (int i=0; i<jsons.length(); i++) {
+            JSONObject json = jsons.getJSONObject(i);
+            KAcarsConfig config = fromJSON(json);
+            configs.add(config);
+        }
+        return configs;
+    }
     
 }

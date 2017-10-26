@@ -125,6 +125,16 @@ public class PreferencesPersistenceServiceImpl implements PersistenceService {
     }
     
     @Override
+    public List<KAcarsConfig> readStoredKACARSConfigs() {
+        Preferences prefs = Preferences.userNodeForPackage(KAcarsConfig.class);
+        String jsonString = prefs.get("storedConfigs", "[]");
+        JSONArray jsonArray = new JSONArray(jsonString);
+        List<KAcarsConfig> configs = KAcarsConfig.fromJSON(jsonArray);
+        L.info("[PERSISTENCE] reading stored kACARS configs from user prefs: %s", configs);
+        return configs;
+    }
+    
+    @Override
     public void writeKACARSConfig(KAcarsConfig config) {
         try {
             L.info("[PERSISTENCE] writing kACARS config to user preferences: %s ", config);
@@ -140,6 +150,21 @@ public class PreferencesPersistenceServiceImpl implements PersistenceService {
             L.error(ex, "[PERSISTENCE] Failed to write kACARS config to User Preferences");
         }
     }
+
+    @Override
+    public void writeStoredKACARSConfigs(List<KAcarsConfig> configs) {
+        try {
+            L.info("[PERSISTENCE] writing stored kACARS configs to user preferences: %s ", configs);
+            JSONArray jsonArray = KAcarsConfig.asJSON(configs);
+            Preferences prefs = Preferences.userNodeForPackage(KAcarsConfig.class);
+            prefs.put("storedConfigs", jsonArray.toString());
+            prefs.flush();
+        } catch (BackingStoreException ex) {
+            L.error(ex, "[PERSISTENCE] Failed to write stored kACARS configs to User Preferences");
+        }
+    }
+    
+    
     
     @Override
     public ServerConfig readServerConfig() {
