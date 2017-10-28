@@ -134,6 +134,15 @@ public class TestServices extends Services {
         public void writePreferencesBackupDirectory(File directory) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
-        
+
+        @Override
+        public List<KAcarsConfig> readStoredKACARSConfigs() {
+          throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void writeStoredKACARSConfigs(List<KAcarsConfig> configs) {
+          throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        } 
     }
 }
