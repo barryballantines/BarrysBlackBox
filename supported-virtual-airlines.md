@@ -39,7 +39,7 @@ Verified means, that all supported kACARS features (downloading bid, submitting 
 | ------------------------- | ----------------------------|------------------------------- |
 | [Atlas Virtual Airlines](http://www.atlasvirtualairlines.com)| www.atlasvirtualairlines.com | http://www.atlasvirtualairlines.com/action.php/kacars_free |
 | [European Virtual Airlines](http://european.virtualairlines.eu) | european.virtualairlines.eu |http://european.virtualairlines.eu/action.php/kacars_free   |
-| [Historic Airline Group](http://www.historicairlinegroup.com) | http://www.historicairlinegroup.com/action.php/kacars_free  |
+| [Historic Airline Group](http://www.historicairlinegroup.com) | www.historicairlinegroup.com | http://www.historicairlinegroup.com/action.php/kacars_free  |
 | [Worldwide Virtual](http://www.worldwidevirtual.net) | www.worldwidevirtual.net | http://www.worldwidevirtual.net/action.php/kacars_free |
 
 
